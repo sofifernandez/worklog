@@ -1,5 +1,6 @@
 package com.worklog.backend.controller;
 
+import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
