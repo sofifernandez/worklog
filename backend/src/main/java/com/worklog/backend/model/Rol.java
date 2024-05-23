@@ -9,18 +9,18 @@ import java.sql.Timestamp;
 public class Rol {
 
     @Transient
-    public static final Long ID_ROL_TRA = 1L;
+    public static final Long ID_ROL_ADMIN = 1L;
+    @Transient
+    public static final Long ID_ROL_TRA = 3L;
     @Transient
     public static final Long ID_ROL_JO = 2L;
-    @Transient
-    public static final Long ID_ROL_ADMIN = 3L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "rol", nullable = false, length = 5)
+    @Column(name = "rol", nullable = false, length = 15)
     private String rol;
 
     public Long getId() {
