@@ -33,6 +33,18 @@ CREATE TABLE IF NOT EXISTS PERSONA_ROL
     constraint FK_PERSONAROL_PERSONA
         foreign key (persona_id) references persona (id),
     constraint FK_PERSONAROL_ROL
-        foreign key (rol_id) references rol (id)
+        foreign key (rol_id) references rol (id),
+    CONSTRAINT UNIQUE_PERSONA_ROL UNIQUE (persona_id, rol_id)
 );
 
+CREATE TABLE IF NOT EXISTS OBRA
+(
+    id          bigint auto_increment
+    primary key,
+    nombre           varchar(50) not null,
+    bps           varchar(50) not null,
+    activo      bit         not null,
+    fecha_alta  datetime(6) not null,
+    fecha_modif datetime(6) not null,
+    CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
+    );
