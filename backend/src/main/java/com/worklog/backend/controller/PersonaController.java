@@ -6,6 +6,8 @@ import com.worklog.backend.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,6 +19,9 @@ public class PersonaController {
 
     @PostMapping("/persona")
     Persona newPersona(@RequestBody Persona newPersona) {
+        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+        newPersona.setFechaAlta(currentTimestamp);
+        newPersona.setFechaModif(null);
         return personaRepository.save(newPersona);
     }
 
@@ -33,6 +38,8 @@ public class PersonaController {
 
     @PutMapping("/persona/{id}")
     Persona updatePersona(@RequestBody Persona newPersona, @PathVariable Long id) {
+        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+        newPersona.setFechaModif(currentTimestamp);
         return personaRepository.findById(id)
                 .map(persona -> {
                     persona.setNombre(newPersona.getNombre());

@@ -1,24 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import ListPersonasComponent from './components/ListPersonasComponent';
+import HeaderComponent from './components/HeaderComponent';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AddPersonaComponent from './components/AddPersonaComponent';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <HeaderComponent />
+        <div>
+          <Routes>
+              <Route exact path='/personas' element={<ListPersonasComponent/>} ></Route>
+              <Route exact path='/add-persona' element={<AddPersonaComponent/>} ></Route>
+              <Route exact path='/edit-persona/:id' element={ <AddPersonaComponent/> } ></Route>
+          </Routes>
+        </div>
+      </BrowserRouter>
     </div>
+
   );
 }
 
