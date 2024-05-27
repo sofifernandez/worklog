@@ -1,22 +1,24 @@
 package com.worklog.backend.model;
+
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "PERSONA_ROL", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "rol_id"}))
-public class PersonaRol {
+@Table(name = "JEFE_OBRA", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "obra_id", "activo"}))
+public class JefeObra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id")
-    private Rol rol;
-
-    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "persona_id")
     private Persona persona;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "obra_id")
+    private Obra obra;
 
     @Column(name = "fecha_alta", nullable = false, length = 19)
     private Timestamp fechaAlta;
@@ -35,20 +37,20 @@ public class PersonaRol {
         this.id = id;
     }
 
-    public Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
     public Persona getPersona() {
         return persona;
     }
 
     public void setPersona(Persona persona) {
         this.persona = persona;
+    }
+
+    public Obra getObra() {
+        return obra;
+    }
+
+    public void setObra(Obra obra) {
+        this.obra = obra;
     }
 
     public Timestamp getFechaAlta() {

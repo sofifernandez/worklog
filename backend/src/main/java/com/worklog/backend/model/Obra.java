@@ -1,27 +1,27 @@
 package com.worklog.backend.model;
+
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "PERSONA_ROL", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "rol_id"}))
-public class PersonaRol {
+@Table(name = "OBRA", uniqueConstraints = @UniqueConstraint(columnNames = "bps"))
+public class Obra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id")
-    private Rol rol;
+    @Column(name = "nombre", nullable = false, length = 50)
+    private String nombre;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "persona_id")
-    private Persona persona;
+    @Column(name = "bps", nullable = false, length = 50)
+    private String bps;
 
     @Column(name = "fecha_alta", nullable = false, length = 19)
     private Timestamp fechaAlta;
 
-    @Column(name = "fecha_modif", nullable = false, length = 19)
+    @Column(name = "fecha_modif", length = 19)
     private Timestamp fechaModif;
 
     @Column(name = "activo", nullable = false)
@@ -35,20 +35,20 @@ public class PersonaRol {
         this.id = id;
     }
 
-    public Rol getRol() {
-        return rol;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public Persona getPersona() {
-        return persona;
+    public String getBps() {
+        return bps;
     }
 
-    public void setPersona(Persona persona) {
-        this.persona = persona;
+    public void setBps(String bps) {
+        this.bps = bps;
     }
 
     public Timestamp getFechaAlta() {

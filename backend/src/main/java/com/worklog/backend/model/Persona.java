@@ -32,7 +32,7 @@ public class Persona {
     @Column(name = "fecha_alta", nullable = false, length = 19)
     private Timestamp fechaAlta;
 
-    @Column(name = "fecha_modif", nullable = false, length = 19)
+    @Column(name = "fecha_modif", nullable = true, length = 19)
     private Timestamp fechaModif;
 
     @Column(name = "activo", nullable = false)
