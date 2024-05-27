@@ -34,13 +34,13 @@ public class PersonaRolController {
     @PutMapping("/personaRol/{id}")
     PersonaRol updatePersonaRol(@RequestBody PersonaRol newPersonaRol, @PathVariable Long id) {
         return personaRolRepository.findById(id)
-                .map(persona -> {
-                    persona.setRol(newPersonaRol.getRol());
-                    persona.setPersona(newPersonaRol.getPersona());
-                    persona.setFechaAlta(newPersonaRol.getFechaAlta());
-                    persona.setFechaModif(newPersonaRol.getFechaModif());
-                    persona.setActivo(newPersonaRol.getActivo());
-                    return personaRolRepository.save(persona);
+                .map(personaRol -> {
+                    personaRol.setRol(newPersonaRol.getRol());
+                    personaRol.setPersona(newPersonaRol.getPersona());
+                    personaRol.setFechaAlta(newPersonaRol.getFechaAlta());
+                    personaRol.setFechaModif(newPersonaRol.getFechaModif());
+                    personaRol.setActivo(newPersonaRol.getActivo());
+                    return personaRolRepository.save(personaRol);
                 }).orElseThrow(() -> new PersonaRolNotFoundException(id));
     }
 

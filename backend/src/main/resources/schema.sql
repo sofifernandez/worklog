@@ -48,3 +48,16 @@ CREATE TABLE IF NOT EXISTS OBRA
     fecha_modif datetime(6) not null,
     CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
     );
+
+CREATE TABLE IF NOT EXISTS USUARIO
+(
+    id          bigint auto_increment
+    primary key,
+    persona_id  bigint      null,
+    username           varchar(50) not null,
+    password           varchar(50) not null,
+    CONSTRAINT UNIQUE_USUARIO_USRNAME UNIQUE (username),
+    CONSTRAINT UNIQUE_USUARIO_PERSONA UNIQUE (persona_id),
+    constraint FK_USUARIO_PERSONA
+    foreign key (persona_id) references persona (id)
+    );
