@@ -53,11 +53,28 @@ CREATE TABLE IF NOT EXISTS USUARIO
 (
     id          bigint auto_increment
     primary key,
-    persona_id  bigint      null,
+    persona_id  bigint      not null,
     username           varchar(50) not null,
     password           varchar(50) not null,
     CONSTRAINT UNIQUE_USUARIO_USRNAME UNIQUE (username),
     CONSTRAINT UNIQUE_USUARIO_PERSONA UNIQUE (persona_id),
     constraint FK_USUARIO_PERSONA
     foreign key (persona_id) references persona (id)
+    );
+
+
+CREATE TABLE IF NOT EXISTS JEFE_OBRA
+(
+    id          bigint auto_increment
+    primary key,
+    persona_id  bigint      not null,
+    obra_id  bigint      not null,
+    fecha_alta  datetime(6) not null,
+    fecha_modif datetime(6) not null,
+    activo      bit         not null,
+    CONSTRAINT UNIQUE_USUARIO_PERSONA UNIQUE (persona_id),
+    CONSTRAINT FK_JO_PERSONA
+    foreign key (persona_id) references persona (id),
+    CONSTRAINT FK_JO_OBRA
+    foreign key (obra_id) references obra (id)
     );
