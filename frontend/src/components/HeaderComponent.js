@@ -8,6 +8,7 @@ const HeaderComponent = () => {
                 <div className='container'>
                     <h2>APP v1.0</h2>
                     <a href='/personas' className='btn btn-primary'>Personas</a>
+                    <a href='/rol' className='btn btn-primary'>Asignar rol a persona</a>
                 </div>
             </nav>
         </header>
