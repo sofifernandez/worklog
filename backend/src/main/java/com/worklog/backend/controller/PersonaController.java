@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://100.28.58.113:8081")
 public class PersonaController {
 
     @Autowired
@@ -21,7 +22,7 @@ public class PersonaController {
     Persona newPersona(@RequestBody Persona newPersona) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newPersona.setFechaAlta(currentTimestamp);
-        newPersona.setFechaModif(null);
+        newPersona.setFechaModif(currentTimestamp);
         return personaRepository.save(newPersona);
     }
 
