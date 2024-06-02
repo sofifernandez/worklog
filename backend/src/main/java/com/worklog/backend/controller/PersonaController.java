@@ -4,13 +4,19 @@ package com.worklog.backend.controller;
 import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.PersonaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -25,9 +31,9 @@ public class PersonaController {
     }
 
     @PostMapping("/persona")
-    public ResponseEntity<Persona> newPersona(@RequestBody Persona newPersona) {
+    public ResponseEntity<Object> newPersona(@Valid @RequestBody Persona newPersona) {
         Persona savedPersona = personaService.savePersona(newPersona);
-        return new ResponseEntity<>(savedPersona, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPersona);
     }
 
     @GetMapping("/personas")
@@ -43,7 +49,7 @@ public class PersonaController {
     }
 
     @PutMapping("/persona/{id}")
-    public ResponseEntity<Persona> updatePersona(@RequestBody Persona newPersona, @PathVariable Long id) {
+    public ResponseEntity<Object> updatePersona(@Valid @RequestBody Persona newPersona, @PathVariable Long id) {
         Persona updatedPersona = personaService.updatePersona(newPersona, id);
         return new ResponseEntity<>(updatedPersona, HttpStatus.OK);
     }
@@ -59,6 +65,17 @@ public class PersonaController {
         Persona persona = personaService.findPersonaByCi(ci);
         return new ResponseEntity<>(persona, HttpStatus.OK);
     }
+
+   /* private ResponseEntity<Object> getValidationErrors(BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+        return null;
+    }*/
 
 
 
