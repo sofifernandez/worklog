@@ -1,6 +1,10 @@
 package com.worklog.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -15,17 +19,20 @@ public class Persona {
     private Long id;
 
     @Column(name = "nombre", nullable = false, length = 50)
+    @Size(min = 2, max = 30, message = "El nombre debe tener entre 2 y 30 caracteres")
     private String nombre;
-
+    @Size(min = 2, max = 30, message = "El apellido debe tener entre 2 y 30 caracteres")
     @Column(name = "apellido", nullable = false, length = 50)
     private String apellido;
 
     @Column(name = "ci", unique = true, nullable = false, length = 26)
+    @Pattern(regexp = "\\d{7}-\\d{1}", message = "La cédula debe tener el formato 1234567-8")
     private String ci;
 
     @Column(name = "fecha_nacimiento", length = 10)
     private Date fechaNacimiento;
 
+    @Digits(integer = 10, fraction = 0, message = "El teléfono solo debe contener hasta 9 dígitos")
     @Column(name = "numero_telefono", length = 15)
     private String numeroTelefono;
 
