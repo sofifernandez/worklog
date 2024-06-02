@@ -19,7 +19,7 @@ public class Usuario {
     @Column(name = "username", unique = true, nullable = false, length = 26)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 26)
+    @Column(name = "password", nullable = false)
     private String password;
 
 
