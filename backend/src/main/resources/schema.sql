@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS PERSONA
     nombre           varchar(50) not null,
     fecha_nacimiento date        null,
     fecha_alta       datetime(6) not null,
-    fecha_modif      datetime(6) not null,
+    fecha_modif      datetime(6) null,
     numero_telefono  varchar(15) null,
     activo           bit         not null,
     constraint UNIQUE_PERSONA_CI
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS PERSONA_ROL
     rol_id      bigint      null,
     activo      bit         not null,
     fecha_alta  datetime(6) not null,
-    fecha_modif datetime(6) not null,
+    fecha_modif datetime(6) null,
     constraint FK_PERSONAROL_PERSONA
         foreign key (persona_id) references persona (id),
     constraint FK_PERSONAROL_ROL
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS OBRA
     bps           varchar(50) not null,
     activo      bit         not null,
     fecha_alta  datetime(6) not null,
-    fecha_modif datetime(6) not null,
+    fecha_modif datetime(6) null,
     CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
     );
 

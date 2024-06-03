@@ -24,10 +24,21 @@ public class PersonaService {
 
     @Transactional
     public Persona savePersona(Persona newPersona) {
-        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-        newPersona.setFechaAlta(currentTimestamp);
-        newPersona.setFechaModif(null);
-        return personaRepository.save(newPersona);
+        try {
+            Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+            newPersona.setFechaAlta(currentTimestamp);
+            newPersona.setFechaModif(null);
+            return personaRepository.save(newPersona);
+        } catch (Exception e) {
+            // Handle the exception, e.g., log it and/or rethrow it as a custom exception
+            System.err.println("An error occurred while saving the Persona: " + e.getMessage());
+            // You can also log the stack trace for more detailed error information
+            e.printStackTrace();
+
+            // Optionally, rethrow the exception or return a default/fallback value
+            // throw new CustomException("Failed to save Persona", e);
+            return null; // or you might choose to return a default Persona object or handle it in another way
+        }
     }
 
     @Transactional(readOnly = true)

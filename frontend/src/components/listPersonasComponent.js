@@ -41,6 +41,7 @@ export const ListPersonasComponent = () => {
                     <th>Fecha Nacimiento</th>
                     <th>Activo</th>
                     <th>Acciones</th>
+                    <th>Rol actual</th>
                 </thead>
                 <tbody>
                     {personas.map(p =>

@@ -1,11 +1,13 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.PersonaRol;
 import com.worklog.backend.repository.PersonaRepository;
 import com.worklog.backend.repository.PersonaRolRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,15 @@ public class PersonaRolService {
 
     @Transactional
     public PersonaRol savePersonaRol(PersonaRol newPersonaRol) {
-        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-        newPersonaRol.setFechaAlta(currentTimestamp);
-        newPersonaRol.setFechaModif(null);
-        return personaRolRepository.save(newPersonaRol);
+        try {
+            Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+            newPersonaRol.setFechaAlta(currentTimestamp);
+            newPersonaRol.setFechaModif(null);
+            newPersonaRol.setActivo(true);
+            return personaRolRepository.save(newPersonaRol);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Transactional(readOnly = true)
@@ -76,11 +83,15 @@ public class PersonaRolService {
     }
 
     @Transactional(readOnly = true)
-    public PersonaRol findPersonaRolActivoByCi(String ci) {
+    public PersonaRol getPersonaRolActivoByCi(String ci) {
         String queryStr = "SELECT pr FROM PersonaRol pr WHERE pr.persona.ci = :ci AND pr.activo = true";
         TypedQuery<PersonaRol> query = entityManager.createQuery(queryStr, PersonaRol.class);
         query.setParameter("ci", ci);
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new PersonaRolNotFoundException(ci);
+        }
     }
 
 }
