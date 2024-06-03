@@ -63,7 +63,7 @@ public class PersonaRolController {
 
     @GetMapping("/personaRol/personaRolByCI/{ci}")
     public ResponseEntity<PersonaRol> getPersonaRolActivoByCI(@PathVariable String ci) {
-        PersonaRol personaRol = personaRolService.findPersonaRolActivoByCi(ci);
+        PersonaRol personaRol = personaRolService.getPersonaRolActivoByCi(ci);
         return new ResponseEntity<>(personaRol, HttpStatus.OK);
     }
 

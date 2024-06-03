@@ -2,34 +2,49 @@ import axios from "axios"
 
 const BASE_REST_API_URL = "http://localhost:8080/"
 
+// Create an instance of Axios
+const axiosInstance = axios.create({
+    baseURL: BASE_REST_API_URL
+});
+
+// Add a response interceptor
+axiosInstance.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 404) {
+      // Suppress the console error for 404
+      console.log('Resource not found (404)');
+    }
+    return Promise.reject(error);
+  }
+);
+
+
 class PersonaService{
 
     getAllPersonas(){
-        return axios.get(BASE_REST_API_URL + 'personas')
+        return axiosInstance.get(BASE_REST_API_URL + 'personas')
     }
 
     createPersona(persona){
-        return axios.post(BASE_REST_API_URL + 'persona', persona)
+        return axiosInstance.post(BASE_REST_API_URL + 'persona', persona)
     }
 
     getPersonaById(personaId){
-        return axios.get(BASE_REST_API_URL +  'persona/' + personaId)
+        return axiosInstance.get(BASE_REST_API_URL +  'persona/' + personaId)
     }
 
     updatePersona(personaId, persona){
-        return axios.put(BASE_REST_API_URL + 'persona/' + personaId, persona)
+        return axiosInstance.put(BASE_REST_API_URL + 'persona/' + personaId, persona)
     }
 
     deletePersona(personaId){
-        return axios.delete((BASE_REST_API_URL +  'persona/' + personaId))
+        return axiosInstance.delete((BASE_REST_API_URL +  'persona/' + personaId))
     }
 
     getPersonaByCI(cedula){
-        return axios.get(BASE_REST_API_URL + 'persona/searchByCI/', cedula)
+        return axiosInstance.get(BASE_REST_API_URL + 'persona/searchByCI/' + cedula)
     }
 
-    getPersonaRolActivoByCI(cedula){
-        return axios.get(BASE_REST_API_URL + 'personaRol/personaRolByCI/', cedula)
-    }
 }
 export default new PersonaService

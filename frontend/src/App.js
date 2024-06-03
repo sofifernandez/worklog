@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <HeaderComponent />
-        <div>
+        <div className='container-fluid row justify-content-center'>
           <Routes>
               <Route exact path='/personas' element={<ListPersonasComponent/>} ></Route>
               <Route exact path='/add-persona' element={<AddPersonaComponent/>} ></Route>
