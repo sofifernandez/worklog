@@ -26,6 +26,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
     private PersonaRolRepository personaRolRepository;
 
 

@@ -36,8 +36,7 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(config -> config.disable()) //comentar para habilitar csrf cuando hagamos puesta en producción. no funciona con postman por lo que lo deshabilitamos descomentandolo para hacer pruebas
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/personaRol").permitAll();
-                    //auth.requestMatchers("/usuario").permitAll();
+                    //auth.requestMatchers("/login").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
