@@ -21,7 +21,8 @@ function App() {
               <Route exact path='/obras' element={<ListObrasComponent/>} ></Route>
               <Route exact path='/add-obra' element={<AddObraComponent/>} ></Route>
               <Route exact path='/edit-obra/:id' element={<AddObraComponent/>} ></Route>
-              <Route exact path='/rol' element={ <AssignRolComponent/> } ></Route>
+              <Route exact path='/assign-rol' element={ <AssignRolComponent/> } ></Route>
+              <Route exact path='/assign-rol/:id' element={ <AssignRolComponent/> } ></Route>
               
           </Routes>
         </div>
