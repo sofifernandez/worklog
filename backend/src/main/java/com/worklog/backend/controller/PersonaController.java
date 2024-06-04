@@ -4,6 +4,7 @@ import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -19,6 +20,7 @@ public class PersonaController {
     private PersonaRepository personaRepository;
 
     @PostMapping("/persona")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     Persona newPersona(@RequestBody Persona newPersona) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newPersona.setFechaAlta(currentTimestamp);

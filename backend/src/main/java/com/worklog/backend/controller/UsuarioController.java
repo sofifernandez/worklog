@@ -22,6 +22,7 @@ public class UsuarioController {
 
     @PostMapping("/usuario")
     Usuario newUsuario(@RequestBody Usuario newUsuario) {
+        newUsuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
         return usuarioRepository.save(newUsuario);
     }
 
