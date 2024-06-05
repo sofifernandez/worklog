@@ -1,6 +1,7 @@
 import axios from "axios"
 
 const BASE_REST_API_URL = "http://localhost:8080/"
+//const BASE_REST_API_URL = "http://18.205.219.216:8080/"
 
 // Create an instance of Axios
 const axiosInstance = axios.create({

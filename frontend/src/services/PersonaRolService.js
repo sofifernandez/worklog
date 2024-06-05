@@ -1,6 +1,7 @@
 import axios from "axios"
 
 const PERSONA_ROL_BASE_REST_API_URL = "http://localhost:8080/personaRol"
+//const BASE_REST_API_URL = "http://18.205.219.216:8080/personaRol"
 
 class PersonaRolService{
 
