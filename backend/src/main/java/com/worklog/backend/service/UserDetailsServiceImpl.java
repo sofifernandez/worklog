@@ -44,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(rolStr);
 
-        System.out.println(rolStr);
+        //System.out.println(rolStr);
 
         return new User(usuario.getUsername(), usuario.getPassword(), true,true,true,true, Collections.singleton(simpleGrantedAuthority));
     }
