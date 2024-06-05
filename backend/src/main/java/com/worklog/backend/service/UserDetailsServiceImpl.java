@@ -38,7 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe"));
 
         PersonaRol personaRol = personaRolRepository.findByPersona(usuario.getPersona())
-                .orElseThrow(() -> new PersonaRolNotFoundException((usuario.getId())));
+                .orElseThrow(() -> new PersonaRolNotFoundException(usuario.getPersona().getNombre() + ' ' + usuario.getPersona().getApellido()));
 
         String rolStr = "ROLE_".concat(personaRol.getRol().getRol());
 

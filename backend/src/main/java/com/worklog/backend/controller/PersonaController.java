@@ -32,6 +32,7 @@ public class PersonaController {
     }
 
     @PostMapping("/persona")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Object> newPersona(@Valid @RequestBody Persona newPersona) {
         Persona savedPersona = personaService.savePersona(newPersona);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPersona);
