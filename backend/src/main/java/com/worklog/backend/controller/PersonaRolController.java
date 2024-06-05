@@ -1,10 +1,15 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.PersonaRolNotFoundException;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.PersonaRol;
 import com.worklog.backend.repository.PersonaRolRepository;
+import com.worklog.backend.service.PersonaRolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
@@ -14,43 +19,53 @@ import java.util.List;
 public class PersonaRolController {
 
     @Autowired
-    PersonaRolRepository personaRolRepository;
+    private PersonaRolService personaRolService;
+
+    @ExceptionHandler(PersonaRolNotFoundException.class)
+    public ResponseEntity<String> handlePersonaRolNotFoundException(PersonaRolNotFoundException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @PostMapping("/personaRol")
-    PersonaRol newPersonaRol(@RequestBody PersonaRol newPersonaRol) {
-        return personaRolRepository.save(newPersonaRol);
+    public ResponseEntity<PersonaRol> newPersonaRol(@RequestBody PersonaRol newPersonaRol) {
+        PersonaRol savedPersonaRol = personaRolService.savePersonaRol(newPersonaRol);
+        return new ResponseEntity<>(savedPersonaRol, HttpStatus.CREATED);
     }
 
     @GetMapping("/personaRoles")
-    List<PersonaRol> getAllPersonaRol() {
-        return personaRolRepository.findAll();
+    public ResponseEntity<List<PersonaRol>> getAllPersonaRoles() {
+        List<PersonaRol> personaRoles = personaRolService.getAllPersonaRoles();
+        return new ResponseEntity<>(personaRoles, HttpStatus.OK);
     }
 
     @GetMapping("/personaRol/{id}")
-    PersonaRol getPersonaRolById(@PathVariable Long id) {
-        return personaRolRepository.findById(id)
-                .orElseThrow(() -> new PersonaRolNotFoundException(id));
+    public ResponseEntity<PersonaRol> getPersonaRolById(@PathVariable Long id) {
+        PersonaRol personaRol = personaRolService.getPersonaRolById(id);
+        return new ResponseEntity<>(personaRol, HttpStatus.OK);
     }
 
     @PutMapping("/personaRol/{id}")
-    PersonaRol updatePersonaRol(@RequestBody PersonaRol newPersonaRol, @PathVariable Long id) {
-        return personaRolRepository.findById(id)
-                .map(personaRol -> {
-                    personaRol.setRol(newPersonaRol.getRol());
-                    personaRol.setPersona(newPersonaRol.getPersona());
-                    personaRol.setFechaAlta(newPersonaRol.getFechaAlta());
-                    personaRol.setFechaModif(newPersonaRol.getFechaModif());
-                    personaRol.setActivo(newPersonaRol.getActivo());
-                    return personaRolRepository.save(personaRol);
-                }).orElseThrow(() -> new PersonaRolNotFoundException(id));
+    public ResponseEntity<PersonaRol> updatePersonaRol(@RequestBody PersonaRol newPersonaRol, @PathVariable Long id) {
+        PersonaRol updatedPersonaRol = personaRolService.updatePersonaRol(newPersonaRol, id);
+        return new ResponseEntity<>(updatedPersonaRol, HttpStatus.OK);
     }
 
     @DeleteMapping("/personaRol/{id}")
-    String deletePersonaRol(@PathVariable Long id){
-        if(!personaRolRepository.existsById(id)){
-            throw new PersonaRolNotFoundException(id);
-        }
-        personaRolRepository.deleteById(id);
-        return  "PersonaRol with id "+id+" has been deleted success.";
+    public ResponseEntity<String> deletePersonaRol(@PathVariable Long id) {
+        personaRolService.deletePersonaRol(id);
+        return new ResponseEntity<>("PersonaRol with id " + id + " has been deleted successfully.", HttpStatus.OK);
     }
+
+    @GetMapping("/personaRol/personasByRol/{rol}")
+    public ResponseEntity<List<Persona>> getPersonasByRol(@PathVariable String rol) {
+        List<Persona> personas = personaRolService.findPersonasByRol(rol);
+        return new ResponseEntity<>(personas, HttpStatus.OK);
+    }
+
+    @GetMapping("/personaRol/personaRolByCI/{ci}")
+    public ResponseEntity<PersonaRol> getPersonaRolActivoByCI(@PathVariable String ci) {
+        PersonaRol personaRol = personaRolService.getPersonaRolActivoByCi(ci);
+        return new ResponseEntity<>(personaRol, HttpStatus.OK);
+    }
+
 }

@@ -14,6 +14,7 @@ const AddPersonaComponent = () => {
     const [fechaNacimiento, setFechaNacimiento] = useState(null)
     const [numeroTelefono, setNumeroTelefono] = useState('')
     const [activo, setActivo] = useState(true)
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate()
     // Este hook apunta al parametro de la URL ej persona/$id
     const { id } = useParams()
@@ -26,19 +27,32 @@ const AddPersonaComponent = () => {
             PersonaService.updatePersona(id, persona).then((res) => {
                 console.log(res.data)
                 navigate('/personas')
-            }).catch(e => {
-                console.log(e)
+            }).catch(error => {
+                if (error.response && error.response.status === 400) {
+                    if (error.response.data === 'Error de integridad de datos') {
+                        setErrors({ ci: 'Cedula ya registrada' });
+                    } else {
+                        setErrors(error.response.data)
+                        console.log(error.response.data)
+                    }
+                }
             })
         } else {
             console.log(persona)
             PersonaService.createPersona(persona).then((res) => {
                 console.log(res.data)
                 navigate('/personas')
-            }).catch(e => {
-                console.log(e)
+            }).catch(error => {
+                if (error.response && error.response.status === 400) {
+                    if (error.response.data === 'Error de integridad de datos') {
+                        setErrors({ ci: 'Cedula ya registrada' });
+                    } else {
+                        setErrors(error.response.data)
+                        console.log(error.response.data)
+                    }
+                }
             })
         }
-
     }
 
     // Este efecto es para cuando voy a actualizar una persona, que me traiga los datos actuales de esa persona
@@ -71,47 +85,57 @@ const AddPersonaComponent = () => {
     }
 
     return (
-        <div>
-            <div className='contenedor'>
-                <div className='row'>
-                    <div>
+        <div className='d-flex justify-content-center align-items-center min-vh-100'>
+            <div className='col-md-6'>
+                <div className='card'>
+                    <div className='card-header'>
                         <h2 className='text-center'>{title()}</h2>
-                        <div className='card-body'>
-                            <form className=''>
-                                <div className='form-group'>
-                                    <label className='form-label mb-2'>Nombre</label>
-                                    <input type='text' name='nombre' className='form-control' value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Apellido</label>
-                                    <input type='text' name='apellido' className='form-control' value={apellido} onChange={(e) => setApellido(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Cedula</label>
-                                    <input type='text' name='ci' className='form-control' value={ci} onChange={(e) => setCi(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Fecha Nacimiento</label>
-                                    <DatePicker
-                                        selected={fechaNacimiento}
-                                        onChange={date => setFechaNacimiento(format(date, 'yyyy-MM-dd'))}
-                                        className='form-control'
-                                        dateFormat='yyyy-MM-dd'
-                                    />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Numero Telefono</label>
-                                    <input type='text' name='telefono' className='form-control' value={numeroTelefono} onChange={(e) => setNumeroTelefono(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Activo</label>
-                                    <input type='checkbox' name='activo' className='form-check-input m-2' checked={activo} onChange={handleCheckboxChange} />
-                                </div>
-                                <button className='btn btn-success' onClick={(e) => saveOrUpdatePersona(e)}>Guardar</button>
-
-                                <Link to={'/personas'} className='btn btn-danger ml-2'>Cancelar</Link>
-                            </form>
-                        </div>
+                    </div>
+                    <div className='card-body'>
+                        <form>
+                            <div className='form-group'>
+                                <label className='form-label mb-2'>Nombre</label>
+                                <input type='text' name='nombre' className='form-control' value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+                                {errors.nombre && <div className="alert alert-danger mt-2" role="alert">{errors.nombre}</div>}
+                            </div>
+                            <div className='form-group'>
+                                <label className='form-label'>Apellido</label>
+                                <input type='text' name='apellido' className='form-control' value={apellido} onChange={(e) => setApellido(e.target.value)} required />
+                                {errors.apellido && <div className="alert alert-danger mt-2" role="alert">{errors.apellido}</div>}
+                            </div>
+                            <div className='form-group'>
+                                <label className='form-label'>Cedula</label>
+                                <input type='text' name='ci' className='form-control' value={ci} onChange={(e) => setCi(e.target.value)} required />
+                                {errors.ci && <div className="alert alert-danger mt-2" role="alert">{errors.ci}</div>}
+                            </div>
+                            <div className='form-group'>
+                                <label className='form-label'>Fecha Nacimiento</label>
+                                <DatePicker
+                                    selected={fechaNacimiento}
+                                    onChange={date => setFechaNacimiento(format(date, 'yyyy-MM-dd'))}
+                                    className='form-control'
+                                    dateFormat='yyyy-MM-dd'
+                                />
+                            </div>
+                            <div className='form-group'>
+                                <label className='form-label'>Numero Telefono</label>
+                                <input
+                                    type='text'
+                                    name='telefono'
+                                    className='form-control'
+                                    value={numeroTelefono}
+                                    onChange={(e) => setNumeroTelefono(e.target.value)}
+                                    required
+                                />
+                                {errors.numeroTelefono && <div className="alert alert-danger mt-2" role="alert">{errors.numeroTelefono}</div>}
+                            </div>
+                            <div className='form-group form-check'>
+                                <input type='checkbox' name='activo' className='form-check-input' checked={activo} onChange={handleCheckboxChange} />
+                                <label className='form-check-label m-2'>Activo</label>
+                            </div>
+                            <button className='btn btn-success' onClick={(e) => saveOrUpdatePersona(e)}>Guardar</button>
+                            <Link to={'/personas'} className='btn btn-danger ml-2'>Cancelar</Link>
+                        </form>
                     </div>
                 </div>
             </div>

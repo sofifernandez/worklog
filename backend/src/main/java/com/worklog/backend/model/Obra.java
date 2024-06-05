@@ -1,6 +1,8 @@
 package com.worklog.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Size;
 
 import java.sql.Timestamp;
 
@@ -11,10 +13,11 @@ public class Obra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-
+    @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
+    @Digits(integer = 20, fraction = 0, message = "El numero de BPS debe tener X digitos")
     @Column(name = "bps", nullable = false, length = 50)
     private String bps;
 

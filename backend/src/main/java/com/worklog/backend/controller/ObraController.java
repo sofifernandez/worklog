@@ -3,6 +3,7 @@ package com.worklog.backend.controller;
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.repository.ObraRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +20,10 @@ public class ObraController {
     private ObraRepository obraRepository;
 
     @PostMapping("/obra")
-    Obra newObra(@RequestBody Obra newObra) {
+    Obra newObra(@Valid @RequestBody Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaAlta(currentTimestamp);
+        newObra.setFechaModif(currentTimestamp);
         return obraRepository.save(newObra);
     }
 
@@ -37,7 +39,7 @@ public class ObraController {
     }
 
     @PutMapping("/obra/{id}")
-    Obra updateObra(@RequestBody Obra newObra, @PathVariable Long id) {
+    Obra updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaModif(currentTimestamp);
         return obraRepository.findById(id)
