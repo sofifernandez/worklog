@@ -1,11 +1,11 @@
 package com.worklog.backend.controller;
 
-
 import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.PersonaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://100.28.58.113:8081")
 public class PersonaController {
 
     @Autowired
@@ -31,6 +32,7 @@ public class PersonaController {
     }
 
     @PostMapping("/persona")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Object> newPersona(@Valid @RequestBody Persona newPersona) {
         Persona savedPersona = personaService.savePersona(newPersona);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPersona);

@@ -1,8 +1,9 @@
 import axios from "axios"
 
 const OBRA_BASE_REST_API_URL = "http://localhost:8080/"
+//const BASE_REST_API_URL = "http://18.205.219.216:8080/"
 
-class ObraSerice{
+class ObraService{
 
     getAllObras(){
         return axios.get(OBRA_BASE_REST_API_URL + 'obras')
@@ -24,4 +25,4 @@ class ObraSerice{
         return axios.delete((OBRA_BASE_REST_API_URL +  'obra/' + obraId))
     }
 }
-export default new ObraSerice
+export default new ObraService

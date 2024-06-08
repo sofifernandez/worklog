@@ -4,20 +4,25 @@ import com.worklog.backend.exception.UsuarioNotFoundException;
 import com.worklog.backend.model.Usuario;
 import com.worklog.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://100.28.58.113:8081")
 public class UsuarioController {
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     UsuarioRepository usuarioRepository;
 
     @PostMapping("/usuario")
     Usuario newUsuario(@RequestBody Usuario newUsuario) {
+        newUsuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
         return usuarioRepository.save(newUsuario);
     }
 
@@ -38,7 +43,7 @@ public class UsuarioController {
                 .map(usuario -> {
                     usuario.setPersona(newUsuario.getPersona());;
                     usuario.setUsername(newUsuario.getUsername());
-                    usuario.setPassword(newUsuario.getPassword());
+                    usuario.setPassword(passwordEncoder.encode(newUsuario.getPassword()));
                     return usuarioRepository.save(usuario);
                 }).orElseThrow(() -> new UsuarioNotFoundException(id));
     }

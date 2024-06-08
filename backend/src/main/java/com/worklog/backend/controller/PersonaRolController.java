@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://100.28.58.113:8081")
 public class PersonaRolController {
 
     @Autowired

@@ -1,6 +1,7 @@
 package com.worklog.backend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +20,8 @@ public class Usuario {
     @Column(name = "username", unique = true, nullable = false, length = 26)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 26)
+    @Column(name = "password", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
 

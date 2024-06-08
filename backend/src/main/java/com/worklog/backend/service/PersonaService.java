@@ -27,7 +27,7 @@ public class PersonaService {
         try {
             Timestamp currentTimestamp = new Timestamp(new Date().getTime());
             newPersona.setFechaAlta(currentTimestamp);
-            newPersona.setFechaModif(null);
+            newPersona.setFechaModif(currentTimestamp);
             return personaRepository.save(newPersona);
         } catch (Exception e) {
             // Handle the exception, e.g., log it and/or rethrow it as a custom exception
