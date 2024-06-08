@@ -1,5 +1,6 @@
 package com.worklog.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -16,8 +17,9 @@ public class JefeObra {
     @JoinColumn(name = "persona_id")
     private Persona persona;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "obra_id")
+    @JsonBackReference
     private Obra obra;
 
     @Column(name = "fecha_alta", nullable = false, length = 19)
@@ -37,6 +39,14 @@ public class JefeObra {
         this.id = id;
     }
 
+    public Obra getObra() {
+        return obra;
+    }
+
+    public void setObra(Obra obra) {
+        this.obra = obra;
+    }
+
     public Persona getPersona() {
         return persona;
     }
@@ -45,13 +55,6 @@ public class JefeObra {
         this.persona = persona;
     }
 
-    public Obra getObra() {
-        return obra;
-    }
-
-    public void setObra(Obra obra) {
-        this.obra = obra;
-    }
 
     public Timestamp getFechaAlta() {
         return fechaAlta;

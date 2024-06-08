@@ -6,6 +6,7 @@ import AddPersonaComponent from './components/AddPersonaComponent';
 import AssignRolComponent from './components/AssignRolComponent'
 import ListObrasComponent from './components/ListObrasComponent';
 import  AddObraComponent  from './components/AddObraComponent';
+import AssignJefeObraComponent from './components/AssignJefeObraComponent'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
               <Route exact path='/add-obra' element={<AddObraComponent/>} ></Route>
               <Route exact path='/edit-obra/:id' element={<AddObraComponent/>} ></Route>
               <Route exact path='/rol' element={ <AssignRolComponent/> } ></Route>
+              <Route exact path='/assing-jefeObra/:id' element={ <AssignJefeObraComponent/> } ></Route>
               
           </Routes>
         </div>
