@@ -3,6 +3,7 @@ import ObraService from '../services/ObraService'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import JefeObraService from '../services/JefeObraService';
 
 const ListObrasComponent = () => {
 
@@ -10,9 +11,20 @@ const ListObrasComponent = () => {
 
     const listarObras = () => {
         ObraService.getAllObras().then(res =>{
+            console.log(res.data)
             setObras(res.data)
+            
         }).catch(error =>{
             console.log(error)
+        })
+    }
+
+    const eliminarJefeObra = (jefeObraId) => {
+        console.log(jefeObraId)
+        JefeObraService.deleteJefeObra(jefeObraId).then((res) => {
+        window.location.reload();
+        }).catch(e => {
+            console.log(e)
         })
     }
 
@@ -27,6 +39,8 @@ const ListObrasComponent = () => {
             console.log(e)
         })
     }
+
+
   return (
     <div className='container'>
             <h2 className='text-center'>Lista de obras</h2>
@@ -37,6 +51,7 @@ const ListObrasComponent = () => {
                     <th>Nombre</th>
                     <th>Numero BPS</th>
                     <th>Activo</th>
+                    <th>Jefe de Obra</th>
                     <th>Acciones</th>
                 </thead>
                 <tbody>
@@ -51,8 +66,12 @@ const ListObrasComponent = () => {
                                     style={{ color: o.activo ? 'green' : 'red' }}
                                 />
                             </td>
+                            { o.jefeObra?.activo ?  <td >{o.jefeObra.persona.nombre} {o.jefeObra.persona.apellido}</td>
+                            : <td >Sin jefe de obra asignadio</td>}
                             <td >
-                                <Link className='btn btn-info' to={`/edit-obra/${o.id}`}>Actualizar</Link>
+                                {!o.jefeObra?.activo ?  <Link className='btn btn-primary' to={`/assing-jefeObra/${o.id}`}>Asignar Jefe de obra</Link> :
+                               <button className='btn alert-warning ml-2' onClick={() => eliminarJefeObra(o.jefeObra.id)}>Eliminar Jefe de obra</button>} 
+                                <Link className='btn btn-info ml-2' to={`/edit-obra/${o.id}`}>Actualizar</Link>
                                 <button className='btn btn-danger ml-2' onClick={() => deleteObra(o.id)}>Eliminar</button>
                             </td>
                         </tr>

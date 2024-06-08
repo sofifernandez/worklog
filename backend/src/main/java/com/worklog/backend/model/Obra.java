@@ -1,8 +1,10 @@
 package com.worklog.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
 
@@ -30,6 +32,11 @@ public class Obra {
     @Column(name = "activo", nullable = false)
     private Boolean activo;
 
+    @OneToOne(mappedBy = "obra", fetch = FetchType.EAGER)
+    @Where(clause = "activo = true")
+    @JsonManagedReference
+    private JefeObra jefeObra;
+
     public Long getId() {
         return id;
     }
@@ -40,6 +47,14 @@ public class Obra {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public JefeObra getJefeObra() {
+        return jefeObra;
+    }
+
+    public void setJefeObra(JefeObra jefeObra) {
+        this.jefeObra = jefeObra;
     }
 
     public void setNombre(String nombre) {
