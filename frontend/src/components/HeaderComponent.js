@@ -10,7 +10,8 @@ const HeaderComponent = () => {
                         <div className='d-flex'>
                             <a href='/personas' className='btn btn-sm btn-primary m-1'>Personas</a>
                             <a href='/obras' className='btn btn-sm btn-primary m-1'>Obras</a>
-                            <a href='/rol' className='btn btn-sm btn-primary m-1'>Asignar rol a persona</a>
+                            <a href='/assign-rol' className='btn btn-sm btn-primary m-1'>Asignar rol a persona</a>
+                            <a href='/logoff' className='btn btn-sm btn-primary m-1'>Cerrar Sesión</a>
                         </div>
                     </div>
                 </nav>

@@ -1,4 +1,5 @@
 import axios from "axios"
+import { initAxiosInterceptors } from "../helpers/AuthHelper";
 
 const BASE_REST_API_URL = "http://localhost:8080/"
 //const BASE_REST_API_URL = "http://18.205.219.216:8080/"
@@ -20,6 +21,16 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+axiosInstance.interceptors.request.use(function(request){
+    const token = window.localStorage.getItem('appJornalesToken');
+    if (token) {
+        request.headers['Authorization'] = `Bearer ${token}`;
+    } else {
+        request.headers['Authorization'] = null;
+    }
+    return request;
+  }
+);
 
 class PersonaService{
 
