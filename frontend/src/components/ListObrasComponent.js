@@ -67,7 +67,7 @@ const ListObrasComponent = () => {
                                 />
                             </td>
                             { o.jefeObra?.activo ?  <td >{o.jefeObra.persona.nombre} {o.jefeObra.persona.apellido}</td>
-                            : <td >Sin jefe de obra asignadio</td>}
+                            : <td >Sin jefe de obra asignado</td>}
                             <td >
                                 {!o.jefeObra?.activo ?  <Link className='btn btn-primary' to={`/assing-jefeObra/${o.id}`}>Asignar Jefe de obra</Link> :
                                <button className='btn alert-warning ml-2' onClick={() => eliminarJefeObra(o.jefeObra.id)}>Eliminar Jefe de obra</button>} 
