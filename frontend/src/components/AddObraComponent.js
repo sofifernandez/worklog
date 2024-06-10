@@ -71,7 +71,7 @@ export const AddObraComponent = () => {
 
     return (
         <div className='d-flex justify-content-center align-items-center min-vh-100'>
-            <div className='col-md-6'>
+            <div className='col-md-12'>
                 <div className='card'>
                     <div className='card-header'>
                         <h2 className='text-center'>{title()}</h2>
