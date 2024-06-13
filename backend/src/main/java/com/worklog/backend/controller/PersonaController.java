@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:8081")
+//@CrossOrigin("http://100.28.58.113:3000")
 public class PersonaController {
 
     @Autowired
@@ -39,30 +39,35 @@ public class PersonaController {
     }
 
     @GetMapping("/personas")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<List<Persona>> getAllPersonas() {
         List<Persona> personas = personaService.getAllPersonas();
         return new ResponseEntity<>(personas, HttpStatus.OK);
     }
 
     @GetMapping("/persona/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Persona> getPersonaById(@PathVariable Long id) {
         Persona persona = personaService.getPersonaById(id);
         return new ResponseEntity<>(persona, HttpStatus.OK);
     }
 
     @PutMapping("/persona/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Object> updatePersona(@Valid @RequestBody Persona newPersona, @PathVariable Long id) {
         Persona updatedPersona = personaService.updatePersona(newPersona, id);
         return new ResponseEntity<>(updatedPersona, HttpStatus.OK);
     }
 
     @DeleteMapping("/persona/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<String> deletePersona(@PathVariable Long id) {
         personaService.deletePersona(id);
         return new ResponseEntity<>("Persona with id " + id + " has been deleted successfully.", HttpStatus.OK);
     }
 
     @GetMapping("/persona/searchByCI/{ci}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Persona> findPersonaByCi(@PathVariable String ci) {
         Persona persona = personaService.findPersonaByCi(ci);
         return new ResponseEntity<>(persona, HttpStatus.OK);

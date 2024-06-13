@@ -19,7 +19,7 @@ public class BackendApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/login").allowedOrigins("http://localhost:3000");
-				//registry.addMapping("/login").allowedOrigins("http://http://100.28.58.113:8081");
+				//registry.addMapping("/login").allowedOrigins("http://100.28.58.113:3000");
 			}
 		};
 	}

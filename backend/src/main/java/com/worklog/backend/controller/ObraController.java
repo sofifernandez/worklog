@@ -5,6 +5,7 @@ import com.worklog.backend.model.Obra;
 import com.worklog.backend.repository.ObraRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -13,13 +14,14 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:8081")
+//@CrossOrigin("http://100.28.58.113:3000")
 public class ObraController {
 
     @Autowired
     private ObraRepository obraRepository;
 
     @PostMapping("/obra")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     Obra newObra(@Valid @RequestBody Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaAlta(currentTimestamp);
@@ -28,17 +30,20 @@ public class ObraController {
     }
 
     @GetMapping("/obras")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     List<Obra> getAllObras() {
         return obraRepository.findAll();
     }
 
     @GetMapping("/obra/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     Obra getObraById(@PathVariable Long id) {
         return obraRepository.findById(id)
                 .orElseThrow(() -> new ObraNotFoundException(id));
     }
 
     @PutMapping("/obra/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     Obra updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaModif(currentTimestamp);
@@ -53,6 +58,7 @@ public class ObraController {
     }
 
     @DeleteMapping("/obra/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     String deleteObra(@PathVariable Long id){
         if(!obraRepository.existsById(id)){
             throw new ObraNotFoundException(id);
