@@ -70,7 +70,6 @@ public class PersonaRolController {
     }
 
     @GetMapping("/personaRol/personaRolByCI/{ci}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<PersonaRol> getPersonaRolActivoByCI(@PathVariable String ci) {
         PersonaRol personaRol = personaRolService.getPersonaRolActivoByCi(ci);
         return new ResponseEntity<>(personaRol, HttpStatus.OK);

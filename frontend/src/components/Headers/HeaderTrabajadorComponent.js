@@ -31,7 +31,7 @@ const HeaderTrabajadorComponent = () => {
                     </ul>
                     <div className="row my-2 my-lg-0">
                         <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.persona.nombre}!</div>
-                        <button className="btn btn-danger mx-3" href='/logout' type="submit">Salir</button>
+                        <a className="btn btn-danger mx-3" href='/logout' role="button">Salir</a>
                     </div>
                 </div>
             </nav>

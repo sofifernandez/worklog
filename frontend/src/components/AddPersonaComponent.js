@@ -25,7 +25,6 @@ const AddPersonaComponent = () => {
 
         if (id) {
             PersonaService.updatePersona(id, persona).then((res) => {
-                console.log(res.data)
                 navigate('/personas')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -33,14 +32,12 @@ const AddPersonaComponent = () => {
                         setErrors({ ci: 'Cedula ya registrada' });
                     } else {
                         setErrors(error.response.data)
-                        console.log(error.response.data)
                     }
                 }
             })
         } else {
             console.log(persona)
             PersonaService.createPersona(persona).then((res) => {
-                console.log(res.data)
                 navigate('/personas')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -48,7 +45,6 @@ const AddPersonaComponent = () => {
                         setErrors({ ci: 'Cedula ya registrada' });
                     } else {
                         setErrors(error.response.data)
-                        console.log(error.response.data)
                     }
                 }
             })
@@ -57,20 +53,17 @@ const AddPersonaComponent = () => {
 
     // Este efecto es para cuando voy a actualizar una persona, que me traiga los datos actuales de esa persona
     useEffect(() => {
-        console.log(id)
         PersonaService.getPersonaById(id).then((res) => {
-
             setNombre(res.data.nombre)
             setApellido(res.data.apellido)
             setCi(res.data.ci)
             setFechaNacimiento(res.data.fechaNacimiento)
             setNumeroTelefono(res.data.numeroTelefono)
             setActivo(res.data.activo)
-            console.log(id)
         }).catch(e => {
             console.log(e)
         })
-    }, [])
+    }, [id])
 
     const handleCheckboxChange = (e) => {
         setActivo(e.target.checked);

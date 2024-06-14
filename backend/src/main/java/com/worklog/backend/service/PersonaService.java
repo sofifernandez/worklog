@@ -3,6 +3,7 @@ package com.worklog.backend.service;
 import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.PersonaRepository;
+import com.worklog.backend.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -22,13 +23,18 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @Transactional
     public Persona savePersona(Persona newPersona) {
         try {
             Timestamp currentTimestamp = new Timestamp(new Date().getTime());
             newPersona.setFechaAlta(currentTimestamp);
             newPersona.setFechaModif(currentTimestamp);
-            return personaRepository.save(newPersona);
+            Persona persona = personaRepository.save(newPersona);
+            usuarioService.newUsuario(persona);
+            return persona;
         } catch (Exception e) {
             // Handle the exception, e.g., log it and/or rethrow it as a custom exception
             System.err.println("An error occurred while saving the Persona: " + e.getMessage());
