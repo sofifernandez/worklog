@@ -58,7 +58,6 @@ export const ListPersonasComponent = () => {
             <Link to='/add-persona' className='btn btn-primary mb-2' >Agregar Persona </Link>
             <table className='table table-bordered table-striped'>
                 <thead>
-                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Cedula</th>
@@ -70,7 +69,6 @@ export const ListPersonasComponent = () => {
                 <tbody>
                     {personas.map(p =>
                         <tr key={p.id}>
-                            <td >{p.id}</td>
                             <td >{p.nombre}</td>
                             <td >{p.apellido}</td>
                             <td >{p.ci}</td>

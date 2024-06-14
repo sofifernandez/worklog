@@ -24,10 +24,10 @@ export function isValidToken() {
   let currentDate = new Date();
 
   // Verifico tiempo de expiración en segundos
-  console.log(decodedToken.exp)
+/*   console.log(decodedToken.exp)
   console.log(decodedToken.exp * 1000)
   console.log(currentDate.getTime())
-  console.log(decodedToken.exp * 1000 > currentDate.getTime()) 
+  console.log(decodedToken.exp * 1000 > currentDate.getTime())  */
   return (decodedToken.exp * 1000 > currentDate.getTime()) 
 
 };

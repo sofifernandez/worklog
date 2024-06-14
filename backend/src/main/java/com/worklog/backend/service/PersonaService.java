@@ -83,10 +83,10 @@ public class PersonaService {
                 .orElseThrow(() -> new PersonaNotFoundException(ci));
     }
 
-    public List<Persona> findPersonaByCustomCriteria(String apellido) {
-        String queryStr = "SELECT P FROM Persona P WHERE P.apellido = :apellido";
+    public Persona findPersonaByUsername(String username) {
+        String queryStr = "SELECT U.persona FROM Usuario U WHERE U.username  = :username";
         TypedQuery<Persona> query = entityManager.createQuery(queryStr, Persona.class);
-        query.setParameter("apellido", apellido);
-        return query.getResultList();
+        query.setParameter("username", username);
+        return query.getSingleResult();
    }
 }
