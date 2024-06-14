@@ -1,0 +1,49 @@
+nav{
+    background-color: #370EA3;
+  }
+  
+  a[id^="navbar"] {
+    color: white !important; 
+    text-decoration: none;
+  }  
+  
+  
+  .nav-item{
+    border: 3px solid var(--primary-color);
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .nav-item:hover {
+    background-color: var(--quaternary-color);
+    border-radius: 7px;
+  }
+  
+  .btn-primary{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--terciary-color);
+  }
+  
+  #logo {
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 900;
+    font-size: 3rem;
+    letter-spacing: 0px;
+    color:  var(--primary-color);
+  }
+  
+  #logo-header {
+    max-width: 200px;
+    max-height: 200px;
+    height: auto;
+    width: auto;
+  }
+  
+  
+  #nombreUsuario{
+    color: white;
+  }

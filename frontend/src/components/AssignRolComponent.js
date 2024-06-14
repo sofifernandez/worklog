@@ -24,7 +24,7 @@ export const AssignRolComponent = () => {
 
     const volver = (e) => {
         e.preventDefault();
-        navigate('/'); // replace '/target-page' with the desired path
+        navigate('/home'); // replace '/target-page' with the desired path
     };
 
     const getPersonaById = async (id) => {
@@ -130,21 +130,18 @@ export const AssignRolComponent = () => {
                                 <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value="3" checked={rolSeleccionado == 3} onChange={(e) => seleccionarRol(e)} />
                                 <span>
                                     Trabajador
-                                    <small className="d-block text-body-secondary">With support text underneath to add more detail</small>
                                 </span>
                             </label>
                             <label className="list-group-item d-flex gap-2">
                                 <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value="2" checked={rolSeleccionado == 2} onChange={(e) => seleccionarRol(e)} />
                                 <span>
                                     Jefe de obra
-                                    <small className="d-block text-body-secondary">Some other text goes here</small>
                                 </span>
                             </label>
                             <label className="list-group-item d-flex gap-2">
                                 <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value="1" checked={rolSeleccionado == 1} onChange={(e) => seleccionarRol(e)} />
                                 <span>
                                     Administrador
-                                    <small className="d-block text-body-secondary">And we end with another snippet of text</small>
                                 </span>
                             </label>
                         </div>

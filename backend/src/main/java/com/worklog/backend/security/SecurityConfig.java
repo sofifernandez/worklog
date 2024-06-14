@@ -43,6 +43,7 @@ public class SecurityConfig {
                     //auth.requestMatchers("/login").permitAll();
                     //auth.requestMatchers("/persona").hasRole("ADMINISTRADOR");
                     auth.anyRequest().authenticated();
+//                    auth.anyRequest().permitAll();
                 })
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
