@@ -73,6 +73,16 @@ public class PersonaController {
         return new ResponseEntity<>(persona, HttpStatus.OK);
     }
 
+    @GetMapping("/persona/searchByUsername/{username}")
+    public ResponseEntity<Persona> findPersonaByUsername(@PathVariable String username) {
+        Persona persona = personaService.findPersonaByUsername(username);
+        return new ResponseEntity<>(persona, HttpStatus.OK);
+    }
+
+
+
+
+
    /* private ResponseEntity<Object> getValidationErrors(BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();

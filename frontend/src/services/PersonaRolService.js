@@ -32,6 +32,10 @@ class PersonaRolService{
     getPersonaRolActivoByCI(cedula){
         return axios.get(PERSONA_ROL_BASE_REST_API_URL + '/personaRolByCI/' + cedula)
     }
+
+    getPersonaRolActivoByUsername(username){
+        return axios.get(PERSONA_ROL_BASE_REST_API_URL + '/personaRolByUsername/' + username)
+    }
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new PersonaRolService();

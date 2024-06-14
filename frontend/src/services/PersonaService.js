@@ -58,5 +58,9 @@ class PersonaService{
         return axiosInstance.get(BASE_REST_API_URL + 'persona/searchByCI/' + cedula)
     }
 
+    getPersonaByUsername(username){
+        return axiosInstance.get(BASE_REST_API_URL + 'persona/searchByUsername/' + username)
+    }
+
 }
 export default new PersonaService
