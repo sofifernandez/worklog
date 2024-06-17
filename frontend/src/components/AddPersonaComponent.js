@@ -15,6 +15,8 @@ const AddPersonaComponent = () => {
     const [numeroTelefono, setNumeroTelefono] = useState('')
     const [activo, setActivo] = useState(true)
     const [errors, setErrors] = useState({});
+    const [personaAgregada, setPersonaAgregada] = useState();
+
     const navigate = useNavigate()
     // Este hook apunta al parametro de la URL ej persona/$id
     const { id } = useParams()
@@ -36,9 +38,9 @@ const AddPersonaComponent = () => {
                 }
             })
         } else {
-            console.log(persona)
             PersonaService.createPersona(persona).then((res) => {
-                navigate('/personas')
+                setPersonaAgregada(res.data);
+                navigate('/edit-persona/:' + personaAgregada.id);
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
                     if (error.response.data === 'Error de integridad de datos') {
@@ -126,6 +128,11 @@ const AddPersonaComponent = () => {
                                 <input type='checkbox' name='activo' className='form-check-input' checked={activo} onChange={handleCheckboxChange} />
                                 <label className='form-check-label m-2'>Activo</label>
                             </div>
+                            {personaAgregada && (
+                                <Link to={`/assign-rol/${personaAgregada.id}`} className='btn btn-info ml-2'>
+                                    Agregar rol
+                                </Link>
+                            )}
                             <button className='btn btn-success' onClick={(e) => saveOrUpdatePersona(e)}>Guardar</button>
                             <Link to={'/personas'} className='btn btn-danger ml-2'>Cancelar</Link>
                         </form>
