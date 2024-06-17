@@ -18,12 +18,12 @@ const HeaderAdminComponent = () => {
                             <a className="nav-link" href="/home">Inicio <span className="sr-only">(current)</span></a>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a className="nav-link dropdown-toggle" href="/personas" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Personas
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
                                 <a className="dropdown-item" href="/add-persona">Agregar</a>
-                                <a className="dropdown-item" href="/personas">Buscar</a>
+                                <a className="dropdown-item" href="/personas">Ver</a>
                                 <a className="dropdown-item" href="/assign-rol">Gestionar roles</a>
                             </div>
                         </li>
