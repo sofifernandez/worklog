@@ -1,10 +1,6 @@
 package com.worklog.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.Where;
 import java.sql.Timestamp;
 
 @Entity
@@ -15,6 +11,14 @@ public class Jornal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "persona_id",unique = true, nullable = false)
+    private Persona persona;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "obra_id")
+    private Obra obra;
 
     @Column(name = "fecha_jornal", nullable = false, length = 19)
     private Timestamp fechaJornal;
@@ -28,10 +32,9 @@ public class Jornal {
     @Column(name = "modificado", nullable = false)
     private Boolean modificado;
 
-    @OneToOne(mappedBy = "obra", fetch = FetchType.EAGER)
-    @Where(clause = "activo = true")
-    @JsonManagedReference
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tipo_jornal_id")
+    private TipoJornal tipoJornal;
 
 
     public Long getId() {
@@ -42,9 +45,21 @@ public class Jornal {
         this.id = id;
     }
 
+    public Persona getPersona() {
+        return persona;
+    }
 
+    public void setPersona(Persona persona) {
+        this.persona = persona;
+    }
 
+    public Obra getObra() {
+        return obra;
+    }
 
+    public void setObra(Obra obra) {
+        this.obra = obra;
+    }
 
     public Timestamp getFechaJornal() {
         return fechaJornal;
@@ -69,5 +84,13 @@ public class Jornal {
     public Boolean getModificado() { return modificado; }
 
     public void setModificado(Boolean activo) { this.modificado = activo; }
+
+    public TipoJornal getTipoJornal() {
+        return tipoJornal;
+    }
+
+    public void setTipoJornal(TipoJornal tipoJornal) {
+        this.tipoJornal = tipoJornal;
+    }
 
 }

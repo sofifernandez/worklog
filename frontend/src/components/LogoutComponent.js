@@ -9,7 +9,9 @@ const LogoutComponent = () => {
 
     setTimeout(() => {
         navigate('/');
-    }, 1000); 
+    }, 1000);
+    
+
   }, []);
 
   return <div>Logging out...</div>;

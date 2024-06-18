@@ -78,3 +78,29 @@ CREATE TABLE IF NOT EXISTS JEFE_OBRA
     CONSTRAINT FK_JO_OBRA
     foreign key (obra_id) references obra (id)
     );
+
+CREATE TABLE IF NOT EXISTS TIPO_JORNAL
+(
+    id  bigint auto_increment
+    primary key,
+    tipo_jornal varchar(6) null
+    );
+
+CREATE TABLE IF NOT EXISTS JORNAL
+(
+    id          bigint auto_increment
+    primary key,
+    persona_id  bigint      not null,
+    obra_id  bigint      not null,
+    fecha_jornal  datetime(6)   not null,
+    hora_comienzo datetime(6)   not null,
+    hora_fin datetime(6)    null,
+    modificado      bit         not null,
+    tipo_jornal_id      bigint      null,
+    CONSTRAINT FK_JORNAL_PERSONA
+    foreign key (persona_id) references persona (id),
+    CONSTRAINT FK_JORNAL_OBRA
+    foreign key (obra_id) references obra (id),
+    CONSTRAINT FK_JORNAL_TIPO_JORNAL
+    foreign key (tipo_jornal_id) references tipo_jornal (id)
+    );
