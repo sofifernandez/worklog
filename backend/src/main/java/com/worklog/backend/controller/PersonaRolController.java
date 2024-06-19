@@ -3,6 +3,7 @@ package com.worklog.backend.controller;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.PersonaRol;
+import com.worklog.backend.model.Rol;
 import com.worklog.backend.repository.PersonaRolRepository;
 import com.worklog.backend.service.PersonaRolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,13 @@ public class PersonaRolController {
     public ResponseEntity<PersonaRol> getPersonaRolActivoByUsername(@PathVariable String username) {
         PersonaRol personaRol = personaRolService.getPersonaRolActivoByUsername(username);
         return new ResponseEntity<>(personaRol, HttpStatus.OK);
+    }
+
+    @GetMapping("/personaRol/esJefe/{personaId}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Boolean> esJefeObraByPersonaId(@PathVariable Long personaId) {
+        boolean esJefe = personaRolService.existsByPersonaIdAndRolIdAndActivo(personaId, Rol.ID_ROL_JO);
+        return new ResponseEntity<>(esJefe,HttpStatus.OK);
     }
 
 }

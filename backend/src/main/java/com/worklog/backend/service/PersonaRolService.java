@@ -107,4 +107,9 @@ public class PersonaRolService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsByPersonaIdAndRolIdAndActivo(Long personaId, Long rolId) {
+        return personaRolRepository.existsByPersonaIdAndRolIdAndActivo(personaId, rolId) ==1;
+    }
+
 }

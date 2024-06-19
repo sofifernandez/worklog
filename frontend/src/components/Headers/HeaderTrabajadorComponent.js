@@ -3,6 +3,7 @@ import React from 'react'
 import { useAuth } from '../../context/AuthContext';
 import myIcon from '../../Images/Imagen1.svg'
 import '../../style/headerComponent.css'
+import LogoutComponent from '../LogoutComponent';
 
 const HeaderTrabajadorComponent = () => {
     const { personaRolLoggeado } = useAuth();
@@ -31,7 +32,7 @@ const HeaderTrabajadorComponent = () => {
                     </ul>
                     <div className="row my-2 my-lg-0">
                         <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.persona.nombre}!</div>
-                        <a className="btn btn-danger mx-3" href='/logout' role="button">Salir</a>
+                        <LogoutComponent/>
                     </div>
                 </div>
             </nav>

@@ -11,11 +11,11 @@ export const ListPersonasComponent = () => {
     const [roles, setRoles] = useState({}); // State to store roles
 
 
-    const listarPersonas = () =>{
+    const listarPersonas = () => {
         PersonaService.getAllPersonas().then(res => {
             setPersonas(res.data)
             res.data.forEach(persona => {
-            fetchPersonaRol(persona.ci);
+                fetchPersonaRol(persona.ci);
             });
         }).catch(error => {
             console.log(error)
@@ -26,13 +26,13 @@ export const ListPersonasComponent = () => {
         listarPersonas()
     }, [])
 
-    const deletePersona = (personaId) => {
-        PersonaService.deletePersona(personaId).then((res) => {
-            listarPersonas()
-        }).catch(e => {
-            console.log(e)
-        })
-    }
+    /*     const deletePersona = (personaId) => {
+            PersonaService.deletePersona(personaId).then((res) => {
+                listarPersonas()
+            }).catch(e => {
+                console.log(e)
+            })
+        } */
 
     const fetchPersonaRol = (cedula) => {
         PersonaRolService.getPersonaRolActivoByCI(cedula)
@@ -53,41 +53,41 @@ export const ListPersonasComponent = () => {
 
 
     return (
-        <div className='container'>
+        <div className='container mt-5 row justify-content-center'>
+            <h1>PERSONAS</h1>
+
             <h2 className='text-center'>Lista de personas</h2>
-            <Link to='/add-persona' className='btn btn-primary mb-2' >Agregar Persona </Link>
-            <table className='table table-bordered table-striped'>
-                <thead>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Cedula</th>
-                    <th>Fecha Nacimiento</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
-                    <th>Rol actual</th>
-                </thead>
-                <tbody>
-                    {personas.map(p =>
-                        <tr key={p.id}>
-                            <td >{p.nombre}</td>
-                            <td >{p.apellido}</td>
-                            <td >{p.ci}</td>
-                            <td >{p.fechaNacimiento}</td>
-                            <td>
-                                <FontAwesomeIcon
-                                    icon={faCircle}
-                                    style={{ color: p.activo ? 'green' : 'red' }}
-                                />
-                            </td>
-                            <td >
-                                <Link className='btn btn-info' to={`/edit-persona/${p.id}`}>Actualizar</Link>
-                                <button className='btn btn-danger ml-2' onClick={() => deletePersona(p.id)}>Eliminar</button>
-                            </td>
-                            <td>{roles[p.ci] || 'Cargando...'} <Link title='Editar' to ={`/assign-rol/${p.id}`}><span class="badge badge-secondary"><FontAwesomeIcon icon={faPenToSquare} /></span></Link></td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+            <Link to='/add-persona' className='btn btn-primary mb-2 col-lg-8' >Agregar Persona </Link>
+            <div className='table-responsive col-lg-8'>
+                <table className='table table-sm table-bordered table-striped'>
+                    <thead>
+                        <th> </th>
+                        <th>Nombre completo</th>
+                        <th>Cédula</th>
+                        <th>Activo</th>
+                        <th>Rol actual</th>
+                    </thead>
+                    <tbody>
+                        {personas.map(p =>
+                            <tr key={p.id}>
+                                <td >
+                                    <Link className='btn btn-info' to={`/edit-persona/${p.id}`}>Actualizar</Link>
+                                    {/* <button className='btn btn-danger ml-2' onClick={() => deletePersona(p.id)}>Eliminar</button> */}
+                                </td>
+                                <td >{p.nombre} {p.apellido}</td>
+                                <td >{p.ci}</td>
+                                <td>
+                                    <FontAwesomeIcon
+                                        icon={faCircle}
+                                        style={{ color: p.activo ? 'green' : 'red' }}
+                                    />
+                                </td>
+                                <td><Link className='roles' title='Editar' to={`/assign-rol/${p.id}`}>{roles[p.ci]}</Link></td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div >
     )
 }
