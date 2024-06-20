@@ -12,6 +12,8 @@ import AuthProvider from './context/AuthContext';
 import AdminRoutes from './routes/AdminRoutes';
 import JefeObraRoutes from './routes/JefeObraRoutes';
 import TrabajadorRoutes from './routes/TrabajadorRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 initAxiosInterceptors();
 
@@ -38,7 +40,7 @@ function MainApp() {
     console.log(personaRolLoggeado.rol.rol)
     return (
 
-      <div className="App">
+      <div className="App justify-content-center">
 
         {personaRolLoggeado.rol.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
         {personaRolLoggeado.rol.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
@@ -47,7 +49,7 @@ function MainApp() {
           <Route exact path='/' element={<LoginComponent />} />
           <Route exact path='/logout' element={<LogoutComponent />} />
         </Routes>)}
-        <div className='container-fluid row justify-content-center'>
+        <div className='container row justify-content-center mx-auto'>
           {renderRoutes()}
         </div>
       </div>
@@ -58,7 +60,6 @@ function MainApp() {
     return (
       <Routes>
         <Route exact path='/' element={<LoginComponent />} />
-        <Route exact path='/logout' element={<LogoutComponent />} />
       </Routes>
 
 
@@ -71,6 +72,7 @@ const App = () => (
     <BrowserRouter>
       <MainApp />
     </BrowserRouter>
+    <ToastContainer />
   </AuthProvider>
 );
 

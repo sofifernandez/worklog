@@ -3,6 +3,7 @@ import React from 'react'
 import { useAuth } from '../../context/AuthContext';
 import myIcon from '../../Images/Imagen1.svg'
 import '../../style/headerComponent.css'
+import LogoutComponent from '../LogoutComponent';
 
 const HeaderJefeComponent = () => {
     const { personaRolLoggeado } = useAuth();

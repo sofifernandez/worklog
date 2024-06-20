@@ -12,9 +12,24 @@
 body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(to bottom, #CDCBFF, #FEFEFF);
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
 }
+
+.botonesRol{
+  border-radius: 20px;
+}
+
+.cardForm{
+  border-radius: 10px;
+  border: #370EA3 2px solid;
+  box-shadow: #c0c0be 2px 2px;
+}
+
+
+
+
+
 
 
 
