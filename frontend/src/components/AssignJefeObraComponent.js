@@ -3,7 +3,8 @@ import PersonaRolService from '../services/PersonaRolService';
 import { useNavigate, useParams } from 'react-router-dom';
 import JefeObraService from '../services/JefeObraService';
 import ObraService from '../services/ObraService';
-import BuscadorByCedulaComponent from './functionalComponents/BuscadorByCIComponent';
+import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
 
 
 export const AssignJefeObraComponent = () => {
@@ -31,14 +32,9 @@ export const AssignJefeObraComponent = () => {
 
     const handlePersonaFound = (persona) => {
         setPersona(persona);
+        setPersonaRol(persona.personaRol);
     };
-    const handlePersonaRolFound=(personaRol) =>{
-        setPersonaRol(personaRol);
-    }
 
-    const handleMensajeRolNotFound = (mensaje) =>{
-        setMensajeError(mensaje)
-    }
 
     const cancelar = (e) => {
         e.preventDefault();
@@ -96,30 +92,13 @@ export const AssignJefeObraComponent = () => {
             {obra && (
                 <><h3>Asignar jefe de obra a: </h3><p>{obra.nombre} (BPS: {obra.bps}) </p></>
             )}
-            {!persona && (<div className='col-12 col-lg-6 row justify-content-center'>
-                <BuscadorByCedulaComponent onPersonaFound={handlePersonaFound} onPersonaRolFound={handlePersonaRolFound} onVolver={volver} onMensajeErrorPersonaRolNotFound={handleMensajeRolNotFound}  />
+            {!persona && (<div className='row justify-content-center'>
+                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerBuscadorByCIComponent>
             </div>)}
             { persona && (
                 <div className='col-12 col-lg-7 row justify-content-center'>
                     <h5 className='px-0'>Resultado:</h5>
-                    <table className='table table-sm table-bordered table-striped mt-3'>
-                        <thead>
-                            <th>Nombre completo</th>
-                            <th>Cédula</th>
-                            <th>Fecha Nacimiento</th>
-                            <th>Rol actual</th>
-                            
-                        </thead>
-                        <tbody>
-                            <tr key={persona.id}>
-                                <td >{persona.nombre} {persona.apellido}</td>
-                                <td >{persona.ci}</td>
-                                <td>{persona.fechaNacimiento}</td>
-                                <td>{personaRol ? personaRol.rol.rol : 'Sin rol'}</td>
-                               
-                            </tr>
-                        </tbody>
-                    </table>
+                    <DatoPersonaComponent persona={persona} personaRol={personaRol ? personaRol.rol.rol : 'Sin rol'} />
                     {isJefeObra===true && (<><button className="btn btn-success py-2 m-3 col-4" type="submit" onClick={(e) => asignarJefeObra(e)}>Asignar</button><button className="btn btn-danger py-2 m-3 col-4" type="submit" onClick={cancelar}>Cancelar</button></>)}
                 </div>
             )}
@@ -129,7 +108,8 @@ export const AssignJefeObraComponent = () => {
                     <div className='alert alert-light' role='alert'>La persona encotrada no tiene autorización para ser jefe de obra</div>
                     <button className="btn btn-danger py-2 m-3 col-4" type="submit" onClick={volver}>Volver</button>
                 </div>
-            )}       
+            )}  
+            {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}     
         </div>
 
     )

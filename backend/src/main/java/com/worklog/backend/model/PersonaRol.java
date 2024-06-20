@@ -1,9 +1,10 @@
 package com.worklog.backend.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "PERSONA_ROL", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "rol_id"}))
+@Table(name = "PERSONA_ROL", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "rol_id", "activo"}))
 public class PersonaRol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +15,9 @@ public class PersonaRol {
     @JoinColumn(name = "rol_id")
     private Rol rol;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "persona_id")
+    @JsonBackReference
     private Persona persona;
 
     @Column(name = "fecha_alta", nullable = false, length = 19)
