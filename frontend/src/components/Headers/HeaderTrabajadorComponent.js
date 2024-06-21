@@ -31,7 +31,7 @@ const HeaderTrabajadorComponent = () => {
                         </li>
                     </ul>
                     <div className="row my-2 my-lg-0">
-                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.persona.nombre}!</div>
+                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
                         <LogoutComponent/>
                     </div>
                 </div>

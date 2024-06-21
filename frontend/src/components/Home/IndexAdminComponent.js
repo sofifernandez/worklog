@@ -2,17 +2,11 @@ import '../../style/adminIndexComponent.css'
 import iconoPersonas from '../../Images/people.jpeg';
 import iconoObras from '../../Images/obras.jpeg'
 import iconoReportes from '../../Images/reporte2.jpeg'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom'
 
 
 export const AdminIndexComponent = () => {
-
-  const { personaRolLoggeado } = useAuth();
-  console.log(personaRolLoggeado)
-
+ 
   return (
     <div className="container mt-5 mx-auto justify-content-center">
       <div className='row justify-content-center'>

@@ -39,9 +39,9 @@ const HeaderJefeComponent = () => {
                             </div>
                         </li>
                     </ul>
-                    <div className="row my-2 my-lg-0">
-                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola Juan!</div>
-                        <a className="btn btn-danger mx-3" href='/logout' role="button">Salir</a>
+                    <div className="row my-2 my-lg-0 mx-0">
+                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
+                        <div className='col-lg-5'><LogoutComponent/></div>
                     </div>
                 </div>
             </nav>
