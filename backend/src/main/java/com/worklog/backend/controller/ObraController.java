@@ -2,68 +2,68 @@ package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
-import com.worklog.backend.repository.ObraRepository;
+import com.worklog.backend.service.ObraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:3000")
 public class ObraController {
 
     @Autowired
-    private ObraRepository obraRepository;
+    private ObraService obraService;
+
+    @ExceptionHandler(ObraNotFoundException.class)
+    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @PostMapping("/obra")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    Obra newObra(@Valid @RequestBody Obra newObra) {
-        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-        newObra.setFechaAlta(currentTimestamp);
-        newObra.setFechaModif(currentTimestamp);
-        return obraRepository.save(newObra);
+    public ResponseEntity<Obra> newObra(@Valid @RequestBody Obra newObra) {
+        Obra savedObra = obraService.saveObra(newObra);
+        return new ResponseEntity<>(savedObra, HttpStatus.CREATED);
     }
 
     @GetMapping("/obras")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    List<Obra> getAllObras() {
-        return obraRepository.findAll();
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<List<Obra>> getAllObras() {
+        List<Obra> obras = obraService.getAllObras();
+        return new ResponseEntity<>(obras, HttpStatus.OK);
     }
 
     @GetMapping("/obra/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    Obra getObraById(@PathVariable Long id) {
-        return obraRepository.findById(id)
-                .orElseThrow(() -> new ObraNotFoundException(id));
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Obra> getObraById(@PathVariable Long id) {
+        Obra obra = obraService.getObraById(id);
+        return new ResponseEntity<>(obra, HttpStatus.OK);
     }
 
     @PutMapping("/obra/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    Obra updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
-        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-        newObra.setFechaModif(currentTimestamp);
-        return obraRepository.findById(id)
-                .map(obra -> {
-                    obra.setNombre(newObra.getNombre());
-                    obra.setBps(newObra.getBps());
-                    obra.setFechaModif(newObra.getFechaModif());
-                    obra.setActivo(newObra.getActivo());
-                    return obraRepository.save(obra);
-                }).orElseThrow(() -> new ObraNotFoundException(id));
+    public ResponseEntity<Obra> updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
+        Obra updatedObra = obraService.updateObra(newObra, id);
+        return new ResponseEntity<>(updatedObra, HttpStatus.OK);
     }
 
     @DeleteMapping("/obra/{id}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    String deleteObra(@PathVariable Long id){
-        if(!obraRepository.existsById(id)){
-            throw new ObraNotFoundException(id);
-        }
-        obraRepository.deleteById(id);
-        return  "Obra with id "+id+" has been deleted";
+    public ResponseEntity<String> deleteObra(@PathVariable Long id) {
+        obraService.deleteObra(id);
+        return new ResponseEntity<>("Obra with id " + id + " has been deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/getObraByBPS/{bps}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Obra> getObraByBPS(@PathVariable String bps) {
+        Obra obra = obraService.getObraByBPS(bps);
+        return new ResponseEntity<>(obra, HttpStatus.OK);
     }
 }

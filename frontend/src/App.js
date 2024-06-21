@@ -12,6 +12,8 @@ import AuthProvider from './context/AuthContext';
 import AdminRoutes from './routes/AdminRoutes';
 import JefeObraRoutes from './routes/JefeObraRoutes';
 import TrabajadorRoutes from './routes/TrabajadorRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 initAxiosInterceptors();
 
@@ -20,7 +22,7 @@ function MainApp() {
 
 
   const renderRoutes = () => {
-    switch (personaRolLoggeado.rol.rol) {
+    switch (personaRolLoggeado.personaRol.rol.rol) {
       case 'ADMINISTRADOR':
         return <AdminRoutes />;
       case 'JEFE_OBRA':
@@ -35,19 +37,18 @@ function MainApp() {
 
 
   if ((window.localStorage.getItem('appJornalesToken') !== null) && isValidToken()) {
-    console.log(personaRolLoggeado.rol.rol)
+    console.log(personaRolLoggeado)
     return (
 
-      <div className="App">
-
-        {personaRolLoggeado.rol.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
-        {personaRolLoggeado.rol.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
-        {personaRolLoggeado.rol.rol === "TRABAJADOR" && (<HeaderTrabajadorComponent />)}
-        {personaRolLoggeado.rol.rol==="NONE" && ( <Routes>
+      <div className="App justify-content-center">
+        {personaRolLoggeado?.personaRol?.rol?.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "TRABAJADOR" && (<HeaderTrabajadorComponent />)}
+        {!personaRolLoggeado && ( <Routes>
           <Route exact path='/' element={<LoginComponent />} />
           <Route exact path='/logout' element={<LogoutComponent />} />
         </Routes>)}
-        <div className='container-fluid row justify-content-center'>
+        <div className='container row justify-content-center mx-auto'>
           {renderRoutes()}
         </div>
       </div>
@@ -58,7 +59,6 @@ function MainApp() {
     return (
       <Routes>
         <Route exact path='/' element={<LoginComponent />} />
-        <Route exact path='/logout' element={<LogoutComponent />} />
       </Routes>
 
 
@@ -71,6 +71,7 @@ const App = () => (
     <BrowserRouter>
       <MainApp />
     </BrowserRouter>
+    <ToastContainer />
   </AuthProvider>
 );
 

@@ -3,6 +3,7 @@ import React from 'react'
 import { useAuth } from '../../context/AuthContext';
 import myIcon from '../../Images/Imagen1.svg'
 import '../../style/headerComponent.css'
+import LogoutComponent from '../LogoutComponent';
 
 const HeaderJefeComponent = () => {
     const { personaRolLoggeado } = useAuth();
@@ -38,9 +39,9 @@ const HeaderJefeComponent = () => {
                             </div>
                         </li>
                     </ul>
-                    <div className="row my-2 my-lg-0">
-                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola Juan!</div>
-                        <button className="btn btn-danger mx-3" href='/logout' type="submit">Salir</button>
+                    <div className="row my-2 my-lg-0 mx-0">
+                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
+                        <div className='col-lg-5'><LogoutComponent/></div>
                     </div>
                 </div>
             </nav>
