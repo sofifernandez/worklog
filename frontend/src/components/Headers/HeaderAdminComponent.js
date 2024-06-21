@@ -6,6 +6,8 @@ import LogoutComponent from '../LogoutComponent';
 
 const HeaderAdminComponent = () => {
     const { personaRolLoggeado } = useAuth();
+    console.log(personaRolLoggeado)
+
     return (
         <div className=''>
             <nav className="navbar navbar-expand-lg navbar-dark ">
@@ -50,7 +52,7 @@ const HeaderAdminComponent = () => {
 
                     </ul>
                     <div className="row my-2 my-lg-0 mx-0">
-                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.persona.nombre}!</div>
+                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
                         <div className='col-lg-5'><LogoutComponent/></div>
                     </div>
                 </div>

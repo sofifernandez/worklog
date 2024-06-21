@@ -32,7 +32,7 @@ export const AssignJefeObraComponent = () => {
 
     const handlePersonaFound = (persona) => {
         setPersona(persona);
-        setPersonaRol(persona.personaRol);
+        persona && setPersonaRol(persona.personaRol);
     };
 
 

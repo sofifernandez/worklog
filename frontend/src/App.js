@@ -22,7 +22,7 @@ function MainApp() {
 
 
   const renderRoutes = () => {
-    switch (personaRolLoggeado.rol.rol) {
+    switch (personaRolLoggeado.personaRol.rol.rol) {
       case 'ADMINISTRADOR':
         return <AdminRoutes />;
       case 'JEFE_OBRA':
@@ -37,15 +37,14 @@ function MainApp() {
 
 
   if ((window.localStorage.getItem('appJornalesToken') !== null) && isValidToken()) {
-    console.log(personaRolLoggeado.rol.rol)
+    console.log(personaRolLoggeado)
     return (
 
       <div className="App justify-content-center">
-
-        {personaRolLoggeado.rol.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
-        {personaRolLoggeado.rol.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
-        {personaRolLoggeado.rol.rol === "TRABAJADOR" && (<HeaderTrabajadorComponent />)}
-        {personaRolLoggeado.rol.rol==="NONE" && ( <Routes>
+        {personaRolLoggeado?.personaRol?.rol?.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "TRABAJADOR" && (<HeaderTrabajadorComponent />)}
+        {!personaRolLoggeado && ( <Routes>
           <Route exact path='/' element={<LoginComponent />} />
           <Route exact path='/logout' element={<LogoutComponent />} />
         </Routes>)}
