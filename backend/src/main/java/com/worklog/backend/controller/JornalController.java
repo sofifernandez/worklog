@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-    @RestController
-    @CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:3000")
-    public class JornalController {
+@RestController
+public class JornalController {
 
         @Autowired
         private JornalService jornalService;
@@ -42,7 +40,7 @@ import java.util.Optional;
 
         @GetMapping("/jornales")
         @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<List<Jornal>> getAllJornals() {
+        public ResponseEntity<List<Jornal>> getAllJornales() {
             List<Jornal> jornales = jornalService.getAllJornales();
             return new ResponseEntity<>(jornales, HttpStatus.OK);
         }
@@ -74,47 +72,6 @@ import java.util.Optional;
             Optional<Jornal[]> jornales = jornalService.findJornalesByPersona(persona);
             return new ResponseEntity<>(jornales, HttpStatus.OK);
         }
-
-
-
-
-
-   /* private ResponseEntity<Object> getValidationErrors(BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : result.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-        return null;
-    }*/
-
-
-
-
-/*
-    @GetMapping("/jornal/searchByUsername/{username}")
-    public ResponseEntity<Jornal> findJornalByUsername(@PathVariable String username) {
-        Jornal jornal = jornalService.findJornalByUsername(username);
-        return new ResponseEntity<>(jornal, HttpStatus.OK);
-    }
-
-
-*/
-
-
-   /* private ResponseEntity<Object> getValidationErrors(BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : result.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-        return null;
-    }*/
-
 
 
 }

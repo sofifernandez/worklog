@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:3000")
 public class PersonaController {
 
     @Autowired

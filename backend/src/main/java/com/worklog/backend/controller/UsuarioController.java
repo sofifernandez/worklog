@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:3000")
 public class UsuarioController {
 
     @Autowired
