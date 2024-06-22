@@ -104,3 +104,16 @@ CREATE TABLE IF NOT EXISTS JORNAL
     CONSTRAINT FK_JORNAL_TIPO_JORNAL
     foreign key (tipo_jornal_id) references tipo_jornal (id)
     );
+
+CREATE TABLE IF NOT EXISTS MODIFICACION(
+    id          bigint auto_increment primary key,
+    jefe_id bigint      not null,
+    jornal_id bigint      not null,
+    fecha_modificacion datetime(6) not null,
+    campo_modificado varchar(50) not null,
+    valor_anterior varchar(50) not null,
+    valor_actual varchar(50) not null,
+    motivo varchar(200) not null,
+    CONSTRAINT FK_MODIFICACION_JO FOREIGN KEY (jefe_id) references jefe_obra (id),
+    CONSTRAINT FK_MODIFICACION_JORNAL FOREIGN KEY (jornal_id) references jornal (id)
+    )

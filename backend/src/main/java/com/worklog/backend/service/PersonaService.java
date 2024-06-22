@@ -91,9 +91,6 @@ public class PersonaService {
 
     @Transactional(readOnly = true)
     public Persona findPersonaByUsername(String username) {
-        String queryStr = "SELECT U.persona FROM Usuario U WHERE U.username  = :username";
-        TypedQuery<Persona> query = entityManager.createQuery(queryStr, Persona.class);
-        query.setParameter("username", username);
-        return query.getSingleResult();
-   }
+        return personaRepository.findPersonaByUsername(username);
+    }
 }
