@@ -1,41 +1,53 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import PersonaRolService from '../services/PersonaRolService';
 import PersonaService from '../services/PersonaService';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
 
 export const AssignRolComponent = () => {
-
-    const [cedula, setCedula] = useState();
     const [personaRol, setPersonaRol] = useState();
     const [persona, setPersona] = useState();
     const [rolSeleccionado, setRolSeleccionado] = useState();
     const [mensajeError, setMensajeError] = useState();
 
     const navigate = useNavigate();
-    // Este hook apunta al parametro de la URL
-    const { id } = useParams()
+    const { id } = useParams();
 
     useEffect(() => {
         if (id) {
-            getPersonaById(id);
+            getDatosById(id);
         }
     }, [id]);
 
-    const volver = (e) => {
+
+    const cancelar = (e) => {
         e.preventDefault();
-        navigate('/home'); // replace '/target-page' with the desired path
+        id ? navigate('/personas') : setPersona(null);
     };
 
-    const getPersonaById = async (id) => {
+    const volver =()=>{
+        navigate('/personas')
+    }
+
+    const handlePersonaFound = (persona) => {
+        setPersona(persona);
+        persona && setPersonaRol(persona.personaRol);
+        persona.personaRol && setRolSeleccionado(persona.personaRol.rol.id)
+    };
+
+
+    const seleccionarRol = (e) => {
+        setRolSeleccionado(e.target.value);
+    };
+
+
+    const getDatosById = async (id) => {
         try {
             const personaData = await PersonaService.getPersonaById(id);
             setPersona(personaData.data);
-            setCedula(personaData.data.ci);
-            const personaRolData = await PersonaRolService.getPersonaRolActivoByCI(personaData.data.ci);
-            if (personaRolData.data) {
-                setPersonaRol(personaRolData.data);
-                setRolSeleccionado(personaRolData.data.rol.id);
+            if (personaData.data) {
+                getPersonaRolByCI(personaData.data.ci)
             }
         } catch (error) {
             setMensajeError(error.response?.data || 'An error occurred while fetching the data.');
@@ -44,114 +56,72 @@ export const AssignRolComponent = () => {
 
 
 
-    const getInfoByCI = async (e) => {
-        e.preventDefault();
-        setPersonaRol()
-        setPersona()
-        setMensajeError()
-        setRolSeleccionado()
-        try {
-            const personaRol = await getPersonaRolByCI(cedula);
-            if (personaRol) { //si tiene rol
-                setPersonaRol(personaRol);
-                setRolSeleccionado(personaRol.rol.id)
-                setPersona(personaRol.persona)
-            } else {
-                const persona = await getPersonaByCI(cedula);
-                setPersona(persona);
-            }
-        } catch (error) {
-            setMensajeError(error.response.data)
-        }
-    };
-
-    const seleccionarRol = (e) => {
-        e.preventDefault();
-        setRolSeleccionado(e.target.value);
-    }
-
     const guardarPersonaRol = (e) => {
         e.preventDefault();
         if (personaRol) {
-            const nuevaPersonaRol = { ...personaRol, rol: { id: rolSeleccionado }, persona: persona }
+            const nuevaPersonaRol = { ...personaRol, rol: { id: rolSeleccionado }, persona: persona };
             PersonaRolService.updatePersonaRol(personaRol.id, nuevaPersonaRol)
+                .then(() => navigate('/personas'))
+                .catch(e => setMensajeError(e.response.data));
         } else {
-            const updatedPersonaRol = { rol: { id: rolSeleccionado }, persona: persona }
-            PersonaRolService.createPersonaRol(updatedPersonaRol).then((res) => {
-                setPersonaRol(res.data)
-                navigate('/personas')
-            }).catch(e => {
-                console.log(e)
-            })
+            const newPersonaRol = { rol: { id: rolSeleccionado }, persona: persona };
+            PersonaRolService.createPersonaRol(newPersonaRol)
+                .then((res) => {
+                    setPersonaRol(res.data);
+                    navigate('/personas');
+                })
+                .catch(e => setMensajeError(e.response));
         }
-    }
+    };
+
+
 
     const getPersonaRolByCI = async (cedula) => {
         try {
             const result = await PersonaRolService.getPersonaRolActivoByCI(cedula);
-            return result.data;
+            setPersonaRol(result.data)
+            setRolSeleccionado(result.data.rol.id)
         } catch (error) {
             if (error.response && error.response.status === 404) {
-                return null; // Indicate that PersonaRol was not found
+                setMensajeError(error.response.data)
             } else {
                 throw error; // Re-throw other errors
             }
         }
     };
 
-    const getPersonaByCI = async (cedula) => {
-        try {
-            const result = await PersonaService.getPersonaByCI(cedula);
-            return result.data;
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                console.log('es 404')
-                throw error; // Re-throw other errors
-
-            }
-        };
-    }
 
     return (
-        <div className='col-8'>
-            <form>
-                <h1 className="h3 mb-3 fw-normal">Buscar usuario</h1>
-                <div className="form-floating">
-                    <input type="text" className="form-control" id="floatingInput" placeholder="Ejemplo: 12345678" onChange={(e) => setCedula(e.target.value)} />
-                    <label htmlFor="floatingInput">Cédula</label>
-                </div>
-                <button className="btn btn-primary py-2" type="submit" onClick={(e) => getInfoByCI(e)}>Buscar</button>
-            </form>
-            <div>
-                {persona !== undefined ?
-                    <div>{persona.nombre} {persona.apellido}
-                        <div className="list-group">
-                            <label className="list-group-item d-flex gap-2">
-                                <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value="3" checked={rolSeleccionado == 3} onChange={(e) => seleccionarRol(e)} />
-                                <span>
-                                    Trabajador
-                                </span>
-                            </label>
-                            <label className="list-group-item d-flex gap-2">
-                                <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value="2" checked={rolSeleccionado == 2} onChange={(e) => seleccionarRol(e)} />
-                                <span>
-                                    Jefe de obra
-                                </span>
-                            </label>
-                            <label className="list-group-item d-flex gap-2">
-                                <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value="1" checked={rolSeleccionado == 1} onChange={(e) => seleccionarRol(e)} />
-                                <span>
-                                    Administrador
-                                </span>
-                            </label>
-                        </div>
-                        <button className="btn btn-success py-2" type="submit" onClick={(e) => guardarPersonaRol(e)}>Guardar</button>
-                        <button className="btn btn-danger py-2" type="submit" onClick={(e) => volver(e)}>Cancelar</button>
-                    </div> : null}
-                {mensajeError ? <div>{mensajeError}</div> : null}
-            </div>
-        </div>
+        <div className='mt-5 row justify-content-center col-12'>
+            {!persona && (
+                <div>
+                    <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerBuscadorByCIComponent>
+                </div>)}
 
-    )
-}
+            {persona && (
+                <div className='row justify-content-center'>
+                    <DatoPersonaComponent persona={persona}/>
+                    <div className='col-12 col-lg-6 row justify-content-center'>
+                        <h5 className='mt-5 px-0'>Selecciona un rol:</h5>
+                        <div className="btn-group-vertical col-lg-9 mt-3" aria-label="Basic radio toggle button group">
+                            <input type="radio" className="btn-check" name="btnradio" id="btnradio1" value="3" checked={rolSeleccionado === 3} onChange={(e) => seleccionarRol(e)} />
+                            <label className="btn btn-outline-primary botonesRol" htmlFor="btnradio1">Trabajador</label>
+
+                            <input type="radio" className="btn-check" name="btnradio" id="btnradio2" value="2" checked={rolSeleccionado === 2} onChange={(e) => seleccionarRol(e)} />
+                            <label className="btn btn-outline-primary botonesRol" htmlFor="btnradio2">Jefe de obra</label>
+
+                            <input type="radio" className="btn-check" name="btnradio" id="btnradio3" value="1" checked={rolSeleccionado === 1} onChange={(e) => seleccionarRol(e)} />
+                            <label className="btn btn-outline-primary botonesRol" htmlFor="btnradio3">Administrador</label>
+                        </div>
+
+                        <button className="btn btn-success py-2 m-3 col-4" type="button" onClick={guardarPersonaRol}>Guardar</button>
+                        <button className="btn btn-danger py-2 m-3 col-4" type="button" onClick={cancelar}>Cancelar</button>
+                    </div>
+                </div>
+            )}
+            {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}
+        </div>
+    );
+};
+
 export default AssignRolComponent;

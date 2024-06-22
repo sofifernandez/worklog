@@ -37,6 +37,18 @@ public class Obra {
     @JsonManagedReference
     private JefeObra jefeObra;
 
+    @Column(name = "codigoQr", columnDefinition = "LONGBLOB" ,nullable = true)
+    @Lob
+    private byte[] codigoQR;
+
+    public byte[] getCodigoQR() {
+        return codigoQR;
+    }
+
+    public void setCodigoQR(byte[] codigoQR) {
+        this.codigoQR = codigoQR;
+    }
+
     public Long getId() {
         return id;
     }

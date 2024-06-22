@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [personaRolLoggeado, setPersonaRolLoggeado] = useState(() => {
     // Try to get the initial state from local storage
     const savedRole = localStorage.getItem('personaRolLoggeado');
-    return savedRole ? JSON.parse(savedRole) : { "rol": {"rol": "NONE"}, "persona": {"nombre": "NONE"} };
+    return savedRole ? JSON.parse(savedRole) :  null ;
   });
 
   useEffect(() => {
