@@ -17,22 +17,22 @@ const HeaderTrabajadorComponent = () => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active mx-2 px-2 ">
-                            <a className="nav-link" href="/home">Inicio <span className="sr-only">(current)</span></a>
+                            <a className="nav-link" href="/home">Inicio</a>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkJornales" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Jornal
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkJornales">
                                 <a className="dropdown-item" href="/">Entrada/Salida</a>
                                 <a className="dropdown-item" href="/">Modificar</a>
                                 <a className="dropdown-item" href="/">Buscar</a>
                             </div>
                         </li>
                     </ul>
-                    <div className="row my-2 my-lg-0">
-                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
-                        <LogoutComponent/>
+                    <div className="row my-2 my-lg-0 mx-0">
+                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
+                        <div className='col-lg-5'><LogoutComponent/></div>
                     </div>
                 </div>
             </nav>

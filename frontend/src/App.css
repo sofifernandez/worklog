@@ -26,12 +26,17 @@ body {
   box-shadow: #c0c0be 2px 2px;
 }
 
-input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__hour {
-  width: 3em !important;
+.lluvia {
+  color: #0c92ad;
 }
 
-input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute {
-  width: 3em !important;
+.editarJornal{
+  background-color: #FFC20D;
 }
+
+
+
+
+
 
 

@@ -32,7 +32,7 @@ public class ObraController {
     }
 
     @GetMapping("/obras")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
     public ResponseEntity<List<Obra>> getAllObras() {
         List<Obra> obras = obraService.getAllObras();
         return new ResponseEntity<>(obras, HttpStatus.OK);

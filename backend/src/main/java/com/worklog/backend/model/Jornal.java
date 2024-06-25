@@ -1,5 +1,6 @@
 package com.worklog.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
@@ -13,7 +14,7 @@ public class Jornal {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "persona_id",unique = true, nullable = false)
+    @JoinColumn(name = "persona_id")
     private Persona persona;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,8 +34,11 @@ public class Jornal {
     private Boolean modificado;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tipo_jornal_id")
+    @JoinColumn(name = "tipo_jornal")
     private TipoJornal tipoJornal;
+
+    @Column(name = "confirmado", nullable = false)
+    private Boolean confirmado;
 
 
     public Long getId() {
@@ -93,4 +97,11 @@ public class Jornal {
         this.tipoJornal = tipoJornal;
     }
 
+    public Boolean getConfirmado() {
+        return confirmado;
+    }
+
+    public void setConfirmado(Boolean confirmado) {
+        this.confirmado = confirmado;
+    }
 }

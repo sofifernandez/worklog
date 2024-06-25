@@ -21,57 +21,66 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
+//@CrossOrigin("http://100.28.58.113:3000")
 public class JornalController {
 
-        @Autowired
-        private JornalService jornalService;
+    @Autowired
+    private JornalService jornalService;
 
-        @ExceptionHandler(JornalNotFoundException.class)
-        public ResponseEntity<String> handleJornalNotFoundException(JornalNotFoundException ex, WebRequest request) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    @ExceptionHandler(JornalNotFoundException.class)
+    public ResponseEntity<String> handleJornalNotFoundException(JornalNotFoundException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
-        @PostMapping("/jornal")
-        @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<Object> newJornal(@Valid @RequestBody Jornal newJornal) {
-            Jornal savedJornal = jornalService.saveJornal(newJornal);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
-        }
+    @PostMapping("/jornal")
+    public ResponseEntity<Object> newJornal(@Valid @RequestBody Jornal newJornal) {
+        Jornal savedJornal = jornalService.saveJornal(newJornal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+    }
 
-        @GetMapping("/jornales")
-        @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<List<Jornal>> getAllJornales() {
-            List<Jornal> jornales = jornalService.getAllJornales();
-            return new ResponseEntity<>(jornales, HttpStatus.OK);
-        }
+    @GetMapping("/jornales")
+    public ResponseEntity<List<Jornal>> getAllJornals() {
+        List<Jornal> jornales = jornalService.getAllJornales();
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
 
-        @GetMapping("/jornal/{id}")
-        @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<Jornal> getJornalById(@PathVariable Long id) {
-            Jornal jornal = jornalService.getJornalById(id);
-            return new ResponseEntity<>(jornal, HttpStatus.OK);
-        }
+    @GetMapping("/jornal/{id}")
+    public ResponseEntity<Jornal> getJornalById(@PathVariable Long id) {
+        Jornal jornal = jornalService.getJornalById(id);
+        return new ResponseEntity<>(jornal, HttpStatus.OK);
+    }
 
-        @PutMapping("/jornal/{id}")
-        @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id) {
-            Jornal updatedJornal = jornalService.updateJornal(newJornal, id);
-            return new ResponseEntity<>(updatedJornal, HttpStatus.OK);
-        }
+    @PutMapping("/jornal/{id}")
+    public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id) {
+        Jornal updatedJornal = jornalService.updateJornal(newJornal, id);
+        return new ResponseEntity<>(updatedJornal, HttpStatus.OK);
+    }
 
-        @DeleteMapping("/jornal/{id}")
-        @PreAuthorize("hasRole('ADMINISTRADOR')")
-        public ResponseEntity<String> deleteJornal(@PathVariable Long id) {
-            jornalService.deleteJornal(id);
-            return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
-        }
+    @DeleteMapping("/jornal/{id}")
+    public ResponseEntity<String> deleteJornal(@PathVariable Long id) {
+        jornalService.deleteJornal(id);
+        return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
+    }
 
 
-        @GetMapping("/jornal/searchByPersona/{persona}")
-        public ResponseEntity<Optional<Jornal[]>> findJornalesByPersona(@PathVariable Persona persona) {
-            Optional<Jornal[]> jornales = jornalService.findJornalesByPersona(persona);
-            return new ResponseEntity<>(jornales, HttpStatus.OK);
-        }
+    @GetMapping("/jornal/jornalByPersona/{personaId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
+    public ResponseEntity<Optional<Jornal[]>> findJornalesByPersona(@PathVariable Long personaId) {
+        Optional<Jornal[]> jornales = jornalService.findJornalesByPersona(personaId);
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @GetMapping("/jornal/jornalByFiltros/")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
+    public ResponseEntity<Optional<Jornal[]>> findJornalesByFiltros(
+            @RequestParam String fechaDesde,
+            @RequestParam String fechaHasta,
+            @RequestParam Long obraSeleccionada,
+            @RequestParam Long personaId) {
+        Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
 
 
 }

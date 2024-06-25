@@ -1,31 +1,49 @@
 import axios from "axios"
-import { initAxiosInterceptors } from "../helpers/AuthHelper"
 
-const JORNAL_BASE_REST_API_URL = "http://localhost:8080/"
-//const JORNAL_BASE_REST_API_URL = "http://18.205.219.216:8080/"
+
+const JORNALES_BASE_REST_API_URL = "http://localhost:8080/jornal"
+//const JORNALES_BASE_REST_API_URL = "http://18.205.219.216:8080/jornal"
 
 //initAxiosInterceptors();
+
 
 class JornalService{
 
     getAllJornales(){
-        return axios.get(JORNAL_BASE_REST_API_URL + 'jornales')
+        return axios.get(JORNALES_BASE_REST_API_URL + 'es')
     }
 
     createJornal(jornal){
-        return axios.post(JORNAL_BASE_REST_API_URL + 'jornal', jornal)
+        return axios.post(JORNALES_BASE_REST_API_URL, jornal)
     }
 
     getJornalById(jornalId){
-        return axios.get(JORNAL_BASE_REST_API_URL +  'jornal/' + jornalId)
+        return axios.get(JORNALES_BASE_REST_API_URL +  '/' + jornalId)
     }
 
     updateJornal(jornalId, jornal){
-        return axios.put(JORNAL_BASE_REST_API_URL + 'jornal/' + jornalId, jornal)
+        return axios.put(JORNALES_BASE_REST_API_URL + '/' + jornalId, jornal)
     }
 
     deleteJornal(jornalId){
-        return axios.delete(JORNAL_BASE_REST_API_URL +  'jornal/' + jornalId)
+        return axios.delete((JORNALES_BASE_REST_API_URL +  '/' + jornalId))
     }
+    
+    getJornalesByPersonaId(personaId){
+        return axios.get(JORNALES_BASE_REST_API_URL + '/jornalByPersona/' + personaId)
+    }
+
+    getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, personaId){
+        return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalByFiltros/`, {
+            params: {
+                fechaDesde: fechaDesde,
+                fechaHasta: fechaHasta,
+                obraSeleccionada: obraSeleccionada,
+                personaId:personaId
+            }
+        });
+    }
+
 }
-export default new JornalService
+// eslint-disable-next-line import/no-anonymous-default-export
+export default new JornalService();
