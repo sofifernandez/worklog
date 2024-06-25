@@ -33,7 +33,7 @@ export const AssignRolComponent = () => {
     const handlePersonaFound = (persona) => {
         setPersona(persona);
         persona && setPersonaRol(persona.personaRol);
-        persona.personaRol && setRolSeleccionado(persona.personaRol.rol.id)
+        persona?.personaRol && setRolSeleccionado(persona?.personaRol?.rol.id);
     };
 
 
