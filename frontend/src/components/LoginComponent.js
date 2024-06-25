@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
-//import { useNavigate } from 'react-router-dom';
+import React, {  useState } from 'react'
 import LoginService from '../services/LoginService';
-import PersonaRolService from '../services/PersonaRolService';
 import PersonaService from '../services/PersonaService';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -40,9 +38,8 @@ const LoginComponent = () => {
     const getDatosByUsername = async (username) => {
         try {
             const personaData = await PersonaService.getPersonaByUsername(username);
-            const personaRolData = await PersonaRolService.getPersonaRolActivoByCI(personaData.data.ci);
-            if (personaRolData.data) {
-                setPersonaRolLoggeado(personaRolData.data);
+            if (personaData.data) {
+                setPersonaRolLoggeado(personaData.data);
             }
         } catch (error) {
             setErrors(error.response?.data || 'An error occurred while fetching the data.');
@@ -85,7 +82,7 @@ const LoginComponent = () => {
                                 />
                                 {errors.login && <div className="alert alert-danger mt-2" role="alert">{errors.login}</div>}
                             </div>
-                            <button className='btn btn-success' onClick={(e) => intentarLogin(e)}>Iniciar Sesión</button>
+                            <button className='btn btn-primary mt-2' onClick={(e) => intentarLogin(e)}>Iniciar Sesión</button>
                         </form>
                     </div>
                 </div>

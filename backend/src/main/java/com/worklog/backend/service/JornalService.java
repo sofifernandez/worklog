@@ -30,8 +30,6 @@ public class JornalService {
     public Jornal saveJornal(Jornal newJornal) {
         try {
             Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-            newJornal.setFechaJornal(currentTimestamp);
-            newJornal.setHoraComienzo(currentTimestamp);
             return jornalRepository.save(newJornal);
         } catch (Exception e) {
             // Handle the exception, e.g., log it and/or rethrow it as a custom exception

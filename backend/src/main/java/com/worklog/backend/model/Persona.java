@@ -1,13 +1,16 @@
 package com.worklog.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Where;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "PERSONA", uniqueConstraints = @UniqueConstraint(columnNames = "ci"))
@@ -45,9 +48,12 @@ public class Persona {
     @Column(name = "activo", nullable = false)
     private Boolean activo;
 
+    @OneToOne(mappedBy = "persona", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private PersonaRol personaRol;
+
     public Persona() {
     }
-
 
     public Long getId() {
         return id;
@@ -126,4 +132,11 @@ public class Persona {
         return this.id.equals(((Persona)obj).getId());
     }
 
+    public PersonaRol getPersonaRol() {
+        return personaRol;
+    }
+
+    public void setPersonaRol(PersonaRol personaRol) {
+        this.personaRol = personaRol;
+    }
 }

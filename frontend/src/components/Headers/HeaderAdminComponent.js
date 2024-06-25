@@ -2,9 +2,12 @@ import React from 'react'
 import { useAuth } from '../../context/AuthContext';
 import myIcon from '../../Images/Imagen1.svg'
 import '../../style/headerComponent.css'
+import LogoutComponent from '../LogoutComponent';
 
 const HeaderAdminComponent = () => {
     const { personaRolLoggeado } = useAuth();
+    console.log(personaRolLoggeado)
+
     return (
         <div className=''>
             <nav className="navbar navbar-expand-lg navbar-dark ">
@@ -12,13 +15,13 @@ const HeaderAdminComponent = () => {
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <div className="collapse navbar-collapse justify-content-lg-between" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active mx-2 px-2 ">
-                            <a className="nav-link" href="/home">Inicio <span className="sr-only">(current)</span></a>
+                        <li className="nav-item mx-2 px-2 ">
+                            <a className="nav-link" href="/home">Inicio</a>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a className="nav-link dropdown-toggle" href="/personas" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Personas
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
@@ -39,6 +42,15 @@ const HeaderAdminComponent = () => {
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkReportes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Jornales
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkJornales">
+                                <a className="dropdown-item" href="/jornal">Agregar</a>
+                                <a className="dropdown-item" href="#">Buscar</a>
+                            </div>
+                        </li>
+                        <li className="nav-item dropdown mx-2 px-2">
+                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkReportes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Reportes
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkReportes">
@@ -48,9 +60,9 @@ const HeaderAdminComponent = () => {
                         </li>
 
                     </ul>
-                    <div className="row my-2 my-lg-0">
-                        <div className='m-auto d-none d-lg-block' id="nombreUsuario">Hola {personaRolLoggeado.persona.nombre}!</div>
-                        <a className="btn btn-danger mx-3" href='/logout' role="button">Salir</a>
+                    <div className="row my-2 my-lg-0 mx-0">
+                        <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
+                        <div className='col-lg-5'><LogoutComponent/></div>
                     </div>
                 </div>
             </nav>
