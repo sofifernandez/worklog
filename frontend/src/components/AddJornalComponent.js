@@ -21,6 +21,7 @@ export const AddJornalComponent = () => {
     const [tipoJornal, setTipoJornal] = useState(null);
     const [mensajeError, setMensajeError] = useState({})
     const [modificado, setModificado] = useState(false)
+    const [confirmado, setConfirmado] = useState(true)
     const [personaRol, setPersonaRol] = useState();
     const [personaTemp, setPersonaTemp] = useState();
     const [obraTemp, setObraTemp] = useState();
@@ -36,7 +37,7 @@ export const AddJornalComponent = () => {
 
     const saveOrUpdateJornal = (e) => {
         e.preventDefault()
-        const jornal = { persona, obra, fechaJornal, horaComienzo, horaFin, tipoJornal: { id: tipoJornal }, modificado }
+        const jornal = { persona, obra, fechaJornal, horaComienzo, horaFin, tipoJornal: { id: tipoJornal }, modificado, confirmado }
         if (id) {
             JornalService.updateJornal(id, jornal).then((res) => {  
                 let timerInterval;

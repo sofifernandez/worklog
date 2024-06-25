@@ -34,7 +34,13 @@ body {
   background-color: #FFC20D;
 }
 
+input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__hour {
+  width: 3em !important;
+}
 
+input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute {
+  width: 3em !important;
+}
 
 
 

@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
-//@CrossOrigin("http://100.28.58.113:3000")
 public class JornalController {
 
     @Autowired
