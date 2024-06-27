@@ -36,15 +36,15 @@ const BuscadorByCIComponent = ({ onPersonaFound, onMensajeError, onCancelar }) =
 
 
     return (
-        <form className='row align-center justify-content-center'>
+        <form className='row align-center justify-content-center mx-0 px-0'>
             <h2 className="mb-3 text-center">Buscar Persona</h2>
-            <div className="form-floating mb-3 col-12 col-lg-5">
+            <div className="form-floating mx-auto mb-3 col-12 col-lg-5">
                 <input type="text" className="form-control" id="floatingInput" onChange={(e) => setCedula(e.target.value)} value={cedula} />
                 <label className='px-4' htmlFor="floatingInput">Cédula</label>
             </div>
             <div className='row justify-content-center'>
-                <button className="btn btn-primary col-2 ms-3 mb-3" type="button" onClick={getPersonaByCI}>Buscar</button>
-                <button className="btn btn-danger py-2 ms-3 mb-3 col-2" type="button" onClick={cancelar}>Cancelar</button>
+                <button className="btn btn-primary col-12 col-lg-2 ms-lg-3 mb-3" type="button" onClick={getPersonaByCI}>Buscar</button>
+                <button className="btn btn-danger col-12 py-2 ms-lg-3 mb-3 col-lg-2" type="button" onClick={cancelar}>Cancelar</button>
             </div>
         </form>
     );

@@ -34,6 +34,8 @@ axiosInstance.interceptors.request.use(function(request){
 
 class PersonaService{
 
+    // BASIC CRUD
+
     getAllPersonas(){
         return axiosInstance.get(BASE_REST_API_URL + 'personas')
     }
@@ -54,12 +56,18 @@ class PersonaService{
         return axiosInstance.delete((BASE_REST_API_URL +  'persona/' + personaId))
     }
 
+    // CURSTOM
+
     getPersonaByCI(cedula){
         return axiosInstance.get(BASE_REST_API_URL + 'persona/searchByCI/' + cedula)
     }
 
     getPersonaByUsername(username){
         return axiosInstance.get(BASE_REST_API_URL + 'persona/searchByUsername/' + username)
+    }
+
+    getAllTrabajadoresActivos(){
+        return axiosInstance.get(BASE_REST_API_URL + 'persona/getAllTrabajadoresActivos')
     }
 
 }

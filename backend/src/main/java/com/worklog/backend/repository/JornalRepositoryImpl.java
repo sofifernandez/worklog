@@ -19,13 +19,17 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
 
     @Override
     public Optional<Jornal[]> findJornalesByFiltros(Timestamp startDate, Timestamp endDate, Obra obra, Persona persona) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM JORNAL WHERE persona_id = :personaId ");
+        StringBuilder sql = new StringBuilder("SELECT * FROM JORNAL WHERE 1=1");
 
-        if(startDate!=null){
+        if (persona != null) {
+            sql.append(" AND persona_id = :personaId");
+        }
+
+        if (startDate != null) {
             sql.append(" AND fecha_jornal >= :startDate");
         }
 
-        if(endDate!=null){
+        if (endDate != null) {
             sql.append(" AND fecha_jornal < :endDate");
         }
 
@@ -33,24 +37,26 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
             sql.append(" AND obra_id = :obraId");
         }
 
+        Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
+
         if (persona != null) {
-            sql.append(" AND persona_id = :personaId");
+            query.setParameter("personaId", persona.getId());
         }
 
-        Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
         if (startDate != null) {
             query.setParameter("startDate", startDate);
         }
+
         if (endDate != null) {
             query.setParameter("endDate", endDate);
         }
+
         if (obra != null) {
             query.setParameter("obraId", obra.getId());
         }
 
-        query.setParameter("personaId", persona.getId());
-
         List<Jornal> result = query.getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
     }
+
 }

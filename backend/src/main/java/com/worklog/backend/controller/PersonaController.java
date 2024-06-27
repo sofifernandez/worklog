@@ -1,6 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.PersonaNotFoundException;
+import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.PersonaService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class PersonaController {
@@ -77,20 +79,13 @@ public class PersonaController {
         return new ResponseEntity<>(persona, HttpStatus.OK);
     }
 
+    @GetMapping("/persona/getAllTrabajadoresActivos")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Optional<Persona[]>> getAllTrabajadoresActivos() {
+        Optional<Persona[]> personas = personaService.getAllTrabajadoresActivos();
+        return new ResponseEntity<>(personas, HttpStatus.OK);
+    }
 
-
-
-
-   /* private ResponseEntity<Object> getValidationErrors(BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : result.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-        return null;
-    }*/
 
 
 

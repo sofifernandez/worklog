@@ -22,7 +22,7 @@ class JefeObraService{
     }
 
     deleteJefeObra(jefeObraId){
-        return axios.delete((JEFE_OBRA_BASE_REST_API_URL +  'jefeObra/' + jefeObraId))
+        return axios.delete(JEFE_OBRA_BASE_REST_API_URL +  'jefeObra/' + jefeObraId)
     }
     
 }

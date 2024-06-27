@@ -26,6 +26,7 @@ const HeaderJefeComponent = () => {
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
                                 <a className="dropdown-item" href="/add-persona">Agregar</a>
                                 <a className="dropdown-item" href="/personas">Modificar</a>
+                                <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
                                 <a className="dropdown-item" href="/assign-rol">Confirmar</a>
                             </div>
                         </li>
