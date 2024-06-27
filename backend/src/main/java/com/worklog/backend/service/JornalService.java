@@ -85,21 +85,20 @@ public class JornalService {
 
     @Transactional(readOnly = true)
     public Optional<Jornal[]> findJornalesByFiltros(String fechaDesde, String fechaHasta, Long obraSeleccionada, Long personaId) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate startDate = null;
         LocalDate endDate = null;
-
         if (fechaDesde != null && !fechaDesde.isBlank()) {
             startDate = LocalDate.parse(fechaDesde, formatter);
         }
         if (fechaHasta != null && !fechaHasta.isBlank()) {
             endDate = LocalDate.parse(fechaHasta, formatter);
         }
-
         Timestamp startTimestamp = startDate != null ? Timestamp.valueOf(startDate.atStartOfDay()) : null;
         Timestamp endTimestamp = endDate != null ? Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()) : null;
 
-        Persona persona = personaService.getPersonaById(personaId);
+        Persona persona = personaId > 0 ? personaService.getPersonaById(personaId) : null;
         Obra obra = obraSeleccionada > 0 ? obraService.getObraById(obraSeleccionada) : null;
         Optional<Jornal[]> jornales= jornalRepository.findJornalesByFiltros(startTimestamp, endTimestamp, obra, persona);
         if (jornales.isPresent()) {

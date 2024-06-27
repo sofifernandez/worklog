@@ -24,7 +24,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar }) => {
 
     return (
         <div>
-            {!persona && (<div className='row justify-content-center'>
+            {!persona && (<div className='row justify-content-center px-0'>
                 <BuscadorByCedulaComponent onPersonaFound={handlePersonaFound} onMensajeError={handleMensajeError} onCancelar={onCancelar} />
             </div>)}
             {persona && (

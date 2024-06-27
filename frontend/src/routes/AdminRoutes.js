@@ -8,6 +8,7 @@ import AddObraComponent from '../components/AddObraComponent';
 import AssignJefeObraComponent from '../components/AssignJefeObraComponent';
 import AssignRolComponent from '../components/AssignRolComponent';
 import AddJornalComponent from '../components/AddJornalComponent';
+import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
 
 const AdminRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
       <Route exact path='/assign-rol/:id' element={<AssignRolComponent />} />
       <Route exact path='/jornal' element={<AddJornalComponent />} />
       <Route exact path='/jornal/:id' element={<AddJornalComponent />} />
+      <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
     </Routes>
   );
 };

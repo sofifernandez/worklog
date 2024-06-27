@@ -48,7 +48,7 @@ function MainApp() {
           <Route exact path='/' element={<LoginComponent />} />
           <Route exact path='/logout' element={<LogoutComponent />} />
         </Routes>)}
-        <div className='container row justify-content-center mx-auto'>
+        <div className='container row justify-content-center mx-auto px-0'>
           {renderRoutes()}
         </div>
       </div>

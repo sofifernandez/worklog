@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonaService {
@@ -92,5 +93,10 @@ public class PersonaService {
     @Transactional(readOnly = true)
     public Persona findPersonaByUsername(String username) {
         return personaRepository.findPersonaByUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Persona[]> getAllTrabajadoresActivos() {
+        return personaRepository.getAllTrabajadoresActivos();
     }
 }
