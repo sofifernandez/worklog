@@ -28,21 +28,17 @@ public class QrCodeService {
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", byteArrayOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
-            // Manejar la excepción apropiadamente según tu aplicación
         }
 
         return byteArrayOutputStream.toByteArray();
     }
 
-    public void guardarCodigoQR(Long idObra, String texto) {
+    public void saveCodeQR(Obra obra, String texto) {
         try {
-            byte[] qrCode = generateQrCode(texto, 200, 200); // Generar código QR
-            Obra obra = obraRepository.findById(idObra).orElseThrow(() -> new IllegalArgumentException("Obra no encontrada"));
-            obra.setCodigoQR(qrCode); // Guardar código QR en la entidad Obra
-            obraRepository.save(obra);
+            byte[] qrCode = generateQrCode(texto, 200, 200);
+            obra.setCodigoQR(qrCode);
         } catch (Exception e) {
             e.printStackTrace();
-            // Manejar la excepción apropiadamente según tu aplicación
         }
 
 

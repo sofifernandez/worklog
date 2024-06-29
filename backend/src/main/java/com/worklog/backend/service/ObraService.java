@@ -9,18 +9,23 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class ObraService {
 
     @Autowired
     private ObraRepository obraRepository;
+    @Autowired
+    private QrCodeService qrCodeService;
 
     public Obra saveObra(Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaAlta(currentTimestamp);
         newObra.setFechaModif(currentTimestamp);
+        Obra savedObra = obraRepository.save(newObra); // Primero lo guardo asi se genera el ID
+        String qrCodeUrl = "http://localhost:3000/edit-obra/" + savedObra.getId(); // Luego hay que cambiar esta URL
+        qrCodeService.saveCodeQR(newObra, qrCodeUrl );
         return obraRepository.save(newObra);
     }
 
