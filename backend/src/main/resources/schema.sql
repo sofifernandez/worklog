@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS OBRA
     activo      bit         not null,
     fecha_alta  datetime(6) not null,
     fecha_modif datetime(6) null,
+    codigo_qr   longblob null,
     CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
     );
 
