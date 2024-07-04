@@ -86,6 +86,13 @@ public class PersonaController {
         return new ResponseEntity<>(personas, HttpStatus.OK);
     }
 
+    @GetMapping("/persona/getAllTrabajadoresDeObra/{obraId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Optional<Persona[]>> getAllTrabajadoresDeObra(@PathVariable Long obraId) {
+        Optional<Persona[]> personas = personaService.getAllTrabajadoresDeObra(obraId);
+        return new ResponseEntity<>(personas, HttpStatus.OK);
+    }
+
 
 
 

@@ -70,5 +70,9 @@ class PersonaService{
         return axiosInstance.get(BASE_REST_API_URL + 'persona/getAllTrabajadoresActivos')
     }
 
+    getAllTrabajadoresDeObra(obraId){
+        return axiosInstance.get(BASE_REST_API_URL + 'persona/getAllTrabajadoresDeObra/' + obraId)
+    }
+
 }
 export default new PersonaService

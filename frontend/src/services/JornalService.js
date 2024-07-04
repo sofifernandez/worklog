@@ -44,6 +44,10 @@ class JornalService{
         });
     }
 
+    agregarHorarioLluvia(lluviaDetalles){
+        return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', lluviaDetalles);
+    }
+
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new JornalService();

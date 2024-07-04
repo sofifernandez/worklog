@@ -2,6 +2,7 @@ package com.worklog.backend.service;
 
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.ObraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ public class ObraService {
 
     @Autowired
     private ObraRepository obraRepository;
+    @Autowired
+    private PersonaService personaService;
 
     public Obra saveObra(Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
@@ -55,6 +58,13 @@ public class ObraService {
     public Obra getObraByBPS(String bps) {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}
+        return obra;
+    }
+
+    public Obra getObraByJefe(Long id){
+        Persona persona = personaService.getPersonaById(id);
+        Obra obra = obraRepository.getObraByJefe(persona);
+        if (obra == null) {throw new ObraNotFoundException(id.toString());}
         return obra;
     }
 }

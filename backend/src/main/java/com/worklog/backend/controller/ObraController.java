@@ -65,4 +65,11 @@ public class ObraController {
         Obra obra = obraService.getObraByBPS(bps);
         return new ResponseEntity<>(obra, HttpStatus.OK);
     }
+
+    @GetMapping("/getObraByJefe/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Obra> getObraByJefe(@PathVariable Long id) {
+        Obra obra = obraService.getObraByJefe(id);
+        return new ResponseEntity<>(obra, HttpStatus.OK);
+    }
 }

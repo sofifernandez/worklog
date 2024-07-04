@@ -1,5 +1,6 @@
 package com.worklog.backend.repository;
 
+import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,7 @@ public interface PersonaRepository extends JpaRepository<Persona,Long> {
             "INNER JOIN PERSONA_ROL pr ON pr.persona_id=p.id " +
             "WHERE p.activo=true AND pr.rol_id = 3", nativeQuery = true)
     Optional<Persona[]> getAllTrabajadoresActivos();
+
+    @Query(value = "SELECT J.persona FROM Jornal J WHERE J.obra=:obra")
+    Optional<Persona[]>getAllTrabajadoresDeObra(@Param("obra") Obra obra);
 }

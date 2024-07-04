@@ -1,6 +1,7 @@
 package com.worklog.backend.service;
 
 import com.worklog.backend.exception.PersonaNotFoundException;
+import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.PersonaRepository;
 import com.worklog.backend.repository.UsuarioRepository;
@@ -26,6 +27,8 @@ public class PersonaService {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private ObraService obraService;
 
     @Transactional
     public Persona savePersona(Persona newPersona) {
@@ -99,4 +102,13 @@ public class PersonaService {
     public Optional<Persona[]> getAllTrabajadoresActivos() {
         return personaRepository.getAllTrabajadoresActivos();
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Persona[]> getAllTrabajadoresDeObra(Long obraId) {
+        Obra obra=obraService.getObraById(obraId);
+        return personaRepository.getAllTrabajadoresDeObra(obra);
+    }
+
+
+
 }

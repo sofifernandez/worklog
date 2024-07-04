@@ -21,6 +21,9 @@ public class TipoJornal {
     @Column(name = "tipo_jornal", nullable = false, length = 6)
     private String tipoJornal;
 
+    public TipoJornal(Long idJornalLluvia) {
+    }
+
     public Long getId() {
         return id;
     }

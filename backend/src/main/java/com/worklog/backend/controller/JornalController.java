@@ -1,6 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.JornalNotFoundException;
+import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.JornalService;
@@ -29,6 +30,11 @@ public class JornalController {
     @ExceptionHandler(JornalNotFoundException.class)
     public ResponseEntity<String> handleJornalNotFoundException(JornalNotFoundException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(JornalNotSavedException.class)
+    public ResponseEntity<String> handleJornalNotSaved(JornalNotSavedException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/jornal")
@@ -78,6 +84,13 @@ public class JornalController {
             @RequestParam Long personaId) {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @PostMapping("/agregarLluvia")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Object> agregarHorarioLluvia(@Valid @RequestBody Object lluviaDetalles) {
+        jornalService.agregarLLuvia(lluviaDetalles);
+        return ResponseEntity.ok().build();
     }
 
 
