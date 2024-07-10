@@ -4,6 +4,7 @@ import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.repository.ObraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -16,15 +17,19 @@ public class ObraService {
 
     @Autowired
     private ObraRepository obraRepository;
+
     @Autowired
     private QrCodeService qrCodeService;
+
+    @Value("${servidor.frontend}")
+    private String servidorFrontend;
 
     public Obra saveObra(Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaAlta(currentTimestamp);
         newObra.setFechaModif(currentTimestamp);
         Obra savedObra = obraRepository.save(newObra); // Primero lo guardo asi se genera el ID
-        String qrCodeUrl = "http://localhost:3000/edit-obra/" + savedObra.getId(); // Luego hay que cambiar esta URL
+        String qrCodeUrl = servidorFrontend + "/jornalQr/" + savedObra.getId(); // Luego hay que cambiar esta URL
         qrCodeService.saveCodeQR(newObra, qrCodeUrl );
         return obraRepository.save(newObra);
     }

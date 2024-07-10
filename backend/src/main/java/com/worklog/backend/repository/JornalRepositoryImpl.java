@@ -8,7 +8,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
     private EntityManager entityManager;
 
     @Override
-    public Optional<Jornal[]> findJornalesByFiltros(Timestamp startDate, Timestamp endDate, Obra obra, Persona persona) {
+    public Optional<Jornal[]> findJornalesByFiltros(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona) {
         StringBuilder sql = new StringBuilder("SELECT * FROM JORNAL WHERE 1=1");
 
         if (persona != null) {

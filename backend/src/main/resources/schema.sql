@@ -95,11 +95,11 @@ CREATE TABLE IF NOT EXISTS JORNAL
     primary key,
     persona_id  bigint      not null,
     obra_id  bigint      not null,
-    fecha_jornal  datetime(6)   not null,
+    fecha_jornal  date   not null,
     hora_comienzo datetime(6)   not null,
     hora_fin datetime(6)    null,
     modificado      bit         not null,
-    tipo_jornal      bigint      null,
+    tipo_jornal      bigint      not null,
     confirmado bit not null,
     CONSTRAINT FK_JORNAL_PERSONA
     foreign key (persona_id) references persona (id),

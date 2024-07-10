@@ -25,7 +25,7 @@ const LoginComponent = () => {
                 'appJornalesToken', res.data.token
             )
             console.log(personaRolLoggeado)
-            navigate('/home');
+            //navigate('/home');
         }).catch(error => {
             if (error.response && error.response.status === 403) {
                 setErrors({ login: 'Usuario y/o contraseña incorrecto/s' });

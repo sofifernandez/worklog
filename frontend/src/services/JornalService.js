@@ -17,6 +17,10 @@ class JornalService{
         return axios.post(JORNALES_BASE_REST_API_URL, jornal)
     }
 
+    createOrUpdateJornalQr(jornal){
+        return axios.post(JORNALES_BASE_REST_API_URL + "Qr", jornal)
+    }
+
     getJornalById(jornalId){
         return axios.get(JORNALES_BASE_REST_API_URL +  '/' + jornalId)
     }

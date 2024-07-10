@@ -3,7 +3,7 @@ package com.worklog.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "JORNAL", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+@Table(name = "TIPO_JORNAL", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class TipoJornal {
 
     @Transient

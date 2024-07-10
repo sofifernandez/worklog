@@ -4,8 +4,12 @@ import com.worklog.backend.exception.JornalNotFoundException;
 import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
+import com.worklog.backend.model.TipoJornal;
 import com.worklog.backend.repository.JornalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +33,69 @@ public class JornalService {
     @Transactional
     public Jornal saveJornal(Jornal newJornal) {
         try {
-            Timestamp currentTimestamp = new Timestamp(new Date().getTime());
             return jornalRepository.save(newJornal);
+        } catch (Exception e) {
+            // Handle the exception, e.g., log it and/or rethrow it as a custom exception
+            System.err.println("An error occurred while saving the Jornal: " + e.getMessage());
+            // You can also log the stack trace for more detailed error information
+            e.printStackTrace();
+
+            // Optionally, rethrow the exception or return a default/fallback value
+            // throw new CustomException("Failed to save Jornal", e);
+            return null; // or you might choose to return a default Jornal object or handle it in another way
+        }
+    }
+
+    public Jornal saveJornalQr(Jornal newJornal) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!(authentication instanceof AnonymousAuthenticationToken)) {
+                String currentUserName = authentication.getName();
+                Persona persona = personaService.findPersonaByUsername(currentUserName);
+                Obra obra = newJornal.getObra();
+                LocalDate currentDate = LocalDate.now();
+                Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+                Optional<Jornal[]> jornalActual = jornalRepository.findByPersonaAndObraAndFechaJornalOrderByFechaJornalDesc(persona,obra,currentDate);
+                if(jornalActual.isPresent()){
+                    int i=0;
+                    while ((i < jornalActual.get().length) && (jornalActual.get()[i].getHoraFin() != null)){
+                        i++;
+                    }
+                    if (i == jornalActual.get().length){
+                        TipoJornal tipoJornal = new TipoJornal();
+                        tipoJornal.setId(1L);
+                        tipoJornal.setTipoJornal("COMUN");
+                        newJornal.setPersona(persona);
+                        newJornal.setFechaJornal(currentDate);
+                        newJornal.setHoraComienzo(currentTimestamp);
+                        newJornal.setModificado(false);
+                        newJornal.setConfirmado(false);
+                        newJornal.setTipoJornal(tipoJornal);
+                        return jornalRepository.save(newJornal);
+                    }else {
+                        Jornal jornal = jornalActual.get()[i];
+                        jornal.setHoraFin(currentTimestamp);
+                        return jornalRepository.save(jornal);
+                    }
+                }else {
+                    TipoJornal tipoJornal = new TipoJornal();
+                    tipoJornal.setId(1L);
+                    tipoJornal.setTipoJornal("COMUN");
+                    newJornal.setPersona(persona);
+                    newJornal.setFechaJornal(currentDate);
+                    newJornal.setHoraComienzo(currentTimestamp);
+                    newJornal.setModificado(false);
+                    newJornal.setConfirmado(false);
+                    newJornal.setTipoJornal(tipoJornal);
+                    return jornalRepository.save(newJornal);
+                }
+            }
+            else{
+                System.err.println("No se puede registrar un jornal sin estar autentificado");
+                return null;
+            }
+
+
         } catch (Exception e) {
             // Handle the exception, e.g., log it and/or rethrow it as a custom exception
             System.err.println("An error occurred while saving the Jornal: " + e.getMessage());
@@ -78,10 +143,16 @@ public class JornalService {
         }
         jornalRepository.deleteById(id);
     }
+
     public Optional<Jornal[]> findJornalesByPersona(Long personaId) {
         Persona persona = personaService.getPersonaById(personaId);
        return jornalRepository.findByPersonaOrderedByFechaJornalDesc(persona);
     }
+
+    public Optional<Jornal[]> findJornalByFecha(LocalDate fechaJornal){
+        return jornalRepository.findByFechaJornal(fechaJornal);
+    }
+
 
     @Transactional(readOnly = true)
     public Optional<Jornal[]> findJornalesByFiltros(String fechaDesde, String fechaHasta, Long obraSeleccionada, Long personaId) {
@@ -95,12 +166,12 @@ public class JornalService {
         if (fechaHasta != null && !fechaHasta.isBlank()) {
             endDate = LocalDate.parse(fechaHasta, formatter);
         }
-        Timestamp startTimestamp = startDate != null ? Timestamp.valueOf(startDate.atStartOfDay()) : null;
-        Timestamp endTimestamp = endDate != null ? Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()) : null;
+        //Timestamp startTimestamp = startDate != null ? Timestamp.valueOf(startDate.atStartOfDay()) : null;
+        //Timestamp endTimestamp = endDate != null ? Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()) : null;
 
         Persona persona = personaId > 0 ? personaService.getPersonaById(personaId) : null;
         Obra obra = obraSeleccionada > 0 ? obraService.getObraById(obraSeleccionada) : null;
-        Optional<Jornal[]> jornales= jornalRepository.findJornalesByFiltros(startTimestamp, endTimestamp, obra, persona);
+        Optional<Jornal[]> jornales= jornalRepository.findJornalesByFiltros(startDate, endDate, obra, persona);
         if (jornales.isPresent()) {
             Jornal[] jornalesArray = jornales.get();
             if (jornalesArray.length == 0) {
