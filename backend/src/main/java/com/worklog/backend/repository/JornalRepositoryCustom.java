@@ -4,10 +4,10 @@ import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface JornalRepositoryCustom {
-    Optional<Jornal[]> findJornalesByFiltros(Timestamp startDate, Timestamp endDate, Obra obra, Persona persona);
-    Optional<Jornal[]> findJornalesByFechaObraPersona (Timestamp fecha, Obra obra, Persona persona);
+    Optional<Jornal[]> findJornalesByFiltros(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona);
+    Optional<Jornal[]> findJornalesByFechaObraPersona (LocalDate fecha, Obra obra, Persona persona);
 }

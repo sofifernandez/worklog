@@ -67,6 +67,11 @@ public class JornalController {
         return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
     }
 
+    @PostMapping("/jornalQr")
+    public ResponseEntity<Object> jornalQr(@Valid @RequestBody Jornal newJornal) {
+        Jornal savedJornal = jornalService.saveJornalQr(newJornal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+    }
 
     @GetMapping("/jornal/jornalByPersona/{personaId}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")

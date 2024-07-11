@@ -2,7 +2,7 @@
 import DatoObraComponent from "./DatoObraComponent";
 
 const ContainerDatoObraComponent = ({ obras, onRefrescarDatos }) => {
-
+    console.log(obras)
     const onRefrescarDatosParent=()=>{
         onRefrescarDatos()
     }
@@ -15,6 +15,7 @@ const ContainerDatoObraComponent = ({ obras, onRefrescarDatos }) => {
                 <th>Activo</th>
                 <th>Jefe de Obra</th>
                 <th>Acciones</th>
+                <th>Codigo QR</th>
             </thead>
             <tbody>
                 {obras.map(obra =>

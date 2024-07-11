@@ -6,30 +6,30 @@ const OBRA_BASE_REST_API_URL = "http://localhost:8080/"
 
 //initAxiosInterceptors();
 
-class ObraService{
+class ObraService {
 
-    getAllObras(){
+    getAllObras() {
         return axios.get(OBRA_BASE_REST_API_URL + 'obras')
     }
 
-    createObra(obra){
+    createObra(obra) {
         return axios.post(OBRA_BASE_REST_API_URL + 'obra', obra)
     }
 
-    getObraById(obraId){
-        return axios.get(OBRA_BASE_REST_API_URL +  'obra/' + obraId)
+    getObraById(obraId) {
+        return axios.get(OBRA_BASE_REST_API_URL + 'obra/' + obraId)
     }
 
-    updateObra(obraId, obra){
+    updateObra(obraId, obra) {
         return axios.put(OBRA_BASE_REST_API_URL + 'obra/' + obraId, obra)
     }
 
-    deleteObra(obraId){
-        return axios.delete((OBRA_BASE_REST_API_URL +  'obra/' + obraId))
+    deleteObra(obraId) {
+        return axios.delete((OBRA_BASE_REST_API_URL + 'obra/' + obraId))
     }
 
-    getObraByBPS(bps){
-        return axios.get(OBRA_BASE_REST_API_URL +  'getObraByBPS/' + bps)
+    getObraByBPS(bps) {
+        return axios.get(OBRA_BASE_REST_API_URL + 'getObraByBPS/' + bps)
     }
 
     getObraByJefeId(id){

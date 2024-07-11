@@ -24,12 +24,13 @@ public class Persona {
     @Column(name = "nombre", nullable = false, length = 50)
     @Size(min = 2, max = 30, message = "El nombre debe tener entre 2 y 30 caracteres")
     private String nombre;
+
     @Size(min = 2, max = 30, message = "El apellido debe tener entre 2 y 30 caracteres")
     @Column(name = "apellido", nullable = false, length = 50)
     private String apellido;
 
     @Column(name = "ci", unique = true, nullable = false, length = 26)
-    @Pattern(regexp = "\\d{7}-\\d{1}", message = "La cédula debe tener el formato 1234567-8")
+    @Pattern(regexp = "\\d{8}", message = "La cédula debe tener exactamente 8 números")
     private String ci;
 
     @Column(name = "fecha_nacimiento", length = 10)

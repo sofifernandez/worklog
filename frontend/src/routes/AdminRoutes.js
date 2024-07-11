@@ -13,6 +13,7 @@ import ContainerBuscadorJornalComponent from '../components/functionalComponents
 const AdminRoutes = () => {
   return (
     <Routes>
+      <Route exact path='/' element={<IndexAdminComponent />} />
       <Route exact path='/home' element={<IndexAdminComponent />} />
       <Route exact path='/personas' element={<ListPersonasComponent />} />
       <Route exact path='/add-persona' element={<AddOrEditPersonaComponent />} />

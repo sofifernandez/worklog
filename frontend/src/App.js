@@ -57,11 +57,7 @@ function MainApp() {
   } else {
 
     return (
-      <Routes>
-        <Route exact path='/' element={<LoginComponent />} />
-      </Routes>
-
-
+      <LoginComponent />
     );
   }
 }
