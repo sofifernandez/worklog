@@ -15,11 +15,11 @@ public class Jornal {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "persona_id")
+    @JoinColumn(name = "persona_id", nullable = false)
     private Persona persona;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "obra_id")
+    @JoinColumn(name = "obra_id", nullable = false)
     private Obra obra;
 
     @Column(name = "fecha_jornal", nullable = false, length = 19)
@@ -35,7 +35,7 @@ public class Jornal {
     private Boolean modificado;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tipo_jornal")
+    @JoinColumn(name = "tipo_jornal", nullable = false)
     private TipoJornal tipoJornal;
 
     @Column(name = "confirmado", nullable = false)

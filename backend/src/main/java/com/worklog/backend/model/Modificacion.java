@@ -10,14 +10,23 @@ import java.sql.Timestamp;
 @Table(name = "MODIFICACION", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Modificacion {
 
+    @Transient
+    public static final String CAMPO_FECHA= "FECHA_JORNAL";
+    @Transient
+    public static final String CAMPO_HORA_COMIENZO="HORA_COMIENZO";
+    @Transient
+    public static final String CAMPO_HORA_FIN="HORA_FIN";
+    @Transient
+    public static final String JORNAL_ELIMINADO="JORNAL_ELIMINADO";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "jefe_id", nullable = false)
-    private JefeObra jefeObra;
+    @JoinColumn(name = "responsable_id", nullable = false)
+    private Persona responsable;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "jornal_id", nullable = false)
@@ -48,12 +57,12 @@ public class Modificacion {
         this.id = id;
     }
 
-    public JefeObra getJefeObra() {
-        return jefeObra;
+    public Persona getResponsable() {
+        return responsable;
     }
 
-    public void setJefeObra(JefeObra jefeObra) {
-        this.jefeObra = jefeObra;
+    public void setResponsable(Persona responsable) {
+        this.responsable = responsable;
     }
 
     public Jornal getJornal() {

@@ -2,6 +2,7 @@ package com.worklog.backend.service;
 
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.ObraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +18,8 @@ public class ObraService {
 
     @Autowired
     private ObraRepository obraRepository;
-
     @Autowired
     private QrCodeService qrCodeService;
-
     @Value("${servidor.frontend}")
     private String servidorFrontend;
 

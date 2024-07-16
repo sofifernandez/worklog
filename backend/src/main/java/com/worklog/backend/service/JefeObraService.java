@@ -1,8 +1,11 @@
 package com.worklog.backend.service;
 
 import com.worklog.backend.exception.JefeObraNotFoundException;
+import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
 import com.worklog.backend.model.JefeObra;
+import com.worklog.backend.model.Obra;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.PersonaRol;
 import com.worklog.backend.repository.JefeObraRepository;
 import jakarta.persistence.EntityManager;
@@ -24,6 +27,9 @@ public class JefeObraService {
 
     @Autowired
     private JefeObraRepository jefeObraRepository;
+
+    @Autowired
+    private PersonaService personaService;
 
     @Transactional
     public JefeObra saveJefeObra(JefeObra newJefeObra) {
@@ -69,6 +75,13 @@ public class JefeObraService {
             throw new JefeObraNotFoundException(id);
         }
         jefeObraRepository.deleteById(id);
+    }
+
+    public Obra getObraByJefe(Long id){
+        Persona persona = personaService.getPersonaById(id);
+        Obra obra = jefeObraRepository.getObraByJefe(persona);
+        if (obra == null) {throw new ObraNotFoundException("No tienes obras asignadas");}
+        return obra;
     }
 
 }

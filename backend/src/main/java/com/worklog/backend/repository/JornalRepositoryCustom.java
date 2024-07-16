@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface JornalRepositoryCustom {
     Optional<Jornal[]> findJornalesByFiltros(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona);
+    Optional<Jornal[]> findJornalesByFechaObraPersona (LocalDate fecha, Obra obra, Persona persona);
 }

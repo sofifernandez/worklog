@@ -48,6 +48,10 @@ class JornalService{
         });
     }
 
+    agregarLluvia(jornal){
+        return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', jornal);
+    }
+
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new JornalService();

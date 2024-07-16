@@ -31,6 +31,7 @@ class ObraService {
     getObraByBPS(bps) {
         return axios.get(OBRA_BASE_REST_API_URL + 'getObraByBPS/' + bps)
     }
+
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new ObraService()

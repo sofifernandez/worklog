@@ -1,25 +1,20 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.JornalNotFoundException;
+import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.Jornal;
-import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.JornalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class JornalController {
 
@@ -31,8 +26,20 @@ public class JornalController {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(JornalNotSavedException.class)
+    public ResponseEntity<String> handleJornalNotSaved(JornalNotSavedException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PostMapping("/jornal")
     public ResponseEntity<Object> newJornal(@Valid @RequestBody Jornal newJornal) {
+        Jornal savedJornal = jornalService.saveJornal(newJornal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+    }
+
+    @PostMapping("/jornal/agregarLluvia")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Object> newJornalLLuvia(@Valid @RequestBody Jornal newJornal) {
         Jornal savedJornal = jornalService.saveJornal(newJornal);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
     }

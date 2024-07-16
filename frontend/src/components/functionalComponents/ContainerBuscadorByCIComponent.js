@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import BuscadorByCedulaComponent from './BuscadorByCIComponent';
 import DatoPersonaComponent from './DatoPersonaComponent';
 
-const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar }) => {
+const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalData, handleRowClick }) => {
     const [persona, setPersona] = useState('');
     const [mensajeError, setMensajeError] = useState('')
 
@@ -22,6 +22,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar }) => {
     }
 
 
+
     return (
         <div>
             {!persona && (<div className='row justify-content-center px-0'>
@@ -30,8 +31,8 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar }) => {
             {persona && (
                 <div className='row row justify-content-center'>
                     <h5 className='px-0'>Resultado:</h5>
-                    <DatoPersonaComponent persona={persona} />
-                    <button className='btn btn-secondary col-2' onClick={volver}> Volver a buscar</button>
+                    <DatoPersonaComponent persona={persona} minimalData={minimalData} handleRowClick={handleRowClick} />
+                    <button className='btn btn-secondary col-3' onClick={volver}> Volver a buscar</button>
                 </div>
             )}
             {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}
