@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle,faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 
-const DatoPersonaComponent = ({ persona, onlyRows }) => {
+const DatoPersonaComponent = ({ persona, onlyRows, minimalData, handleRowClick }) => {
 
     return (
 
         <>
-            {!onlyRows &&
+            {!onlyRows && !minimalData &&
 
                 (
                     <table className='table table-sm table-bordered table-striped mt-3'>
@@ -42,6 +42,30 @@ const DatoPersonaComponent = ({ persona, onlyRows }) => {
                         </tbody>
                     </table>
                 )}
+
+
+            {!onlyRows && minimalData && (
+                <table className='table table-sm table-bordered table-striped mt-3 table-hover-row'>
+                <thead>
+                    <tr>
+                    <th></th>
+                    <th>Nombre completo</th>
+                    <th>Cédula</th>
+                    <th>Rol actual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr key={persona.id} onClick={() => handleRowClick(persona)}>
+                        <td className='text-center'title='Agregar'><FontAwesomeIcon icon={faSquarePlus} /></td>
+                        <td >{persona.nombre} {persona.apellido}</td>
+                        <td >{persona.ci}</td>
+                        <td>
+                            {persona.personaRol ? persona.personaRol.rol.rol : 'Sin rol'}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            )}    
 
             {onlyRows && (
                 <tr key={persona.id}>

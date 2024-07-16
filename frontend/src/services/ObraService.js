@@ -32,9 +32,6 @@ class ObraService {
         return axios.get(OBRA_BASE_REST_API_URL + 'getObraByBPS/' + bps)
     }
 
-    getObraByJefeId(id){
-        return axios.get(OBRA_BASE_REST_API_URL +  'getObraByJefe/' + id)
-    }
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new ObraService()

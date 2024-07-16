@@ -1,10 +1,7 @@
 package com.worklog.backend.controller;
 
-import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.service.ObraService;
-import com.worklog.backend.repository.ObraRepository;
-import com.worklog.backend.service.QrCodeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +18,10 @@ public class ObraController {
     @Autowired
     private ObraService obraService;
 
-    @ExceptionHandler(ObraNotFoundException.class)
-    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler(ObraNotFoundException.class)
+//    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping("/obra")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -68,10 +65,4 @@ public class ObraController {
         return new ResponseEntity<>(obra, HttpStatus.OK);
     }
 
-    @GetMapping("/getObraByJefe/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
-    public ResponseEntity<Obra> getObraByJefe(@PathVariable Long id) {
-        Obra obra = obraService.getObraByJefe(id);
-        return new ResponseEntity<>(obra, HttpStatus.OK);
-    }
 }

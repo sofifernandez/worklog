@@ -6,6 +6,7 @@ const BuscadorByCIComponent = ({ onPersonaFound, onMensajeError, onCancelar }) =
     const [cedula, setCedula] = useState('');
 
     const getPersonaByCI = async () => {
+        onMensajeError();
         try {
             if (cedula === undefined || cedula === "") {
                 onMensajeError('Ingresa una cédula')

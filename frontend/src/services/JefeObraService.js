@@ -25,6 +25,9 @@ class JefeObraService{
         return axios.delete(JEFE_OBRA_BASE_REST_API_URL +  'jefeObra/' + jefeObraId)
     }
     
+    getObraByJefeId(id){
+        return axios.get(JEFE_OBRA_BASE_REST_API_URL +  'getObraByJefe/' + id)
+    }
 }
 
 export default new JefeObraService();

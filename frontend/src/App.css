@@ -43,6 +43,17 @@ input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute
 }
 
 
+.labelCard{
+ background-color: #CDCBFF;
+ border-radius: 3px;
+ font-weight: 700;
+ padding: 5px;
+}
 
+
+.table-hover-row tbody tr:hover {
+  background-color: #FFC20D;
+  cursor: pointer;
+}
 
 

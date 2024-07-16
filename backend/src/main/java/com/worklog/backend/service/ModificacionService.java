@@ -1,9 +1,14 @@
 package com.worklog.backend.service;
 
 import com.worklog.backend.exception.ModificacionNotFoundException;
+import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Modificacion;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.ModificacionRepository;
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +19,10 @@ import java.util.List;
 @Service
 public class ModificacionService {
 
-
     @Autowired
     private ModificacionRepository modificacionRepository;
+    @Autowired
+    private PersonaService personaService;
 
     @Transactional
     public Modificacion saveModificacion(Modificacion newModificacion) {
@@ -46,7 +52,7 @@ public class ModificacionService {
     public Modificacion updateModificacion(Modificacion newModificacion, Long id) {
         return modificacionRepository.findById(id)
                 .map(modificacion -> {
-                    modificacion.setJefeObra(newModificacion.getJefeObra());
+                    modificacion.setResponsable(newModificacion.getResponsable());
                     modificacion.setJornal(newModificacion.getJornal());
                     modificacion.setFechaModificacion(new Timestamp(new Date().getTime()));
                     modificacion.setCampoModificado(newModificacion.getCampoModificado());
@@ -68,5 +74,40 @@ public class ModificacionService {
     @Transactional(readOnly = true)
     public Modificacion findModificacionByJornalId(Long jornalId) {
         return modificacionRepository.findModificacionByJornalId(jornalId);
+    }
+
+    @Transactional
+    public void agregarModificacionJornal(Jornal datosAnteriores, Jornal datosNuevos){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        Persona persona = personaService.findPersonaByUsername(currentUserName);
+        Modificacion nuevaModificacion= new Modificacion();
+        nuevaModificacion.setJornal(datosNuevos);
+        nuevaModificacion.setResponsable(persona);
+        //Se modifica la fecha
+        if(!datosAnteriores.getFechaJornal().equals(datosNuevos.getFechaJornal())){
+            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_FECHA);
+            nuevaModificacion.setValorAnterior(datosAnteriores.getFechaJornal().toString());
+            nuevaModificacion.setValorActual(datosNuevos.getFechaJornal().toString());
+        }
+        //Se modifica el horario de comienzo
+        if(!datosAnteriores.getHoraComienzo().equals(datosNuevos.getHoraComienzo())){
+            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_COMIENZO);
+            nuevaModificacion.setValorAnterior(datosAnteriores.getHoraComienzo().toString());
+            nuevaModificacion.setValorActual(datosNuevos.getHoraComienzo().toString());
+        }
+        //Se modifica el horario de fin
+        if(!datosAnteriores.getHoraFin().equals(datosNuevos.getHoraFin())){
+            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_FIN);
+            nuevaModificacion.setValorAnterior(datosAnteriores.getHoraFin().toString());
+            nuevaModificacion.setValorActual(datosNuevos.getHoraFin().toString());
+        }
+        //Se modifica la obra
+        if(!datosAnteriores.getHoraFin().equals(datosNuevos.getHoraFin())){
+            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_FIN);
+            nuevaModificacion.setValorAnterior(datosAnteriores.getHoraFin().toString());
+            nuevaModificacion.setValorActual(datosNuevos.getHoraFin().toString());
+        }
+        modificacionRepository.save(nuevaModificacion);
     }
 }

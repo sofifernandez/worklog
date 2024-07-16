@@ -19,11 +19,7 @@ public class ObraService {
     @Autowired
     private ObraRepository obraRepository;
     @Autowired
-    private PersonaService personaService;
-
-    @Autowired
     private QrCodeService qrCodeService;
-
     @Value("${servidor.frontend}")
     private String servidorFrontend;
 
@@ -68,13 +64,6 @@ public class ObraService {
     public Obra getObraByBPS(String bps) {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}
-        return obra;
-    }
-
-    public Obra getObraByJefe(Long id){
-        Persona persona = personaService.getPersonaById(id);
-        Obra obra = obraRepository.getObraByJefe(persona);
-        if (obra == null) {throw new ObraNotFoundException(id.toString());}
         return obra;
     }
 }

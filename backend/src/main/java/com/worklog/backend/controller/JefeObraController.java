@@ -2,6 +2,7 @@ package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.JefeObraNotFoundException;
 import com.worklog.backend.model.JefeObra;
+import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.PersonaRol;
 import com.worklog.backend.repository.JefeObraRepository;
 import com.worklog.backend.service.JefeObraService;
@@ -53,5 +54,12 @@ public class JefeObraController {
     ResponseEntity<String> deleteJefeObra(@PathVariable Long id){
         jefeObraService.deleteJefeObra(id);
         return new ResponseEntity<>("PersonaRol with id " + id + " has been deleted successfully.", HttpStatus.OK);
+    }
+
+    @GetMapping("/getObraByJefe/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Obra> getObraByJefe(@PathVariable Long id) {
+        Obra obra = jefeObraService.getObraByJefe(id);
+        return new ResponseEntity<>(obra, HttpStatus.OK);
     }
 }

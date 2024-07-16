@@ -8,8 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +30,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         }
 
         if (endDate != null) {
-            sql.append(" AND fecha_jornal < :endDate");
+            sql.append(" AND fecha_jornal <= :endDate");
         }
 
         if (obra != null) {

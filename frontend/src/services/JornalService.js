@@ -48,8 +48,8 @@ class JornalService{
         });
     }
 
-    agregarHorarioLluvia(lluviaDetalles){
-        return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', lluviaDetalles);
+    agregarLluvia(jornal){
+        return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', jornal);
     }
 
 }
