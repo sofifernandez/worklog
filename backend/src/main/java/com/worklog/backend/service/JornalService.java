@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,19 +37,8 @@ public class JornalService {
 
     @Transactional
     public Jornal saveJornal(Jornal newJornal) {
-        try {
-            validateDatosJornal(newJornal);
-            return jornalRepository.save(newJornal);
-        } catch (Exception e) {
-            // Handle the exception, e.g., log it and/or rethrow it as a custom exception
-            System.err.println("An error occurred while saving the Jornal: " + e.getMessage());
-            // You can also log the stack trace for more detailed error information
-            e.printStackTrace();
-
-            // Optionally, rethrow the exception or return a default/fallback value
-            // throw new CustomException("Failed to save Jornal", e);
-            return null; // or you might choose to return a default Jornal object or handle it in another way
-        }
+        validateJornal(newJornal);
+        return jornalRepository.save(newJornal);
     }
 
     public Jornal saveJornalQr(Jornal newJornal) {
@@ -216,7 +204,7 @@ public class JornalService {
 
     @Transactional
     public void validarUpdate(Jornal newJornal, Long id) {
-        validateDatosJornal(newJornal);
+        validateJornal(newJornal);
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
         if(rolService.isUsuarioLoggeadoJefeObra()){
@@ -231,20 +219,36 @@ public class JornalService {
         }
     }
 
-    private void validateDatosJornal(Jornal jornal){
+    private void validateJornal(Jornal jornal){
+        validacionGeneralDeDatos(jornal);
+        validacionPersonal(jornal);
+    }
+
+    public void validacionGeneralDeDatos(Jornal jornal){
+        transformToCorrectTimeZone(jornal);
         if (!DateUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())){throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");};
-       //Los jornales COMUNES no pueden marcarse en fecha posterior a hoy
+        //Los jornales COMUNES no pueden marcarse en fecha posterior a hoy
         if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN)){
             if(DateUtil.isFuture(jornal.getFechaJornal())){
                 {throw new InvalidDataException("El jornal no puede ser marcado a futuro");}
             }
         }
 
+        if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
+            if(!DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
+                    !DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())){
+                throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
+            }
+        }
+
+    }
+
+    private void validacionPersonal(Jornal jornal){
         if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
             boolean allDayRain=false;
             if(DateUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateUtil.MONDAY_TO_FRIDAY_START) &&
                     DateUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateUtil.MONDAY_TO_THURSDAY_END
-            ))
+                    ))
             {
                 allDayRain=true;
                 jornal.setHoraFin(DateUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
@@ -252,24 +256,27 @@ public class JornalService {
             if(!allDayRain){//Si no es lluvia all day, solo se puede agregar el período de lluvia en trabajadores que haya ingresado ese día
                 Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona());
                 if (jornales.isEmpty() && (DateUtil.isBeforeToday(jornal.getFechaJornal()) || DateUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
-                    throw new JornalNotSavedException(jornal.getPersona().getApellido());
+                    throw new JornalNotSavedException(jornal.getPersona().getApellido(), "No hay ingreso registrado para la obra indicada.");
                 }
-                if(!DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
-                !DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())){
-                    throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
-                }
+
             }
         }
-        //En una misma fecha una persona no puede tener jornales superpuestos en distintas obras, sin importar el tipo
-        Optional<Jornal[]> jornalesFecha=jornalRepository.findByFechaJornalAndPersona(jornal.getFechaJornal(), jornal.getPersona());
-        validateNoOverlap(jornalesFecha,jornal);
+
+        //En una misma fecha una persona no puede tener jornales superpuestos en otras obras, sin importar el tipo
+        Optional<Jornal[]> jornalesFecha=jornalRepository.findByPersonaAndFechaAndNotObra( jornal.getPersona(), jornal.getFechaJornal(), jornal.getObra());
+        try {
+            validateNoOverlap(jornalesFecha,jornal);
+        } catch (InvalidDataException e) {
+            throw new InvalidDataException(jornal.getPersona().getApellido() + " ya tiene un jornal sin finalizar en otra obra para este día");
+        }
+
         //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
         Optional<Jornal[]> jornalesFechaObraTipo=jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona(),jornal.getTipoJornal());
         validateNoOverlap(jornalesFechaObraTipo,jornal);
     }
 
     private void validateNoOverlap(Optional<Jornal[]> jornales, Jornal nuevoJornal) {
-        //Validar que no haya ya un jornal del mismo tipo que quede superpuesto con este
+        //Validar que no haya ya un que quede superpuesto con este
         if (jornales.isEmpty()) return;
         if (jornales.isPresent()) {
             // Get the array of Jornal
@@ -277,12 +284,31 @@ public class JornalService {
 
             // Iterate over the Jornal array
             for (Jornal j : jornalArray) {
-                if(j.getHoraFin()==null)throw new InvalidDataException("Ya existe un jornal sin finalizar para este día y obra");
+                if(j.getHoraFin()==null)throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
                 if(DateUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
-                    throw new InvalidDataException("Ya existe un jornal de ese tipo en el horario ingresado");
+                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
                 }
             }
         }
+    }
+
+    private void transformToCorrectTimeZone(Jornal jornal){
+        ZoneId uruguayZoneId = ZoneId.of("America/Montevideo");
+
+        // Convert LocalDateTime to ZonedDateTime in Uruguay timezone
+        ZonedDateTime zonedHoraComienzo = jornal.getHoraComienzo().toLocalDateTime().atZone(uruguayZoneId);
+        ZonedDateTime zonedHoraFin = jornal.getHoraFin().toLocalDateTime().atZone(uruguayZoneId);
+
+        // Convert ZonedDateTime to UTC
+        ZonedDateTime utcHoraComienzo = zonedHoraComienzo.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime utcHoraFin = zonedHoraFin.withZoneSameInstant(ZoneId.of("UTC"));
+
+        // Convert ZonedDateTime to Timestamp
+        Timestamp horaComienzo = Timestamp.valueOf(utcHoraComienzo.toLocalDateTime());
+        Timestamp horaFin = Timestamp.valueOf(utcHoraFin.toLocalDateTime());
+
+        jornal.setHoraComienzo(horaComienzo);
+        jornal.setHoraFin(horaFin);
     }
 
 

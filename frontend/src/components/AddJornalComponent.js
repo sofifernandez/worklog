@@ -66,6 +66,7 @@ export const AddJornalComponent = () => {
             })
         } else {
             JornalService.createJornal(jornal).then((res) => {
+                console.log(jornal)
                 let timerInterval;
                  Swal.fire({
                     title: 'Jornal Registrado con éxito',

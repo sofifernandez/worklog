@@ -38,4 +38,8 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
     @Query(value = "SELECT DISTINCT J.persona FROM Jornal J WHERE J.obra=:obra AND J.fechaJornal = :fecha")
     List<Persona> getTrabajadoresByObraAndFecha(@Param("obra") Obra obra, @Param("fecha") LocalDate fecha);
 
+    @Query("SELECT j FROM Jornal j WHERE j.persona = :persona AND j.fechaJornal = :fecha AND j.obra != :obra")
+    Optional<Jornal[]> findByPersonaAndFechaAndNotObra(@Param("persona") Persona persona, @Param("fecha") LocalDate fecha, @Param("obra") Obra obra);
+
+
 }

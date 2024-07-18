@@ -37,11 +37,13 @@ public class JornalController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/jornal/agregarLluvia")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
     public ResponseEntity<Object> newJornalLLuvia(@Valid @RequestBody Jornal newJornal) {
         Jornal savedJornal = jornalService.saveJornal(newJornal);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+        String message = savedJornal.getPersona().getApellido() + ":  horario de lluvia agregado";
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     @GetMapping("/jornales")
@@ -90,6 +92,12 @@ public class JornalController {
             @RequestParam Long personaId) {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @PostMapping("/jornal/validateGeneral")
+    public ResponseEntity<Object> validateGeneral(@Valid @RequestBody Jornal jornal) {
+        jornalService.validacionGeneralDeDatos(jornal);
+        return ResponseEntity.ok().build();
     }
 
 
