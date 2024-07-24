@@ -313,19 +313,6 @@ public class JornalService {
         Timestamp horaComienzo = Timestamp.valueOf(utcHoraComienzo.toLocalDateTime());
         Timestamp horaFin = Timestamp.valueOf(utcHoraFin.toLocalDateTime());
 
-        System.out.println("Comienzo");
-        System.out.println(jornal.getHoraComienzo());
-        System.out.println(jornal.getHoraFin());
-        System.out.println("Uruguay");
-        System.out.println(zonedHoraComienzo);
-        System.out.println(zonedHoraFin);
-        System.out.println("UTC");
-        System.out.println(utcHoraComienzo);
-        System.out.println(utcHoraFin);
-        System.out.println("FINAL");
-        System.out.println(horaComienzo);
-        System.out.println(horaFin);
-
         jornal.setHoraComienzo(horaComienzo);
         jornal.setHoraFin(horaFin);
 
