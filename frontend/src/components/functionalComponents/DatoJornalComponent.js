@@ -45,14 +45,15 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView }) => {
                     <table className='table table-sm table-bordered table-striped mt-3'>
                         <thead>
                             <tr>
-
-                                {adminView &&(<th className="text-center">Nombre</th>)}
+                                {adminView && (<th className="text-center">Nombre</th>)}
                                 <th> </th>
                                 <th className="text-center">Fecha</th>
                                 <th className="text-center">Obra</th>
                                 <th className="text-center">Ingreso</th>
                                 <th className="text-center">Salida</th>
-                                {adminView &&(<th className="text-center">Confirmado</th>)}
+                                {adminView && (<th className="text-center">Confirmado</th>)}
+                                {adminView && (<th className="text-center">Acciones</th>)}
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -67,6 +68,10 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView }) => {
                                 <td className="text-center">{jornal.obra.nombre}</td>
                                 <td className="text-center">{formatTime(jornal.horaComienzo)}</td>
                                 <td className="text-center">{formatTime(jornal.horaFin, jornal.id)}</td>
+                                {adminView &&(<td className="text-center">
+                                                <Link className='btn btn-info mx-1' to={`/edit-obra/${jornal.id}`}>Modificar</Link>
+                                                <button className='btn btn-danger mx-1' onClick={() => formatDate(jornal.id)}>Eliminar</button>
+                                             </td>)}
                             </tr>
                         </tbody>
                     </table>
@@ -84,10 +89,15 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView }) => {
                     <td className="text-center">{jornal.obra.nombre}</td>
                     <td className="text-center">{formatTime(jornal.horaComienzo)}</td>
                     <td className="text-center">{formatTime(jornal.horaFin, jornal.id)}</td>
-                    {adminView &&(<th className="text-center"> <FontAwesomeIcon
+                    {adminView &&(<td className="text-center"> <FontAwesomeIcon
                                         icon={faCircle}
                                         style={{ color: jornal.confirmado ? 'green' : 'red' }}
-                                    /> </th>)}
+                                    /> </td>)
+                                    }
+                    {adminView &&(<td className="text-center">
+                                                <Link className='btn btn-info mx-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
+                                                <button className='btn btn-danger mx-1' onClick={() => formatDate(jornal.id)}>Eliminar</button>
+                                             </td>)}
                 </tr>
 
             )

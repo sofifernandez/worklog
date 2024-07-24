@@ -116,7 +116,6 @@ public class JornalService {
 
     @Transactional
     public Jornal updateJornal(Jornal newJornal, Long id) {
-        validarUpdate(newJornal, id);
         return jornalRepository.findById(id)
                 .map(jornal -> {
                     jornal.setPersona(newJornal.getPersona());
@@ -129,6 +128,10 @@ public class JornalService {
                     jornal.setConfirmado(newJornal.getConfirmado());
                     return jornalRepository.save(jornal);
                 }).orElseThrow(() -> new JornalNotFoundException(id.toString()));
+    }
+
+    public Jornal updateJornalWithValidations(Jornal newJornal, Long id) {
+        return validarUpdate(newJornal, id);
     }
 
     @Transactional
@@ -203,7 +206,7 @@ public class JornalService {
     }
 
     @Transactional
-    public void validarUpdate(Jornal newJornal, Long id) {
+    public Jornal validarUpdate(Jornal newJornal, Long id) {
         validateJornal(newJornal);
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
@@ -216,6 +219,9 @@ public class JornalService {
         Jornal jornalActualizado = updateJornal(newJornal, id);
         if(jornalActualizado != null){
             modificacionService.agregarModificacionJornal(datosAnteriores,newJornal);
+            return jornalActualizado;
+        }else {
+            throw new InvalidDataException("No se encontró el jornal o hubo otro error, contacte a su administrador");
         }
     }
 
@@ -307,8 +313,22 @@ public class JornalService {
         Timestamp horaComienzo = Timestamp.valueOf(utcHoraComienzo.toLocalDateTime());
         Timestamp horaFin = Timestamp.valueOf(utcHoraFin.toLocalDateTime());
 
+        System.out.println("Comienzo");
+        System.out.println(jornal.getHoraComienzo());
+        System.out.println(jornal.getHoraFin());
+        System.out.println("Uruguay");
+        System.out.println(zonedHoraComienzo);
+        System.out.println(zonedHoraFin);
+        System.out.println("UTC");
+        System.out.println(utcHoraComienzo);
+        System.out.println(utcHoraFin);
+        System.out.println("FINAL");
+        System.out.println(horaComienzo);
+        System.out.println(horaFin);
+
         jornal.setHoraComienzo(horaComienzo);
         jornal.setHoraFin(horaFin);
+
     }
 
 

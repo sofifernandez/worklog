@@ -60,7 +60,7 @@ public class JornalController {
 
     @PutMapping("/jornal/{id}")
     public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id) {
-        Jornal updatedJornal = jornalService.updateJornal(newJornal, id);
+        Jornal updatedJornal = jornalService.updateJornalWithValidations(newJornal, id);
         return new ResponseEntity<>(updatedJornal, HttpStatus.OK);
     }
 

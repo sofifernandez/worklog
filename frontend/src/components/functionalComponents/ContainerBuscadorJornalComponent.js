@@ -34,7 +34,7 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
                 <BuscadorJornalComponent onJornalesFound={handleJornalFound} onMensajeError={handleMensajeError} onCancelar={handleCancelar} />
             </div>)}
             {jornales?.length > 0 &&
-                (<div className=' row justify-content-center col-lg-8 mt-2'>
+                (<div className=' row justify-content-center col-lg-9 mt-2'>
                     <div className='table-responsive mt-2 mx-auto'>
                         <ContainerDatoJornalComponent jornales={jornales.slice(0, 10)} adminView={adminView} />
                     </div>

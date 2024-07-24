@@ -15,6 +15,7 @@ const ContainerDatoJornalComponent = ({ jornales,adminView }) => {
                     <th className="text-center">Ingreso</th>
                     <th className="text-center">Salida</th>
                     {adminView &&(<th className="text-center">Confirmado</th>)}
+                    {adminView &&(<th className="text-center">Acciones</th>)}
                 </tr>
             </thead>
             <tbody>
