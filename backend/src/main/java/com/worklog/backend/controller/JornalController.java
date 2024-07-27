@@ -58,9 +58,9 @@ public class JornalController {
         return new ResponseEntity<>(jornal, HttpStatus.OK);
     }
 
-    @PutMapping("/jornal/{id}")
-    public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id) {
-        Jornal updatedJornal = jornalService.updateJornalWithValidations(newJornal, id);
+    @PutMapping("/jornal/{id}/{motivo}")
+    public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id, @PathVariable String motivo) {
+        Jornal updatedJornal = jornalService.updateJornalWithValidations(newJornal, id, motivo);
         return new ResponseEntity<>(updatedJornal, HttpStatus.OK);
     }
 

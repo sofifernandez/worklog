@@ -39,6 +39,7 @@ export const ModifyJornalComponent = () => {
     const [horaFinManual, setHoraFinManual] = useState(false)
     const [modificado, setModificado] = useState()
     const [confirmado, setConfirmado] = useState()
+    const [motivo, setMotivo] = useState('No marcó entrada')
 
     const handleFetchError = (error, currentErrors) => {
         const newErrors = [...(currentErrors || [])]; // Create a copy of currentErrors or initialize as empty array
@@ -204,7 +205,7 @@ export const ModifyJornalComponent = () => {
         const horaFinFormatted = fechaJornal + 'T' + horaFin;
         const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado }
             try {
-                const response = await JornalService.updateJornal(id, jornal);
+                const response = await JornalService.updateJornal(id, motivo, jornal);
                 //return { success: true, response };
             } catch (error) {
                 console.log(error)

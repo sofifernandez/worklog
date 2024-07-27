@@ -25,8 +25,8 @@ class JornalService{
         return axios.get(JORNALES_BASE_REST_API_URL +  '/' + jornalId)
     }
 
-    updateJornal(jornalId, jornal){
-        return axios.put(JORNALES_BASE_REST_API_URL + '/' + jornalId, jornal)
+    updateJornal(jornalId, motivo, jornal){
+        return axios.put(JORNALES_BASE_REST_API_URL + '/' + jornalId + '/' + motivo, jornal)
     }
 
     deleteJornal(jornalId){

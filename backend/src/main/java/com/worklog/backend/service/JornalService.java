@@ -130,8 +130,8 @@ public class JornalService {
                 }).orElseThrow(() -> new JornalNotFoundException(id.toString()));
     }
 
-    public Jornal updateJornalWithValidations(Jornal newJornal, Long id) {
-        return validarUpdate(newJornal, id);
+    public Jornal updateJornalWithValidations(Jornal newJornal, Long id, String motivo) {
+        return validarUpdate(newJornal, id, motivo);
     }
 
     @Transactional
@@ -206,7 +206,7 @@ public class JornalService {
     }
 
     @Transactional
-    public Jornal validarUpdate(Jornal newJornal, Long id) {
+    public Jornal validarUpdate(Jornal newJornal, Long id, String motivo) {
         validateJornal(newJornal);
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
@@ -216,9 +216,19 @@ public class JornalService {
                     !newJornal.getFechaJornal().equals(datosAnteriores.getFechaJornal()))
             {throw new InvalidDataException("Hubo un error, contacte a su administrador");};
         }
+        Jornal jornalAnterior = new Jornal();
+        jornalAnterior.setPersona(datosAnteriores.getPersona());
+        jornalAnterior.setObra(datosAnteriores.getObra());
+        jornalAnterior.setFechaJornal(datosAnteriores.getFechaJornal());
+        jornalAnterior.setHoraComienzo(datosAnteriores.getHoraComienzo());
+        jornalAnterior.setHoraFin(datosAnteriores.getHoraComienzo());
+        jornalAnterior.setModificado(datosAnteriores.getModificado());
+        jornalAnterior.setConfirmado(datosAnteriores.getConfirmado());
+        jornalAnterior.setTipoJornal(datosAnteriores.getTipoJornal());
         Jornal jornalActualizado = updateJornal(newJornal, id);
         if(jornalActualizado != null){
-            modificacionService.agregarModificacionJornal(datosAnteriores,newJornal);
+            Jornal jornalPersistido = getJornalById(id);
+            modificacionService.agregarModificacionJornal(jornalAnterior,jornalPersistido,motivo);
             return jornalActualizado;
         }else {
             throw new InvalidDataException("No se encontró el jornal o hubo otro error, contacte a su administrador");

@@ -77,13 +77,15 @@ public class ModificacionService {
     }
 
     @Transactional
-    public void agregarModificacionJornal(Jornal datosAnteriores, Jornal datosNuevos){
+    public void agregarModificacionJornal(Jornal datosAnteriores, Jornal datosNuevos, String motivo){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         Persona persona = personaService.findPersonaByUsername(currentUserName);
         Modificacion nuevaModificacion= new Modificacion();
         nuevaModificacion.setJornal(datosNuevos);
         nuevaModificacion.setResponsable(persona);
+        nuevaModificacion.setMotivo(motivo);
+        nuevaModificacion.setFechaModificacion(new Timestamp(new Date().getTime()));
         //Se modifica la fecha
         if(!datosAnteriores.getFechaJornal().equals(datosNuevos.getFechaJornal())){
             nuevaModificacion.setCampoModificado(Modificacion.CAMPO_FECHA);
