@@ -13,6 +13,8 @@ import 'react-clock/dist/Clock.css';
 import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
 import ErrorMessage from './functionalComponents/ErrorMessageComponent';
 import SuccessMessage from './functionalComponents/SuccessMessageComponent';
+import Swal from 'sweetalert2';
+
 
 export const ModifyJornalComponent = () => {
     const { id } = useParams()
@@ -39,7 +41,8 @@ export const ModifyJornalComponent = () => {
     const [horaFinManual, setHoraFinManual] = useState(false)
     const [modificado, setModificado] = useState()
     const [confirmado, setConfirmado] = useState()
-    const [motivo, setMotivo] = useState('No marcó entrada')
+    const [motivo, setMotivo] = useState()
+    const [otroMotivo, setOtroMotivo] = useState('')
 
     const handleFetchError = (error, currentErrors) => {
         const newErrors = [...(currentErrors || [])]; // Create a copy of currentErrors or initialize as empty array
@@ -61,11 +64,13 @@ export const ModifyJornalComponent = () => {
             setObra(res.data.obra)
             setFechaJornal(res.data.fechaJornal)
             setHoraComienzo(format(res.data.horaComienzo, 'HH:mm:ss'))
-            setHoraFin(format(res.data.horaFin, 'HH:mm:ss'))
             setPersona(res.data.persona)
             setTipoJornal(res.data.tipoJornal)
             setModificado(res.data.modificado)
             setConfirmado(res.data.confirmado)
+            if (res.data.horaFin){
+                setHoraFin(format(res.data.horaFin, 'HH:mm:ss'))
+            }
         }).catch(e => {
             console.log(e)
         })
@@ -90,7 +95,7 @@ export const ModifyJornalComponent = () => {
     }, [obra, fechaJornal]);
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         const [hours, minutes] = horaComienzo.split(':').map(Number);
         const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
 
@@ -119,7 +124,7 @@ export const ModifyJornalComponent = () => {
             setHoraFinManual(true)
         }
     }, [horaComienzo, radioSelection]);
-
+*/
     useEffect(() => {
         if (seleccionarTodos) {
             setTrabajadoresSeleccionados(trabajadoresSugeridos);
@@ -203,41 +208,37 @@ export const ModifyJornalComponent = () => {
         // Update jornal
         const horaComienzoFormatted = fechaJornal + 'T' + horaComienzo;
         const horaFinFormatted = fechaJornal + 'T' + horaFin;
-        const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado }
-            try {
-                const response = await JornalService.updateJornal(id, motivo, jornal);
-                //return { success: true, response };
-            } catch (error) {
-                console.log(error)
-                //return { success: false, error: error || 'An error occurred while processing jornal' };
-              }
-
-        // Separate errors and successful responses
-        /*const successfulResults = results.filter(result => result.success);
-        console.log(successfulResults)
-        const errorResults = results.filter(result => !result.success);
-        console.log(errorResults)
-
-        // Update mensajeError with errors
-        if (errorResults.length > 0) {
-            setMensajeError((prevErrors) => {
-                let updatedErrors = [...prevErrors];
-                errorResults.forEach(result => {
-                    updatedErrors = handleFetchError(result.error, updatedErrors);
-                });
-                return updatedErrors;
-            });
-        }
-
-        if (successfulResults.length > 0) {
-            setMensajeSuccess((prev) => {
-                let updated = [...prev];
-                successfulResults.forEach(result => {
-                    updated = handleFetchSuccess(result, updated);
-                });
-                return updated;
-            });
-        }*/
+        const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado}
+        var motivoDefinitivo = '';
+        if (motivo === 'Otros') {motivoDefinitivo =  otroMotivo;}else{motivoDefinitivo = motivo}
+        JornalService.updateJornal(id, motivoDefinitivo, jornal).then((res) => {  
+            let timerInterval;
+            Swal.fire({
+               title: 'Jornal Modificado con éxito',
+               timer: 2500,
+               timerProgressBar: true,
+               didOpen: () => {
+                   Swal.showLoading();
+                },
+               willClose: () => {
+                clearInterval(timerInterval);
+               }
+               }).then((result) => {
+                 if (result.dismiss === Swal.DismissReason.timer) {
+                   navigate('/modify-jornal/'+id);
+                }
+               });
+               navigate('/modify-jornal/'+id);
+        }).catch(error => {
+            if (error.response) {
+                setMensajeError(error.response.data);
+            }else if (error.request) {
+                setMensajeError('No hay respuesta del servidor');
+            }else{
+                setMensajeError(error.message);
+            }
+        });
+        
     };
 
 
@@ -453,6 +454,27 @@ export const ModifyJornalComponent = () => {
                             <input type="radio" className="btn-check" name="options-outlined" id="tj_extra" autoComplete="off" checked={tipoJornal.id === 3} onChange={(e) => handleTipoJornal(3)} />
                             <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_extra">Extra</label>
                         </div>
+                        )}
+                        {/*--------- MOTIVO --------------------------- */}
+                        {id && (
+                        <div className='form-group mt-3'>
+                            <label className='form-label me-4 labelCard'>Motivo del cambio</label>
+                            <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setMotivo(e.target.value)}>
+                                    <option value='Horario de Entrada Incorrecto'>Trabajador no marcó salida</option>
+                                    <option value='Horario de Entrada Incorrecto'>Trabajador no marcó entrada</option>
+                                    <option value='Horario de Entrada Incorrecto'>Horario de Entrada Incorrecto</option>
+                                    <option value='Horario de Salida Incorrecto'>Horario de Salida Incorrecto</option>
+                                    <option value='Fecha Incorrecta'>Fecha Incorrecta</option>
+                                    <option value='Cambio de Obra'>Cambio de Obra</option>
+                                    <option value='Otros'>Otros</option>
+                            </select>
+                        </div>  
+                        )}
+                        {(motivo == 'Otros') && (
+                            <div className='form-group mt-3'>
+                                <label className='form-label me-4'>Especifique:</label>
+                                <input type='text' name='otrosmotivos' className='form-control' value={otroMotivo} onChange={(e) => setOtroMotivo(e.target.value)}/>
+                            </div>
                         )}
                     </form>
                 </div>

@@ -4,9 +4,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
 import PersonaService from '../services/PersonaService';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
-const AddPersonaComponent = () => {
+export const AddPersonaComponent = () => {
 
     const [nombre, setNombre] = useState('')
     const [apellido, setApellido] = useState('')
@@ -15,7 +16,6 @@ const AddPersonaComponent = () => {
     const [numeroTelefono, setNumeroTelefono] = useState('')
     const [activo, setActivo] = useState(true)
     const [errors, setErrors] = useState({});
-    const [personaAgregada, setPersonaAgregada] = useState();
 
     const navigate = useNavigate()
     // Este hook apunta al parametro de la URL ej persona/$id
@@ -27,6 +27,22 @@ const AddPersonaComponent = () => {
 
         if (id) {
             PersonaService.updatePersona(id, persona).then((res) => {
+                let timerInterval;
+                Swal.fire({
+                   title: 'Persona modificada con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/personas');
+                    }
+                   });
                 navigate('/personas')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -39,8 +55,23 @@ const AddPersonaComponent = () => {
             })
         } else {
             PersonaService.createPersona(persona).then((res) => {
-                setPersonaAgregada(res.data);
-                navigate('/edit-persona/:' + personaAgregada.id);
+                let timerInterval;
+                Swal.fire({
+                   title: 'Persona registrada con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/edit-persona/'+res.data.id);
+                    }
+                   });
+                navigate('/edit-persona/'+res.data.id);
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
                     if (error.response.data === 'Error de integridad de datos') {
@@ -127,8 +158,8 @@ const AddPersonaComponent = () => {
                             <input type='checkbox' name='activo' className='form-check-input' checked={activo} onChange={handleCheckboxChange} />
                             <label className='form-check-label m-2'>Activo</label>
                         </div>
-                        {personaAgregada && (
-                            <Link to={`/assign-rol/${personaAgregada.id}`} className='btn btn-info ml-2'>
+                        {id && (
+                            <Link to={`/assign-rol/${id}`} className='btn btn-info ml-2'>
                                 Agregar rol
                             </Link>
                         )}

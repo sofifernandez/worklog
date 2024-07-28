@@ -207,6 +207,7 @@ public class JornalService {
 
     @Transactional
     public Jornal validarUpdate(Jornal newJornal, Long id, String motivo) {
+        newJornal.setId(id);
         validateJornal(newJornal);
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
@@ -300,9 +301,12 @@ public class JornalService {
 
             // Iterate over the Jornal array
             for (Jornal j : jornalArray) {
-                if(j.getHoraFin()==null)throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
-                if(DateUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
-                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
+                if(!(j.getId().equals(nuevoJornal.getId()))) {
+                    if (j.getHoraFin() == null)
+                        throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
+                    if (DateUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
+                        throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
+                    }
                 }
             }
         }
