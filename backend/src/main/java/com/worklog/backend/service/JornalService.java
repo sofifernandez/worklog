@@ -86,7 +86,7 @@ public class JornalService {
                 }
             }
             else{
-                System.err.println("No se puede registrar un jornal sin estar autenticado");
+                System.err.println("No se puede registrar un jornal sin estar autentificado");
                 return null;
             }
 
