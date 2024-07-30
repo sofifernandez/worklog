@@ -1,15 +1,16 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.UsuarioNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.Usuario;
 import com.worklog.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -26,6 +27,7 @@ public class UsuarioService {
             Usuario usuario = new Usuario();
             usuario.setPersona(persona);
             usuario.setUsername(persona.getCi());
+            usuario.setPasswordResetRequired(false);
             usuario.setPassword(new BCryptPasswordEncoder().encode(persona.getCi()));
             return usuarioRepository.save(usuario);
         } catch (Exception e) {
@@ -38,5 +40,31 @@ public class UsuarioService {
             // throw new CustomException("Failed to save Persona", e);
             return null; // or you might choose to return a default Persona object or handle it in another way
         }
+    }
+
+    @Transactional(readOnly = true)
+    public boolean firstLogin(long id) {
+        Usuario usuario = usuarioRepository.findByPersonaId(id).orElseThrow(() ->
+                new UsuarioNotFoundException(id));
+        return usuario.isPasswordResetRequired();
+    }
+
+    @Transactional
+    public ResponseEntity<String> changePassword(long id, String password) {
+        if(!isValidPassword(password)) {
+            return ResponseEntity.badRequest().body("La contraseña debe tener al menos 4 caracteres");
+        }
+        Usuario usuario = usuarioRepository.findByPersonaId(id).orElse(null);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException(id);
+        }
+        usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+        usuario.setPasswordResetRequired(false);
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Contraseña cambiada exitosamente.");
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 4;
     }
 }

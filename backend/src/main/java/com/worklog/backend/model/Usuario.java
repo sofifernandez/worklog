@@ -24,6 +24,16 @@ public class Usuario {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(name = "password_reset", nullable = false)
+    private boolean passwordResetRequired;
+
+    public boolean isPasswordResetRequired() {
+        return passwordResetRequired;
+    }
+
+    public void setPasswordResetRequired(boolean passwordResetRequired) {
+        this.passwordResetRequired = passwordResetRequired;
+    }
 
     public Long getId() {
         return id;

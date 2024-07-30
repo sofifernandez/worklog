@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS PERSONA
+CREATE TABLE IF NOT EXISTS persona
 (
     id               bigint auto_increment
         primary key,
@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS PERSONA
         unique (ci)
 );
 
-CREATE TABLE IF NOT EXISTS ROL
+CREATE TABLE IF NOT EXISTS rol
 (
     id  bigint auto_increment
     primary key,
     rol varchar(15) null
     );
 
-CREATE TABLE IF NOT EXISTS PERSONA_ROL
+CREATE TABLE IF NOT EXISTS persona_rol
 (
     id          bigint auto_increment
         primary key,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS PERSONA_ROL
     CONSTRAINT UNIQUE_PERSONA_ROL UNIQUE (persona_id, rol_id)
 );
 
-CREATE TABLE IF NOT EXISTS OBRA
+CREATE TABLE IF NOT EXISTS obra
 (
     id          bigint auto_increment
     primary key,
@@ -50,13 +50,14 @@ CREATE TABLE IF NOT EXISTS OBRA
     CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
     );
 
-CREATE TABLE IF NOT EXISTS USUARIO
+CREATE TABLE IF NOT EXISTS usuario
 (
     id          bigint auto_increment
     primary key,
     persona_id  bigint      not null,
     username           varchar(50) not null,
     password           varchar(50) not null,
+    password_reset      boolean not null,
     CONSTRAINT UNIQUE_USUARIO_USRNAME UNIQUE (username),
     CONSTRAINT UNIQUE_USUARIO_PERSONA UNIQUE (persona_id),
     constraint FK_USUARIO_PERSONA
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS USUARIO
     );
 
 
-CREATE TABLE IF NOT EXISTS JEFE_OBRA
+CREATE TABLE IF NOT EXISTS jefe_obra
 (
     id          bigint auto_increment
     primary key,
@@ -80,7 +81,7 @@ CREATE TABLE IF NOT EXISTS JEFE_OBRA
     foreign key (obra_id) references obra (id)
     );
 
-CREATE TABLE IF NOT EXISTS TIPO_JORNAL
+CREATE TABLE IF NOT EXISTS tipo_jornal
 (
     id  bigint auto_increment
     primary key,
@@ -89,7 +90,7 @@ CREATE TABLE IF NOT EXISTS TIPO_JORNAL
 
 # INSERT INTO TIPO_JORNAL VALUES(DEFAULT, 'COMUN'), (DEFAULT, 'LLUVIA'), (DEFAULT, 'EXTRA');
 
-CREATE TABLE IF NOT EXISTS JORNAL
+CREATE TABLE IF NOT EXISTS jornal
 (
     id          bigint auto_increment
     primary key,
@@ -109,7 +110,7 @@ CREATE TABLE IF NOT EXISTS JORNAL
     foreign key (tipo_jornal) references tipo_jornal (id)
     );
 
-CREATE TABLE IF NOT EXISTS MODIFICACION(
+CREATE TABLE IF NOT EXISTS modificacion(
     id          bigint auto_increment primary key,
     jefe_id bigint      not null,
     jornal_id bigint      not null,

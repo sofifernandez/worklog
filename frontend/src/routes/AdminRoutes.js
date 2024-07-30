@@ -9,6 +9,7 @@ import AssignJefeObraComponent from '../components/AssignJefeObraComponent';
 import AssignRolComponent from '../components/AssignRolComponent';
 import AddJornalComponent from '../components/AddJornalComponent';
 import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
+import ChangePassword from '../components/functionalComponents/ChangePassword';
 
 const AdminRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const AdminRoutes = () => {
       <Route exact path='/jornal' element={<AddJornalComponent />} />
       <Route exact path='/jornal/:id' element={<AddJornalComponent />} />
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
+      <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
     </Routes>
   );
 };
