@@ -45,7 +45,7 @@ const HeaderAdminComponent = () => {
                                 Jornales
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkJornales">
-                                <a className="dropdown-item" href="/jornal">Agregar</a>
+                                <a className="dropdown-item" href="/add-jornal">Agregar</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
                             </div>
                         </li>

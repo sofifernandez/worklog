@@ -16,7 +16,7 @@ import SuccessMessage from './functionalComponents/SuccessMessageComponent';
 import Swal from 'sweetalert2';
 
 
-export const ModifyJornalComponent = () => {
+export const AddOrModifyJornalComponent = () => {
     const { id } = useParams()
     const { personaRolLoggeado } = useAuth();
     const navigate = useNavigate();
@@ -39,8 +39,8 @@ export const ModifyJornalComponent = () => {
     const [buscarTrabajador, setBuscarTrabajador] = useState(false)
     const [horaComienzoManual, setHoraComienzoManual] = useState(true)
     const [horaFinManual, setHoraFinManual] = useState(false)
-    const [modificado, setModificado] = useState()
-    const [confirmado, setConfirmado] = useState()
+    const [modificado, setModificado] = useState(false)
+    const [confirmado, setConfirmado] = useState(false)
     const [motivo, setMotivo] = useState()
     const [otroMotivo, setOtroMotivo] = useState('')
 
@@ -51,12 +51,13 @@ export const ModifyJornalComponent = () => {
         return newErrors;
     };
 
-    const handleFetchSuccess = (response, currentMessages) => {
-        const newMessagges = [...(currentMessages || [])]; // Create a copy of currentErrors or initialize as empty array
-        console.log(response)
-        newMessagges.push(response?.response?.data || 'ÉXITO');
-        return newMessagges;
-    };
+    const title = () => {
+        if (id) {
+            return <h2 className='text-center'>Modificar Jornal</h2>
+        } else {
+            return <h2 className='text-center'>Agregar Jornal</h2>
+        }
+    }
 
     useEffect(() => {
       if(id){
@@ -75,6 +76,9 @@ export const ModifyJornalComponent = () => {
             console.log(e)
         })
       }
+      else {
+        setTipoJornal({id:1})
+      }
     }, [id])
 
     useEffect(() => {
@@ -91,11 +95,7 @@ export const ModifyJornalComponent = () => {
     }, [personaRolLoggeado]);
 
     useEffect(() => {
-        obra && fetchTrabajadoresSugeridos(obra.id, fechaJornal);
-    }, [obra, fechaJornal]);
-
-
-    /*useEffect(() => {
+      if (!id) {
         const [hours, minutes] = horaComienzo.split(':').map(Number);
         const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
 
@@ -116,15 +116,16 @@ export const ModifyJornalComponent = () => {
         if (radioSelection === 'radio_all_day') {
             setHoraComienzoManual(false)
             setHoraFinManual(false)
-            setHoraComienzo('7:30:00')
+            setHoraComienzo('07:30:00')
             setHoraFin('16:30:00');
         }
         if (radioSelection === 'radio_manual') {
             setHoraComienzoManual(true)
             setHoraFinManual(true)
         }
+      }
     }, [horaComienzo, radioSelection]);
-*/
+
     useEffect(() => {
         if (seleccionarTodos) {
             setTrabajadoresSeleccionados(trabajadoresSugeridos);
@@ -162,25 +163,6 @@ export const ModifyJornalComponent = () => {
         }
     };
 
-    const handleCheckboxChange = (event, persona) => {
-        const isChecked = event.target.checked;
-        setTrabajadoresSeleccionados((prevSelected) => {
-            if (isChecked) {
-                // Check if the persona is already in the array
-                const alreadySelected = prevSelected.some((selectedPersona) => selectedPersona.id === persona.id);
-                if (!alreadySelected) {
-                    // Add the persona to the array if not already added
-                    return [...prevSelected, persona];
-                } else {
-                    return prevSelected;
-                }
-            } else {
-                // Remove the persona from the array
-                return prevSelected.filter((selectedPersona) => selectedPersona.id !== persona.id);
-            }
-        });
-    };
-
     const handleConfirmar = async (e) => {
         setMensajeError([]);
         setMensajeSuccess([])
@@ -205,39 +187,69 @@ export const ModifyJornalComponent = () => {
             return; // Stop further processing
         }
 
-        // Update jornal
+        // Modify Update jornal
         const horaComienzoFormatted = fechaJornal + 'T' + horaComienzo;
         const horaFinFormatted = fechaJornal + 'T' + horaFin;
         const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado}
-        var motivoDefinitivo = '';
-        if (motivo === 'Otros') {motivoDefinitivo =  otroMotivo;}else{motivoDefinitivo = motivo}
-        JornalService.updateJornal(id, motivoDefinitivo, jornal).then((res) => {  
-            let timerInterval;
-            Swal.fire({
-               title: 'Jornal Modificado con éxito',
-               timer: 2500,
-               timerProgressBar: true,
-               didOpen: () => {
-                   Swal.showLoading();
-                },
-               willClose: () => {
-                clearInterval(timerInterval);
-               }
+        if(id){
+            var motivoDefinitivo = '';
+            if (motivo === 'Otros') {motivoDefinitivo =  otroMotivo;}else{motivoDefinitivo = motivo}
+            JornalService.updateJornal(id, motivoDefinitivo, jornal).then((res) => {  
+                let timerInterval;
+                Swal.fire({
+                    title: 'Jornal Modificado con éxito',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
                }).then((result) => {
                  if (result.dismiss === Swal.DismissReason.timer) {
                    navigate('/modify-jornal/'+id);
                 }
                });
                navigate('/modify-jornal/'+id);
-        }).catch(error => {
-            if (error.response) {
-                setMensajeError(error.response.data);
-            }else if (error.request) {
-                setMensajeError('No hay respuesta del servidor');
-            }else{
-                setMensajeError(error.message);
-            }
-        });
+            }).catch(error => {
+                if (error.response) {
+                    setMensajeError(error.response.data);
+                }else if (error.request) {
+                    setMensajeError('No hay respuesta del servidor');
+                }else{
+                    setMensajeError(error.message);
+                }
+            });
+        }else{
+            JornalService.createJornal(jornal).then((res) => {  
+                let timerInterval;
+                Swal.fire({
+                    title: 'Jornal Creado con éxito',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+               }).then((result) => {
+                 if (result.dismiss === Swal.DismissReason.timer) {
+                   navigate('/modify-jornal/'+res.data.id);
+                }
+               });
+               navigate('/modify-jornal/'+res.data.id);
+            }).catch(error => {
+                if (error.response) {
+                    setMensajeError(error.response.data);
+                }else if (error.request) {
+                    setMensajeError('No hay respuesta del servidor');
+                }else{
+                    setMensajeError(error.message);
+                }
+            });
+        }
         
     };
 
@@ -273,27 +285,12 @@ export const ModifyJornalComponent = () => {
         setMensajeSuccess(prevSucess => prevSucess.filter((_, i) => i !== index));
     };
 
-
-    const agregarALista = async (e) => {
-        setTrabajadoresSugeridos(prevTrabajadores => {
-            // Check if personaFound is already in the array
-            const exists = prevTrabajadores.some(trabajador => trabajador.id === personaFound.id);
-            // If not, add it to the array
-            if (!exists) {
-                return [...prevTrabajadores, personaFound];
-            }
-            // Otherwise, return the previous array unchanged
-            return prevTrabajadores;
-        });
-        cancelarBusqueda()
+    const handleSeleccionarObra = (e) => {
+        setObra({id: e});
+        if(!id) {
+            fetchTrabajadoresSugeridos(e,fechaJornal);
+        }
     }
-
-    const handleSeleccionarTodos = (e) => {
-        e.preventDefault();
-        seleccionarTodos && setSeleccionarTodos(false);
-        !seleccionarTodos && setSeleccionarTodos(true);
-    }
-
     const handleTipoJornal = (tipoJornal) => {
         switch (tipoJornal) {        
             case 1:
@@ -312,27 +309,41 @@ export const ModifyJornalComponent = () => {
         <div className='d-flex justify-content-center align-items-center mt-3 row'>
             <div className='card cardForm col-lg-8'>
                 <div className='card-header'>
-                    <h2 className='text-center'>Modificar jornal</h2>
+                    <h2 className='text-center'>{title()}</h2>
                 </div>
                 <div className='card-body'>
                     <form>
                         {/*--------- OBRA/S--------------------------- */}
                         {isAdmin ?
-                            obra && (
-                            <div className='form-group mt-3'>
-                                <label className='form-label labelCard'>Obra</label>
-                                <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setObra(e.target.value)}>
-                                    <option defaultValue={obra.id}>{obra.nombre}</option>
-                                    {obrasActivas && (
-                                        obrasActivas.map(obra => (
-                                            <option key={obra.id} value={obra.id}>
-                                                {obra.nombre}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                            </div>
-                            )
+                            obra ?
+                                <div className='form-group mt-3'>
+                                    <label className='form-label labelCard'>Obra</label>
+                                    <select className="form-select col-5" aria-label="Default select example" onChange={(e) => handleSeleccionarObra(e.target.value)}>
+                                        <option defaultValue={obra.id}>{obra.nombre}</option>
+                                        {obrasActivas && (
+                                            obrasActivas.map(obra => (
+                                                <option key={obra.id} value={obra.id}>
+                                                    {obra.nombre}
+                                                </option>
+                                            ))
+                                        )}
+                                    </select>
+                                </div>
+                                :
+                                <div className='form-group mt-3'>
+                                    <label className='form-label labelCard'>Obra</label>
+                                    <select className="form-select col-5" aria-label="Default select example" onChange={(e) => handleSeleccionarObra(e.target.value)}>
+                                        <option defaultValue>Seleccionar Obra Aquí</option>
+                                        {obrasActivas && (
+                                            obrasActivas.map(obra => (
+                                                <option key={obra.id} value={obra.id}>
+                                                    {obra.nombre}
+                                                </option>
+                                            ))
+                                        )}
+                                    </select>
+                                </div>
+                            
                             :
                             obra && (
                                 <div className='form-group mt-3'>
@@ -399,45 +410,17 @@ export const ModifyJornalComponent = () => {
                         }
                         {/*--------- TRABAJADORES--------------------------- */}
                         <div className='form-group mt-3 mb-3'>
-                            {!id && (<label className='form-label me-4 labelCard'>Trabajadores</label>)}
-                            {!id && (<button className='btn btn-outline-primary' onClick={(e) => handleSeleccionarTodos(e)}>Todos</button>)}
-                            {id && (<label className='form-label me-4 labelCard'>Trabajador</label>)}
-                            {!id && (trabajadoresSugeridos?.length > 0) && (
-                                trabajadoresSugeridos.map(t => (
-                                    <div className="form-check" key={t.id}>
-                                        <input className="form-check-input"
-                                            type="checkbox" value={t.id}
-                                            id={`flexCheckDefault-${t.id}`}
-                                            onChange={(event) => handleCheckboxChange(event, t)} 
-                                             checked={trabajadoresSeleccionados.some(selected => selected.id === t.id)} 
-                                            />
-                                        <label className="form-check-label" htmlFor={`flexCheckDefault-${t.id}`}>
-                                            {t.nombre} {t.apellido}
-                                        </label>
-                                    </div>
-                                ))
-                            )}
-
-                            {!id && trabajadoresSugeridos?.length === 0 && (
-                                <div className='alert alert-light' role='alert'>No hay sugerencias para los parámetros ingresados. Agregue trabajores de forma manual.</div>
-                            )}
-
-                            {id && persona &&           
+                            <label className='form-label me-4 labelCard'>Trabajador</label>
+                            {persona &&           
                                 (<label className="form-label me-4 border d-inline p-2 justify-content-center">
                                     {persona.nombre} {persona.apellido}
                                 </label>)
                             }
-
-                            {!id && !buscarTrabajador && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
-                            {/* id && !buscarTrabajador && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>) Se desahabilita para que no se pueda cambiar el trabajador, en todo caso se debería borrar el jornal y crear uno nuevo*/}
+                            {!id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
+                            {!id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
                         </div>
                         {/*--------- BUSCADOR--------------------------- */}
-                        {buscarTrabajador && !id && (
-                            <div className='row justify-content-center'>
-                                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerBuscadorByCIComponent>
-                            </div>)
-                        }
-                        {buscarTrabajador && id && (
+                        {buscarTrabajador && (
                             <div className='row justify-content-center'>
                                 <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerBuscadorByCIComponent>
                             </div>)
@@ -489,4 +472,4 @@ export const ModifyJornalComponent = () => {
     )
 }
 
-export default ModifyJornalComponent;
+export default AddOrModifyJornalComponent;
