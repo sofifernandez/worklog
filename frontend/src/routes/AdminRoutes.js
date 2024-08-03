@@ -10,6 +10,7 @@ import AssignRolComponent from '../components/AssignRolComponent';
 import AddJornalComponent from '../components/AddJornalComponent';
 import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
 import ModifyJornalComponent from '../components/ModifyJornalComponent';
+import DeleteJornalComponent from '../components/DeleteJornalComponent';
 
 const AdminRoutes = () => {
   return (
@@ -28,6 +29,7 @@ const AdminRoutes = () => {
       <Route exact path='/jornal' element={<AddJornalComponent />} />
       <Route exact path='/jornal/:id' element={<AddJornalComponent />} />
       <Route exact path='/modify-jornal/:id' element={<ModifyJornalComponent />} />
+      <Route exact path='/delete-jornal/:id' element={<DeleteJornalComponent />} />
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
     </Routes>
   );
