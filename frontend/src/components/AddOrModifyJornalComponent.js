@@ -355,6 +355,7 @@ export const AddOrModifyJornalComponent = () => {
                             )
                         }
                         {/*--------- FECHA--------------------------- */}
+                        {isAdmin ?
                         <div className='form-group mt-3'>
                             <label className='form-label me-4 labelCard'>Fecha</label>
                             <DatePicker
@@ -364,6 +365,12 @@ export const AddOrModifyJornalComponent = () => {
                                 value={fechaJornal}
                             />
                         </div>
+                        :
+                            <div className='form-group mt-3'>
+                                <label className='form-label me-4 labelCard'>Fecha</label>
+                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={fechaJornal} disabled />                            
+                            </div>
+                        }
                         {/*--------- HORA COMIENZO--------------------------- */}
                         {horaComienzoManual && (
                             <div className='form-group mt-3'>
@@ -375,10 +382,10 @@ export const AddOrModifyJornalComponent = () => {
                                     timeFormat='HH:mm:ss'
                                 />
                             </div>
-                        )}
+                        )}                     
 
                         {/*--------- OPCIONES HORAS--------------------------- */}
-                        {!id && (
+                        {!id && isAdmin && (
                         <div className='form-group mt-3'>
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
                             <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
@@ -395,7 +402,7 @@ export const AddOrModifyJornalComponent = () => {
                         )}
 
                         {/*--------- HORA FIN--------------------------- */}
-                        {(horaFinManual || id) && (
+                        {(horaFinManual || id || !isAdmin) && (
                             <div className='form-group mt-3'>
                                 <label className='form-label me-4 labelCard'>Hora fin</label>
                                 <TimePicker
@@ -411,22 +418,28 @@ export const AddOrModifyJornalComponent = () => {
                         {/*--------- TRABAJADORES--------------------------- */}
                         <div className='form-group mt-3 mb-3'>
                             <label className='form-label me-4 labelCard'>Trabajador</label>
-                            {persona &&           
+                            {persona && isAdmin &&         
                                 (<label className="form-label me-4 border d-inline p-2 justify-content-center">
                                     {persona.nombre} {persona.apellido}
                                 </label>)
                             }
-                            {!id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
-                            {!id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
+
+                            {persona && !isAdmin && (
+                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={persona.nombre + ' ' + persona.apellido} disabled /> 
+                                )
+                            }
+
+                            {isAdmin && !id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
+                            {isAdmin && !id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
                         </div>
                         {/*--------- BUSCADOR--------------------------- */}
-                        {buscarTrabajador && (
+                        {isAdmin && buscarTrabajador && (
                             <div className='row justify-content-center'>
                                 <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerBuscadorByCIComponent>
                             </div>)
                         }
                         {/*--------- TIPO JORNAL--------------------------- */}
-                        {tipoJornal && (
+                        {isAdmin && tipoJornal && (
                         <div className='form-group mt-3'>
 
                             <label className='form-label me-4 labelCard'>Tipo de Jornal</label>

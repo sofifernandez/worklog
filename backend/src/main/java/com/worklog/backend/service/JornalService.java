@@ -212,17 +212,18 @@ public class JornalService {
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
         if(rolService.isUsuarioLoggeadoJefeObra()){
-            if(!newJornal.getObra().equals(datosAnteriores.getObra()) ||
-                    !newJornal.getPersona().equals(datosAnteriores.getPersona()) ||
-                    !newJornal.getFechaJornal().equals(datosAnteriores.getFechaJornal()))
-            {throw new InvalidDataException("Hubo un error, contacte a su administrador");};
+            if(!(newJornal.getObra().getId().equals(datosAnteriores.getObra().getId())) ||
+                    !(newJornal.getPersona().getId().equals(datosAnteriores.getPersona().getId())) ||
+                    !(newJornal.getFechaJornal().isEqual(datosAnteriores.getFechaJornal())))
+            {
+                throw new InvalidDataException("Hubo un error, contacte a su administrador");};
         }
         Jornal jornalAnterior = new Jornal();
         jornalAnterior.setPersona(datosAnteriores.getPersona());
         jornalAnterior.setObra(datosAnteriores.getObra());
         jornalAnterior.setFechaJornal(datosAnteriores.getFechaJornal());
         jornalAnterior.setHoraComienzo(datosAnteriores.getHoraComienzo());
-        jornalAnterior.setHoraFin(datosAnteriores.getHoraComienzo());
+        jornalAnterior.setHoraFin(datosAnteriores.getHoraFin());
         jornalAnterior.setModificado(datosAnteriores.getModificado());
         jornalAnterior.setConfirmado(datosAnteriores.getConfirmado());
         jornalAnterior.setTipoJornal(datosAnteriores.getTipoJornal());
