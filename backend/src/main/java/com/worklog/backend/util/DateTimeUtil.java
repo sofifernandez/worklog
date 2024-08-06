@@ -1,23 +1,27 @@
 package com.worklog.backend.util;
 
-import java.sql.Time;
+import com.worklog.backend.exception.InvalidDataException;
+
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
-public class DateUtil {
+public class DateTimeUtil {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String TIME_FORMAT = "HH:mm";
 
     public static final LocalTime MONDAY_TO_FRIDAY_START = LocalTime.of(7, 0);
     public static final LocalTime MONDAY_TO_THURSDAY_END = LocalTime.of(16, 30);
     public static final LocalTime FRIDAY_END = LocalTime.of(15, 30);
+    public static final double MONDAY_TO_THURSDAY_WH= 9.5;
+    public static final double FRIDAY_WH= 8.5;
 
 
-    private DateUtil() {
+
+    private DateTimeUtil() {
         throw new UnsupportedOperationException("Utility class");
     }
 
@@ -173,4 +177,29 @@ public class DateUtil {
         if(B_End.after(A_Start) && B_End.before(A_End)) return true; //el fin de B está en el rango
         return A_Start.before(B_End) && A_End.after(B_Start);
     }
+
+    public static void validateFechas(LocalDate fechaDesde, LocalDate fechaHasta){
+        if (fechaDesde != null) {
+            if(DateTimeUtil.isFuture(fechaDesde)) throw new InvalidDataException("La fecha DESDE no puede ser superior a hoy");
+        }
+        if (fechaHasta != null) {
+            if(DateTimeUtil.isFuture(fechaHasta)) throw new InvalidDataException("La fecha HASTA no puede ser superior a hoy");
+        }
+        if(fechaDesde !=null && fechaHasta !=null && fechaDesde.isAfter(fechaHasta)) throw new InvalidDataException("Le fecha DESDE no puede ser posterior a la fecha HASTA");
+    }
+
+    public static double calculateHoursDifference(Timestamp startTime, Timestamp endTime) {
+        Instant startInstant = startTime.toInstant();
+        Instant endInstant = endTime.toInstant();
+
+        Duration duration = Duration.between(startInstant, endInstant);
+
+        return duration.toMinutes() / 60.0; // Convert to hours with decimal
+    }
+
+    public static void areDatesWithinSixMonths(LocalDate date1, LocalDate date2) {
+        long monthsBetween = ChronoUnit.MONTHS.between(date1, date2);
+        if(Math.abs(monthsBetween) >6) throw new InvalidDataException("No se puede generar un reporte con un rango de fechas mayor a 6 meses");
+    }
+
 }

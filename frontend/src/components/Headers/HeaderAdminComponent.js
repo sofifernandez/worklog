@@ -54,7 +54,7 @@ const HeaderAdminComponent = () => {
                                 Reportes
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkReportes">
-                                <a className="dropdown-item" href="#">Obtener nuevo reporte</a>
+                                <a className="dropdown-item" href="/reporte">Obtener nuevo reporte</a>
                                 <a className="dropdown-item" href="#">Historial</a>
                             </div>
                         </li>
