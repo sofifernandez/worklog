@@ -32,6 +32,8 @@ public class JornalService {
     private ObraService obraService;
     @Autowired
     private ModificacionService modificacionService;
+    @Autowired
+    private JornalEliminadoService jornalEliminadoService;
 
     private final RolService rolService= new RolService();
 
@@ -136,10 +138,26 @@ public class JornalService {
 
     @Transactional
     public void deleteJornal(Long id) {
-        if (!jornalRepository.existsById(id)) {
-            throw new JornalNotFoundException(id.toString());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            if (!jornalRepository.existsById(id)) {
+                throw new JornalNotFoundException(id.toString());
+            }
+            Jornal jornal = jornalRepository.findById(id).get();
+            if (jornal.getModificado()){
+                List<Modificacion> modificaciones = modificacionService.findModificacionByJornalId(id);
+                for (Modificacion modificacion : modificaciones) {
+                    modificacionService.deleteModificacion(modificacion.getId());
+                }
+            }
+            String currentUserName = authentication.getName();
+            Persona responsable = personaService.findPersonaByUsername(currentUserName);
+            jornalEliminadoService.saveJornalEliminado(jornal, responsable);
+            jornalRepository.deleteById(id);
         }
-        jornalRepository.deleteById(id);
+        else{
+            System.err.println("No se puede eliminar un jornal sin estar autentificado");
+        }
     }
 
     public Optional<Jornal[]> findJornalesByPersona(Long personaId) {

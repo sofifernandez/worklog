@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS PERSONA
+CREATE TABLE IF NOT EXISTS persona
 (
     id               bigint auto_increment
         primary key,
@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS PERSONA
         unique (ci)
 );
 
-CREATE TABLE IF NOT EXISTS ROL
+CREATE TABLE IF NOT EXISTS rol
 (
     id  bigint auto_increment
     primary key,
     rol varchar(15) null
     );
 
-CREATE TABLE IF NOT EXISTS PERSONA_ROL
+CREATE TABLE IF NOT EXISTS persona_rol
 (
     id          bigint auto_increment
         primary key,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS PERSONA_ROL
     CONSTRAINT UNIQUE_PERSONA_ROL UNIQUE (persona_id, rol_id)
 );
 
-CREATE TABLE IF NOT EXISTS OBRA
+CREATE TABLE IF NOT EXISTS obra
 (
     id          bigint auto_increment
     primary key,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS OBRA
     CONSTRAINT UNIQUE_OBRA UNIQUE (bps)
     );
 
-CREATE TABLE IF NOT EXISTS USUARIO
+CREATE TABLE IF NOT EXISTS usuario
 (
     id          bigint auto_increment
     primary key,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS USUARIO
     );
 
 
-CREATE TABLE IF NOT EXISTS JEFE_OBRA
+CREATE TABLE IF NOT EXISTS jefe_obra
 (
     id          bigint auto_increment
     primary key,
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS JEFE_OBRA
     foreign key (obra_id) references obra (id)
     );
 
-CREATE TABLE IF NOT EXISTS TIPO_JORNAL
+CREATE TABLE IF NOT EXISTS tipo_jornal
 (
     id  bigint auto_increment
     primary key,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS TIPO_JORNAL
 
 # INSERT INTO TIPO_JORNAL VALUES(DEFAULT, 'COMUN'), (DEFAULT, 'LLUVIA'), (DEFAULT, 'EXTRA');
 
-CREATE TABLE IF NOT EXISTS JORNAL
+CREATE TABLE IF NOT EXISTS jornal
 (
     id          bigint auto_increment
     primary key,
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS JORNAL
     foreign key (tipo_jornal) references tipo_jornal (id)
     );
 
-CREATE TABLE IF NOT EXISTS MODIFICACION(
+CREATE TABLE IF NOT EXISTS modificacion(
     id          bigint auto_increment primary key,
     responsable_id bigint      not null,
     jornal_id bigint      not null,
@@ -120,4 +120,27 @@ CREATE TABLE IF NOT EXISTS MODIFICACION(
     motivo varchar(200) not null,
     CONSTRAINT FK_MODIFICACION_JO FOREIGN KEY (responsable_id) references persona (id),
     CONSTRAINT FK_MODIFICACION_JORNAL FOREIGN KEY (jornal_id) references jornal (id)
-    )
+    );
+
+CREATE TABLE IF NOT EXISTS jornal_eliminado
+(
+    id          bigint     primary key,
+    persona_id  bigint      not null,
+    obra_id  bigint      not null,
+    fecha_jornal  date   not null,
+    hora_comienzo datetime(6)   not null,
+    hora_fin datetime(6)    null,
+    modificado      bit         not null,
+    tipo_jornal      bigint      not null,
+    confirmado bit not null,
+    responsable_id  bigint      not null,
+    fecha_eliminado datetime(6)   not null,
+    CONSTRAINT FK_JORNALELIMINADO_PERSONA
+    foreign key (persona_id) references persona (id),
+    CONSTRAINT FK_JORNALELIMINADO_OBRA
+    foreign key (obra_id) references obra (id),
+    CONSTRAINT FK_JORNALELIMINADO_TIPO_JORNAL
+    foreign key (tipo_jornal) references tipo_jornal (id),
+    CONSTRAINT FK_JORNALELIMINADO_RESPONSABLE
+    foreign key (responsable_id) references persona (id)
+    );

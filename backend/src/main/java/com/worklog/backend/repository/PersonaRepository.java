@@ -12,11 +12,11 @@ public interface PersonaRepository extends JpaRepository<Persona,Long> {
 
     Optional<Persona> findByCi(String ci);
 
-    @Query(value = "SELECT p.* FROM Persona p JOIN Usuario u ON p.id = u.persona_id WHERE u.username = :username", nativeQuery = true)
+    @Query(value = "SELECT p.* FROM persona p JOIN usuario u ON p.id = u.persona_id WHERE u.username = :username", nativeQuery = true)
     Persona findPersonaByUsername(@Param("username") String username);
 
-    @Query(value = "SELECT p.* FROM Persona p " +
-            "INNER JOIN PERSONA_ROL pr ON pr.persona_id=p.id " +
+    @Query(value = "SELECT p.* FROM persona p " +
+            "INNER JOIN persona_rol pr ON pr.persona_id=p.id " +
             "WHERE p.activo=true AND pr.rol_id = 3", nativeQuery = true)
     Optional<Persona[]> getAllTrabajadoresActivos();
 

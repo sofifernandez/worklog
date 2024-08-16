@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "ROL", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+@Table(name = "rol", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Rol {
 
     @Transient

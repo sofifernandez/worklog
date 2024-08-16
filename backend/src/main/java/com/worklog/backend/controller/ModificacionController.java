@@ -73,8 +73,8 @@ public class ModificacionController {
 
     @GetMapping("/modificacion/searchByJornalId/{jornalId}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<Modificacion> findModificacionByJornalId(@PathVariable Long jornalId) {
-        Modificacion modificacion = modificacionService.findModificacionByJornalId(jornalId);
+    public ResponseEntity<List<Modificacion>> findModificacionByJornalId(@PathVariable Long jornalId) {
+        List<Modificacion> modificacion = modificacionService.findModificacionByJornalId(jornalId);
         return new ResponseEntity<>(modificacion, HttpStatus.OK);
     }
 
