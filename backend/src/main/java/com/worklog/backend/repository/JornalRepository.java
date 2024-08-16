@@ -17,17 +17,9 @@ import java.util.Optional;
 
 public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepositoryCustom{
 
-    Optional<Jornal[]> findByPersona (Persona persona);
-
-    Optional<Jornal[]> findByFechaJornal (LocalDate fechaJornal);
-
     Optional<Jornal[]> findByPersonaAndObraAndFechaJornalOrderByFechaJornalDesc (Persona persona, Obra obra, LocalDate fechaJornal);
 
     Optional<Jornal[]> findByFechaJornalAndObraAndPersonaAndTipoJornal(LocalDate fechaJornal, Obra obra, Persona persona, TipoJornal tipoJornal);
-
-    Optional<Jornal[]> findByFechaJornalAndPersonaAndTipoJornal(LocalDate fechaJornal, Persona persona, TipoJornal tipoJornal);
-
-    Optional<Jornal[]> findByFechaJornalAndPersona(LocalDate fechaJornal, Persona persona);
 
     @Query("SELECT j FROM Jornal j WHERE j.persona = :persona ORDER BY j.fechaJornal DESC")
     Optional<Jornal[]> findByPersonaOrderedByFechaJornalDesc(@Param("persona") Persona persona);
@@ -40,6 +32,13 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
 
     @Query("SELECT j FROM Jornal j WHERE j.persona = :persona AND j.fechaJornal = :fecha AND j.obra != :obra")
     Optional<Jornal[]> findByPersonaAndFechaAndNotObra(@Param("persona") Persona persona, @Param("fecha") LocalDate fecha, @Param("obra") Obra obra);
+
+    @Query(value="SELECT DISTINCT(J.obra) FROM Jornal J WHERE J.fechaJornal >= :fechaDesde AND J.fechaJornal <= :fechaHasta")
+    List<Obra> getAllObrasByDates(@Param("fechaDesde") LocalDate fechaDesde, @Param("fechaHasta") LocalDate fechaHasta);
+
+    @Query(value="SELECT DISTINCT(J.persona) FROM Jornal J WHERE J.obra= :obra AND J.fechaJornal >= :fechaDesde AND J.fechaJornal <= :fechaHasta")
+    List<Persona> getAllTrabajadoresDeObraByDates(@Param("obra") Obra obra, @Param("fechaDesde") LocalDate fechaDesde, @Param("fechaHasta") LocalDate fechaHasta);
+
 
 
 }

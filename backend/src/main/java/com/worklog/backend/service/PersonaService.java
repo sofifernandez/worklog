@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonaService {
@@ -113,6 +114,15 @@ public class PersonaService {
            String nombrePattern = "%" + parametro + "%";
            return personaRepository.getPersonasByNombreOApellido(nombrePattern);
        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Persona> getPersonasByIds(List<Long> ids) {
+        return ids.stream()
+                .map(personaRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
 

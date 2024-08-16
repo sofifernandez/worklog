@@ -37,6 +37,8 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
             sql.append(" AND obra_id = :obraId");
         }
 
+        sql.append(" ORDER BY fecha_jornal");
+
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
 
         if (persona != null) {
@@ -58,6 +60,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         List<Jornal> result = query.getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
     }
+
 
     @Override
     public Optional<Jornal[]> findJornalesByFechaObraPersona(LocalDate fecha, Obra obra, Persona persona) {

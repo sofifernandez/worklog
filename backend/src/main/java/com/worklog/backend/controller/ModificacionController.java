@@ -73,9 +73,9 @@ public class ModificacionController {
 
     @GetMapping("/modificacion/searchByJornalId/{jornalId}")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<List<Modificacion>> findModificacionByJornalId(@PathVariable Long jornalId) {
-        List<Modificacion> modificacion = modificacionService.findModificacionByJornalId(jornalId);
-        return new ResponseEntity<>(modificacion, HttpStatus.OK);
+    public ResponseEntity <List<Modificacion>> findModificacionByJornalId(@PathVariable Long jornalId) {
+        List<Modificacion> modificaciones = modificacionService.findModificacionByJornalId(jornalId);
+        return new ResponseEntity<>(modificaciones, HttpStatus.OK);
     }
 
     private ResponseEntity<Object> getValidationErrors(BindingResult result) {
