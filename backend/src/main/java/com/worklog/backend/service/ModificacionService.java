@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ModificacionService {
@@ -79,36 +80,35 @@ public class ModificacionService {
     }
 
     @Transactional
-    public void agregarModificacionJornal(Jornal datosAnteriores, Jornal datosNuevos){
+    public void agregarModificacionJornal(Jornal datosAnteriores, Jornal datosNuevos, String motivo){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         Persona persona = personaService.findPersonaByUsername(currentUserName);
         Modificacion nuevaModificacion= new Modificacion();
         nuevaModificacion.setJornal(datosNuevos);
         nuevaModificacion.setResponsable(persona);
+        nuevaModificacion.setMotivo(motivo);
+        nuevaModificacion.setFechaModificacion(new Timestamp(new Date().getTime()));
         //Se modifica la fecha
-        if(!datosAnteriores.getFechaJornal().equals(datosNuevos.getFechaJornal())){
+        if(!(datosAnteriores.getFechaJornal().isEqual(datosNuevos.getFechaJornal()))){
             nuevaModificacion.setCampoModificado(Modificacion.CAMPO_FECHA);
             nuevaModificacion.setValorAnterior(datosAnteriores.getFechaJornal().toString());
             nuevaModificacion.setValorActual(datosNuevos.getFechaJornal().toString());
-        }
-        //Se modifica el horario de comienzo
-        if(!datosAnteriores.getHoraComienzo().equals(datosNuevos.getHoraComienzo())){
+        }else//Se modifica el horario de comienzo
+        if(!(datosAnteriores.getHoraComienzo().equals(datosNuevos.getHoraComienzo()))){
             nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_COMIENZO);
             nuevaModificacion.setValorAnterior(datosAnteriores.getHoraComienzo().toString());
             nuevaModificacion.setValorActual(datosNuevos.getHoraComienzo().toString());
-        }
-        //Se modifica el horario de fin
-        if(!datosAnteriores.getHoraFin().equals(datosNuevos.getHoraFin())){
+        }else//Se modifica el horario de fin
+        if(!(datosAnteriores.getHoraFin().equals(datosNuevos.getHoraFin()))){
             nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_FIN);
             nuevaModificacion.setValorAnterior(datosAnteriores.getHoraFin().toString());
             nuevaModificacion.setValorActual(datosNuevos.getHoraFin().toString());
-        }
-        //Se modifica la obra
-        if(!datosAnteriores.getHoraFin().equals(datosNuevos.getHoraFin())){
-            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_HORA_FIN);
-            nuevaModificacion.setValorAnterior(datosAnteriores.getHoraFin().toString());
-            nuevaModificacion.setValorActual(datosNuevos.getHoraFin().toString());
+        }else//Se modifica la obra
+        if(!(Objects.equals(datosAnteriores.getObra().getId(), datosNuevos.getObra().getId()))){
+            nuevaModificacion.setCampoModificado(Modificacion.CAMPO_OBRA);
+            nuevaModificacion.setValorAnterior(datosAnteriores.getObra().getNombre());
+            nuevaModificacion.setValorActual(datosNuevos.getObra().getNombre());
         }
         modificacionRepository.save(nuevaModificacion);
     }

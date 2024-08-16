@@ -18,6 +18,8 @@ public class Modificacion {
     public static final String CAMPO_HORA_FIN="HORA_FIN";
     @Transient
     public static final String JORNAL_ELIMINADO="JORNAL_ELIMINADO";
+    @Transient
+    public static final String CAMPO_OBRA = "OBRA";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

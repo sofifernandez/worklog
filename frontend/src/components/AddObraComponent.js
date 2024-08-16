@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ObraService from '../services/ObraService';
+import Swal from 'sweetalert2';
 
 export const AddObraComponent = () => {
 
@@ -17,6 +18,22 @@ export const AddObraComponent = () => {
         const obra = { nombre, bps, activo }
         if (id) {
             ObraService.updateObra(id, obra).then((res) => {
+                let timerInterval;
+                Swal.fire({
+                   title: 'Obra modificada con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/obras');
+                    }
+                   });
                 navigate('/obras')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -29,6 +46,22 @@ export const AddObraComponent = () => {
             })
         } else {
             ObraService.createObra(obra).then((res) => {
+                let timerInterval;
+                Swal.fire({
+                   title: 'Obra registrada con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/obras');
+                    }
+                   });
                 navigate('/obras')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {

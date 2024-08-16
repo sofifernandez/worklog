@@ -96,7 +96,7 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView }) => {
                                     }
                     {adminView &&(<td className="text-center">
                                                 <Link className='btn btn-info mx-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                                                <button className='btn btn-danger mx-1' onClick={() => formatDate(jornal.id)}>Eliminar</button>
+                                                <Link className='btn btn-danger mx-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
                                              </td>)}
                 </tr>
 

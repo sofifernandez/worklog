@@ -89,7 +89,7 @@ export const AddRainToObra = () => {
         if (radioSelection === 'radio_all_day') {
             setHoraComienzoManual(false)
             setHoraFinManual(false)
-            setHoraComienzo('7:30:00')
+            setHoraComienzo('07:30:00')
             setHoraFin('16:30:00');
         }
         if (radioSelection === 'radio_manual') {

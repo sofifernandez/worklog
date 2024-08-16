@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class ObraController {
     }
 
     @PutMapping("/obra/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    //@PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Obra> updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
         Obra updatedObra = obraService.updateObra(newObra, id);
         return new ResponseEntity<>(updatedObra, HttpStatus.OK);
