@@ -1,6 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.service.JornalService;
 import com.worklog.backend.service.ObraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class ObraController {
 
     @Autowired
     private ObraService obraService;
+
+    @Autowired
+    private JornalService jornalService;
 
 //    @ExceptionHandler(ObraNotFoundException.class)
 //    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
@@ -64,5 +68,15 @@ public class ObraController {
         Obra obra = obraService.getObraByBPS(bps);
         return new ResponseEntity<>(obra, HttpStatus.OK);
     }
+
+    @GetMapping("/getAllObrasByDates/")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<List<Obra>> getAllObrasByDates(
+            @RequestParam String fechaDesde,
+            @RequestParam String fechaHasta) {
+        List<Obra> obras = jornalService.getAllObrasByDates(fechaDesde,fechaHasta);
+        return new ResponseEntity<>(obras, HttpStatus.OK);
+    }
+
 
 }

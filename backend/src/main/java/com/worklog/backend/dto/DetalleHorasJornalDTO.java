@@ -76,7 +76,7 @@ public class DetalleHorasJornalDTO {
             horasExtraTemp=horasComun- DateTimeUtil.MONDAY_TO_THURSDAY_WH;
         }
         if (horasExtraTemp>=1){
-            this.horasExtra=horasExtraTemp;
+            this.horasExtra=this.horasExtra+horasExtraTemp;
             this.horasComun= this.horasComun- this.horasExtra;
         }
         //HORAS LLUVIA

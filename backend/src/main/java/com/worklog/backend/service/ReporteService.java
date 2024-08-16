@@ -2,10 +2,8 @@ package com.worklog.backend.service;
 
 import com.worklog.backend.dto.DetalleHorasJornalDTO;
 import com.worklog.backend.dto.ExportRequestDTO;
-import com.worklog.backend.model.Jornal;
-import com.worklog.backend.model.Obra;
-import com.worklog.backend.model.Persona;
-import com.worklog.backend.model.TipoJornal;
+import com.worklog.backend.exception.InvalidDataException;
+import com.worklog.backend.model.*;
 import com.worklog.backend.repository.JornalRepository;
 import com.worklog.backend.util.DateTimeUtil;
 import org.apache.poi.ss.usermodel.*;
@@ -36,8 +34,10 @@ public class ReporteService {
     private JornalRepository jornalRepository;
     @Autowired
     private PersonaService personaService;
+    @Autowired
+    private ModificacionService modificacionService;
 
-    public byte[] exportToExcel(List<DetalleHorasJornalDTO> jornalDataList) throws IOException {
+    public byte[] exportToExcel(List<DetalleHorasJornalDTO> jornalDataList, List<Modificacion> modificaciones) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         // Group the data by Obra
@@ -79,6 +79,45 @@ public class ReporteService {
             }
         }
 
+
+        if(modificaciones !=null && !modificaciones.isEmpty()){
+            // Add a new sheet for Modificacion data
+            XSSFSheet modificacionSheet = workbook.createSheet("Modificaciones");
+
+            // Create header row for Modificaciones
+            Row modificacionHeaderRow = modificacionSheet.createRow(0);
+            String[] modificacionHeaders = {"Fecha del jornal", "Obra", "Trabajador",
+                    "Fecha modificacion", "Campo","Valor anterior", "Valor actualzado", "Responsable", "Motivo"};
+            for (int i = 0; i < modificacionHeaders.length; i++) {
+                Cell cell = modificacionHeaderRow.createCell(i);
+                cell.setCellValue(modificacionHeaders[i]);
+                cell.setCellStyle(createHeaderCellStyle(workbook));
+            }
+
+            // Populate the Modificacion sheet with data
+            int modificacionRowNum = 1;
+            for (Modificacion modificacion : modificaciones) {
+                Row row = modificacionSheet.createRow(modificacionRowNum++);
+                row.createCell(0).setCellValue(modificacion.getJornal().getFechaJornal()); // Adjust based on your Modificacion fields
+                row.createCell(1).setCellValue(modificacion.getJornal().getObra().getNombre());
+                row.createCell(2).setCellValue(modificacion.getJornal().getPersona().getApellido() + (modificacion.getJornal().getPersona().getNombre()));
+                row.createCell(3).setCellValue(modificacion.getFechaModificacion());
+                row.createCell(4).setCellValue(modificacion.getCampoModificado());
+                row.createCell(5).setCellValue(modificacion.getValorAnterior());
+                row.createCell(6).setCellValue(modificacion.getValorActual());
+                row.createCell(7).setCellValue(modificacion.getResponsable().getApellido());
+                row.createCell(8).setCellValue(modificacion.getMotivo());
+            }
+
+            // Adjust column widths for Modificacion sheet
+            for (int i = 0; i < modificacionHeaders.length; i++) {
+                modificacionSheet.autoSizeColumn(i);
+            }
+
+        }
+
+
+
         // Write the output to a byte array
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             workbook.write(out);
@@ -98,6 +137,7 @@ public class ReporteService {
 
     public List<DetalleHorasJornalDTO> fetchDataForExport(ExportRequestDTO exportRequest) {
         exportRequest.validateData();
+
         LocalDate fechaDesde = LocalDate.parse(exportRequest.getFechaDesde());
         LocalDate fechaHasta = LocalDate.parse(exportRequest.getFechaHasta());
         List<Long> obrasSeleccionadas = exportRequest.getObras();
@@ -112,6 +152,10 @@ public class ReporteService {
 
         if(allActiveObras){
             obras = jornalService.getAllObrasByDates(fechaDesde,fechaHasta);
+            List<Long> ids = obras.stream()
+                    .map(Obra::getId)
+                    .toList();
+            exportRequest.setObras(ids);
         } else {
             obras= obraService.getObrasByIds(obrasSeleccionadas);
         }
@@ -130,6 +174,7 @@ public class ReporteService {
             jornalDetalles.addAll(jornalDetallesPorObra);
         }
 
+        if(jornalDetalles.isEmpty()) throw new InvalidDataException("No existen jornales para los parámetros ingresados");
         return jornalDetalles; // Return an empty list if no data is found
     }
 
@@ -156,22 +201,26 @@ public class ReporteService {
                 .collect(Collectors.partitioningBy(jornal -> jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN)));
         Map<Boolean, List<Jornal>> partitionedJornalesLluvia = jornalList.stream()
                 .collect(Collectors.partitioningBy(jornal -> jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)));
+        Map<Boolean, List<Jornal>> partitionedJornalesExtra = jornalList.stream()
+                .collect(Collectors.partitioningBy(jornal -> jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_EXTRA)));
         List<Jornal> jornalesComunes = partitionedJornalesComun.get(true);
         List<Jornal> jornalesLluvia = partitionedJornalesLluvia.get(true);
+        List<Jornal> jornalesExtra = partitionedJornalesExtra.get(true);
         double totalHorasComunes= calcularTotalHoras(jornalesComunes);
         double totalHorasLLuvia =calcularTotalHoras(jornalesLluvia);
+        double totalHorasExtra= calcularTotalHoras(jornalesExtra);
 
-        return getDetalleHorasJornalDTO(jornalList, totalHorasComunes, totalHorasLLuvia);
+        return getDetalleHorasJornalDTO(jornalList, totalHorasComunes, totalHorasLLuvia, totalHorasExtra);
     }
 
-    private static DetalleHorasJornalDTO getDetalleHorasJornalDTO(List<Jornal> jornalList, double totalHorasComunes, double totalHorasLLuvia) {
+    private static DetalleHorasJornalDTO getDetalleHorasJornalDTO(List<Jornal> jornalList, double totalHorasComunes, double totalHorasLLuvia, double totalHorasExtra) {
         DetalleHorasJornalDTO detalleHorasJornalDTO = new DetalleHorasJornalDTO();
         detalleHorasJornalDTO.setPersona(jornalList.getFirst().getPersona());
         detalleHorasJornalDTO.setObra(jornalList.getFirst().getObra());
         detalleHorasJornalDTO.setFechaJornal(jornalList.getFirst().getFechaJornal());
         detalleHorasJornalDTO.setHorasComun(totalHorasComunes);
         detalleHorasJornalDTO.setHorasLluvia(totalHorasLLuvia);
-        detalleHorasJornalDTO.setHorasExtra(0.0);
+        detalleHorasJornalDTO.setHorasExtra(totalHorasExtra);
         detalleHorasJornalDTO.transformarHoras();
         return detalleHorasJornalDTO;
     }
@@ -179,9 +228,22 @@ public class ReporteService {
     private double calcularTotalHoras (List<Jornal> jornales) {
         double total=0;
         for(Jornal j: jornales){
-            total+= DateTimeUtil.calculateHoursDifference(j.getHoraComienzo(),j.getHoraFin());
+            if(j.getHoraComienzo()!=null & j.getHoraFin()!=null){ //Para que no de NullPointer si está sin terminar
+                total+= DateTimeUtil.calculateHoursDifference(j.getHoraComienzo(),j.getHoraFin());
+            }
         }
         return total;
+    }
+
+    public List<Modificacion> getModificacionesByFechasAndObras(ExportRequestDTO expReq){
+        List<Modificacion> mod=null;
+        LocalDate fechaDesde = LocalDate.parse(expReq.getFechaDesde());
+        LocalDate fechaHasta = LocalDate.parse(expReq.getFechaHasta());
+
+        if(expReq.isCompleto()){
+            mod= modificacionService.getModificacionesByFechasAndObras(fechaDesde,fechaHasta, expReq.getObras());
+        }
+         return mod;
     }
 
 

@@ -15,6 +15,9 @@ public class ExportRequestDTO {
     private String fechaHasta;
     private List<Long> obras;
     private List<Long> personas;
+    @Setter
+    @Getter
+    private boolean completo;
 
     public void validateData(){
         if (fechaDesde == null || fechaDesde.isBlank())
@@ -30,4 +33,5 @@ public class ExportRequestDTO {
         DateTimeUtil.validateFechas(startDate, endDate);
         DateTimeUtil.areDatesWithinSixMonths(startDate, endDate);
     }
+
 }

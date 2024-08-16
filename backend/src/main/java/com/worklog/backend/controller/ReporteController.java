@@ -2,10 +2,13 @@ package com.worklog.backend.controller;
 
 import com.worklog.backend.dto.DetalleHorasJornalDTO;
 import com.worklog.backend.dto.ExportRequestDTO;
+import com.worklog.backend.model.Modificacion;
 import com.worklog.backend.service.ReporteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,19 +31,24 @@ public class ReporteController {
 
     @PostMapping("/reporte")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public void exportToExcel(
-            @RequestBody ExportRequestDTO exportRequest,
-            HttpServletResponse response) throws IOException {
-        //TODO: cuando hay algún jornal sin finalizar da null pointer except
+    public ResponseEntity<byte[]> exportToExcel(
+            @RequestBody ExportRequestDTO exportRequest) throws IOException {
+        // Fetch the data for the Excel export
         List<DetalleHorasJornalDTO> jornalDataList = reporteService.fetchDataForExport(exportRequest);
+        List<Modificacion> modificaciones = reporteService.getModificacionesByFechasAndObras(exportRequest);
+
         // Generate Excel content
-        byte[] excelContent = reporteService.exportToExcel(jornalDataList);
-        // Set response headers
-        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=jornal_data.xlsx");
-        response.getOutputStream().write(excelContent);
-        response.flushBuffer();
+        byte[] excelContent = reporteService.exportToExcel(jornalDataList, modificaciones);
+
+        // Set headers for file download
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "jornal_data.xlsx");
+
+        // Return the response entity with the byte array of the Excel file
+        return new ResponseEntity<>(excelContent, headers, HttpStatus.OK);
     }
+
 
 
 }

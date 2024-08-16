@@ -324,21 +324,6 @@ public class JornalService {
 
     }
 
-    public List<Obra> getDistinctObras(List<Jornal> jornales) {
-        return jornales.stream()
-                .map(Jornal::getObra)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public List<Persona> getDistinctPersonas(List<Jornal> jornales){
-        return jornales.stream()
-                .map(Jornal::getPersona)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
 
     public List<Jornal> convertOptionalArrayToList(Optional<Jornal[]> optionalJornalArray) {
         if (optionalJornalArray.isPresent()) {
@@ -349,8 +334,15 @@ public class JornalService {
         }
     }
 
+    public List<Obra> getAllObrasByDates(String fechaDesde, String fechaHasta){
+        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
+        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
+        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
+        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+        DateTimeUtil.validateFechas(startDate, endDate);
+        return jornalRepository.getAllObrasByDates(startDate,endDate);
 
-
+    }
 
 
 }
