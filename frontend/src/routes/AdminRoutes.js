@@ -8,7 +8,6 @@ import AddObraComponent from '../components/AddObraComponent';
 import AssignJefeObraComponent from '../components/AssignJefeObraComponent';
 import AssignRolComponent from '../components/AssignRolComponent';
 import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
-import ModifyJornalComponent from '../components/ModifyJornalComponent';
 import GenerarReporteComponent from '../components/GenerarReporteComponent'
 import AddRainToObra from '../components/AddRainToObra'
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';

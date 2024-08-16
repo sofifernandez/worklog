@@ -5,7 +5,7 @@ import com.worklog.backend.exception.JornalNotFoundException;
 import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.JornalEliminado;
 import com.worklog.backend.repository.JornalEliminadoRepository;
-import com.worklog.backend.util.DateUtil;
+import com.worklog.backend.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
