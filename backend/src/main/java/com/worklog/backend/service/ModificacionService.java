@@ -3,6 +3,7 @@ package com.worklog.backend.service;
 import com.worklog.backend.exception.ModificacionNotFoundException;
 import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Modificacion;
+import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.ModificacionRepository;
 import jakarta.persistence.Transient;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +75,7 @@ public class ModificacionService {
     }
 
     @Transactional(readOnly = true)
-    public Modificacion findModificacionByJornalId(Long jornalId) {
+    public List<Modificacion> findModificacionByJornalId(Long jornalId) {
         return modificacionRepository.findModificacionByJornalId(jornalId);
     }
 
@@ -109,5 +111,9 @@ public class ModificacionService {
             nuevaModificacion.setValorActual(datosNuevos.getObra().getNombre());
         }
         modificacionRepository.save(nuevaModificacion);
+    }
+
+    public List<Modificacion> getModificacionesByFechasAndObras(LocalDate fechaDesde, LocalDate fechaHasta, List<Long> obraIds ){
+        return modificacionRepository.getModificacionesByFechasAndObras(fechaDesde, fechaHasta, obraIds);
     }
 }
