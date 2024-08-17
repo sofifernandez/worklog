@@ -41,5 +41,6 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
     @Query("SELECT j FROM Jornal j WHERE j.persona = :persona AND j.fechaJornal = :fecha AND j.obra != :obra")
     Optional<Jornal[]> findByPersonaAndFechaAndNotObra(@Param("persona") Persona persona, @Param("fecha") LocalDate fecha, @Param("obra") Obra obra);
 
-
+    @Query("SELECT j FROM Jornal j WHERE j.obra.id = :obraId AND j.confirmado = false")
+    Optional<Jornal[]> findJornalesNoConfirmado(@Param("obraId") Long obraId);
 }

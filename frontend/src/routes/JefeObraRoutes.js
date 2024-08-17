@@ -6,6 +6,7 @@ import ContainerBuscadorJornalComponent from '../components/functionalComponents
 import QrJornalComponent from '../components/QrJornalComponent';
 import AddRainToObra from '../components/AddRainToObra'
 import AddJornalComponent from '../components/AddJornalComponent';
+import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 
 const JefeObraRoutes = () => {
   return (
@@ -14,6 +15,7 @@ const JefeObraRoutes = () => {
       <Route exact path='/logout' element={<LogoutComponent />} />
       <Route exact path='/jornalQr/:id' element={<QrJornalComponent/>}/>
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
+      <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
       <Route exact path='/add-jornal' element={<AddJornalComponent/>}/>
     </Routes>

@@ -207,14 +207,19 @@ public class JornalService {
 
     @Transactional
     public Jornal validarUpdate(Jornal newJornal, Long id, String motivo) {
+        System.out.println(newJornal.getHoraComienzo());
+        System.out.println(newJornal.getHoraFin());
+
         newJornal.setId(id);
         validateJornal(newJornal);
         Jornal datosAnteriores= getJornalById(id);
         //Jefe de obra solo puede modificar horarios (no fecha, ni persona, ni obra)
         if(rolService.isUsuarioLoggeadoJefeObra()){
+
             if(!newJornal.getObra().equals(datosAnteriores.getObra()) ||
                     !newJornal.getPersona().equals(datosAnteriores.getPersona()) ||
                     !newJornal.getFechaJornal().equals(datosAnteriores.getFechaJornal()))
+
             {throw new InvalidDataException("Hubo un error, contacte a su administrador");};
         }
         Jornal jornalAnterior = new Jornal();
@@ -234,6 +239,13 @@ public class JornalService {
         }else {
             throw new InvalidDataException("No se encontró el jornal o hubo otro error, contacte a su administrador");
         }
+    }
+
+    @Transactional
+    public Optional<Jornal[]> findJornalesNoConfirmado(long obraId){
+        Optional<Jornal[]> jornales = jornalRepository.findJornalesNoConfirmado(obraId);
+        System.out.println(jornales);
+        return jornales;
     }
 
     private void validateJornal(Jornal jornal){
@@ -290,6 +302,12 @@ public class JornalService {
         //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
         Optional<Jornal[]> jornalesFechaObraTipo=jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona(),jornal.getTipoJornal());
         validateNoOverlap(jornalesFechaObraTipo,jornal);
+    }
+
+    public void confirmarJornal(Jornal jornal){
+        validateJornal(jornal);
+        jornal.setConfirmado(true);
+        //jornalRepository.save(jornal);
     }
 
     private void validateNoOverlap(Optional<Jornal[]> jornales, Jornal nuevoJornal) {

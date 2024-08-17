@@ -94,6 +94,22 @@ public class JornalController {
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
 
+    @GetMapping("/jornal/jornalNoConfirmado/{obraId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Optional<Jornal[]>> findJornalesNoConfirmado(@PathVariable Long obraId){
+        System.out.println(obraId);
+        Optional<Jornal[]> jornales = jornalService.findJornalesNoConfirmado(obraId);
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @PostMapping("jornal/confirmarJornal")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Object> confirmarJornal(@Valid @RequestBody Jornal jornal) {
+        System.out.println(jornal.getId());
+        jornalService.confirmarJornal(jornal);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/jornal/validateGeneral")
     public ResponseEntity<Object> validateGeneral(@Valid @RequestBody Jornal jornal) {
         jornalService.validacionGeneralDeDatos(jornal);

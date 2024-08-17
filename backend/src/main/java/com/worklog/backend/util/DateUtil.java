@@ -173,4 +173,6 @@ public class DateUtil {
         if(B_End.after(A_Start) && B_End.before(A_End)) return true; //el fin de B está en el rango
         return A_Start.before(B_End) && A_End.after(B_Start);
     }
+
+
 }
