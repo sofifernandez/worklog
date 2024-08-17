@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "PERSONA", uniqueConstraints = @UniqueConstraint(columnNames = "ci"))
+@Table(name = "persona", uniqueConstraints = @UniqueConstraint(columnNames = "ci"))
 
 public class Persona {
     @Id

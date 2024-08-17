@@ -4,7 +4,8 @@ import IndexJefeComponent from '../components/Home/IndexJefeComponent';
 import LogoutComponent from '../components/LogoutComponent';
 import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
 import QrJornalComponent from '../components/QrJornalComponent';
-import AddRainToObra from '../components/AddRainToObra'
+import AddRainToObra from '../components/AddRainToObra';
+import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 import AddJornalComponent from '../components/AddJornalComponent';
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 
@@ -17,6 +18,7 @@ const JefeObraRoutes = () => {
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
       <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
+      <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-jornal' element={<AddJornalComponent/>}/>
     </Routes>
   );

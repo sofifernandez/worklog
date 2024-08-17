@@ -9,7 +9,7 @@ import org.hibernate.annotations.Where;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "OBRA", uniqueConstraints = @UniqueConstraint(columnNames = "bps"))
+@Table(name = "obra", uniqueConstraints = @UniqueConstraint(columnNames = "bps"))
 public class Obra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "JEFE_OBRA", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "obra_id", "activo"}))
+@Table(name = "jefe_obra", uniqueConstraints = @UniqueConstraint(columnNames = {"persona_id", "obra_id", "activo"}))
 public class JefeObra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

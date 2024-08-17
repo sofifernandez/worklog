@@ -22,30 +22,29 @@ export const AddRainToObra = () => {
     const [obra, setObra] = useState();
     const [obrasActivas, setObrasActivas] = useState();
     const [fechaJornal, setFechaJornal] = useState();
-    const [horaComienzo, setHoraComienzo] = useState( format(new Date(), 'HH:mm:ss'));
+    const [horaComienzo, setHoraComienzo] = useState(format(new Date(), 'HH:mm:ss'));
     const [horaFin, setHoraFin] = useState();
-    const [radioSelection, setRadioSelection]=useState('radio_1_hora')
-    const [trabajadoresSugeridos, setTrabajadoresSugeridos] = useState();
+    const [trabajadoresSugeridos, setTrabajadoresSugeridos] = useState([]);
     const [trabajadoresSeleccionados, setTrabajadoresSeleccionados] = useState([]);
     const [mensajeError, setMensajeError] = useState([]);
     const [mensajeSuccess, setMensajeSuccess] = useState([]);
     const [personaFound, setPersonaFound] = useState(null);
-    const [seleccionarTodos, setSeleccionarTodos]=useState(false)
+
     /*---- VARIABLES TIPO TOGGLE-------------- */
+    const [radioSelection, setRadioSelection] = useState('radio_1_hora')
+    const [seleccionarTodos, setSeleccionarTodos] = useState(false)
     const [buscarTrabajador, setBuscarTrabajador] = useState(false)
     const [horaComienzoManual, setHoraComienzoManual] = useState(true)
     const [horaFinManual, setHoraFinManual] = useState(false)
 
     const handleFetchError = (error, currentErrors) => {
         const newErrors = [...(currentErrors || [])]; // Create a copy of currentErrors or initialize as empty array
-        console.log(error)
         newErrors.push(error.response?.data || 'ERROR AL GUARDAR');
         return newErrors;
     };
 
     const handleFetchSuccess = (response, currentMessages) => {
         const newMessagges = [...(currentMessages || [])]; // Create a copy of currentErrors or initialize as empty array
-        console.log(response)
         newMessagges.push(response?.response?.data || 'ÉXITO');
         return newMessagges;
     };
@@ -208,9 +207,7 @@ export const AddRainToObra = () => {
 
         // Separate errors and successful responses
         const successfulResults = results.filter(result => result.success);
-        console.log(successfulResults)
         const errorResults = results.filter(result => !result.success);
-        console.log(errorResults)
 
         // Update mensajeError with errors
         if (errorResults.length > 0) {
@@ -281,6 +278,8 @@ export const AddRainToObra = () => {
         !seleccionarTodos && setSeleccionarTodos(true);
     }
 
+    console.log(obra)
+
 
     return (
         <div className='d-flex justify-content-center align-items-center mt-3 row'>
@@ -294,11 +293,15 @@ export const AddRainToObra = () => {
                         {isAdmin ?
                             <div className='form-group mt-3'>
                                 <label className='form-label labelCard'>Obra</label>
-                                <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setObra(e.target.value)}>
+                                <select className="form-select col-5" aria-label="Default select example" 
+                                onChange={(e) => {const selectedId = e.target.value;
+                                        const selectedObra = obrasActivas.find(obra => obra.id === parseInt(selectedId));
+                                        setObra(selectedObra);
+                                    }}>
                                     <option defaultValue="-1">Seleccionar</option>
                                     {obrasActivas && (
                                         obrasActivas.map(obra => (
-                                            <option key={obra.id} value={obra.id}>
+                                            <option key={obra.id} value={obra.id} id= {obra.id}>
                                                 {obra.nombre}
                                             </option>
                                         ))
@@ -307,7 +310,7 @@ export const AddRainToObra = () => {
                             </div>
                             :
                             obra && (
-                                <div className='form-group mt-3'>
+                                <div className='form-group mt-5'>
                                     <label className='form-label labelCard'>Obra</label>
                                     <select className="form-select col-5" aria-label="Default select example" disabled>
                                         <option defaultValue={obra.id}>{obra.nombre}</option>
@@ -316,7 +319,7 @@ export const AddRainToObra = () => {
                             )
                         }
                         {/*--------- FECHA--------------------------- */}
-                        <div className='form-group mt-3'>
+                        <div className='form-group mt-5'>
                             <label className='form-label me-4 labelCard'>Fecha</label>
                             <DatePicker
                                 onChange={date => setFechaJornal(format(date, 'yyyy-MM-dd'))}
@@ -327,7 +330,7 @@ export const AddRainToObra = () => {
                         </div>
                         {/*--------- HORA COMIENZO--------------------------- */}
                         {horaComienzoManual && (
-                            <div className='form-group mt-3'>
+                            <div className='form-group mt-5'>
                                 <label className='form-label me-4 labelCard'>Hora comienzo</label>
                                 <TimePicker
                                     value={horaComienzo}
@@ -339,7 +342,7 @@ export const AddRainToObra = () => {
                         )}
 
                         {/*--------- OPCIONES HORAS--------------------------- */}
-                        <div className='form-group mt-3'>
+                        <div className='form-group mt-2'>
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
                             <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
 
@@ -356,7 +359,7 @@ export const AddRainToObra = () => {
 
                         {/*--------- HORA FIN--------------------------- */}
                         {horaFinManual && (
-                            <div className='form-group mt-3'>
+                            <div className='form-group mt-5'>
                                 <label className='form-label me-4 labelCard'>Hora fin</label>
                                 <TimePicker
                                     value={horaFin}
@@ -369,18 +372,21 @@ export const AddRainToObra = () => {
 
                         }
                         {/*--------- TRABAJADORES--------------------------- */}
-                        <div className='form-group mt-3 mb-3'>
+                        <div className='form-group mt-5 mb-3'>
                             <label className='form-label me-4 labelCard'>Trabajadores</label>
-                            <button className='btn btn-outline-primary' onClick={(e) => handleSeleccionarTodos(e)}>Todos</button>
+                            <button className='btn btn-outline-primary mx-3'
+                                onClick={(e) => handleSeleccionarTodos(e)}
+                                disabled={trabajadoresSugeridos?.length == 0}
+                                >Todos</button>
                             {trabajadoresSugeridos?.length > 0 && (
                                 trabajadoresSugeridos.map(t => (
                                     <div className="form-check" key={t.id}>
                                         <input className="form-check-input"
                                             type="checkbox" value={t.id}
                                             id={`flexCheckDefault-${t.id}`}
-                                            onChange={(event) => handleCheckboxChange(event, t)} 
-                                             checked={trabajadoresSeleccionados.some(selected => selected.id === t.id)} 
-                                            />
+                                            onChange={(event) => handleCheckboxChange(event, t)}
+                                            checked={trabajadoresSeleccionados.some(selected => selected.id === t.id)}
+                                        />
                                         <label className="form-check-label" htmlFor={`flexCheckDefault-${t.id}`}>
                                             {t.nombre} {t.apellido}
                                         </label>
@@ -389,7 +395,7 @@ export const AddRainToObra = () => {
                             )}
 
                             {trabajadoresSugeridos?.length === 0 && (
-                                <div className='alert alert-light' role='alert'>No hay sugerencias para los parámetros ingresados. Agregue trabajores de forma manual.</div>
+                                <div className='alert alert-secondary' role='alert'>No hay sugerencias para los parámetros ingresados. Agregue trabajores de forma manual.</div>
                             )}
 
                             {!buscarTrabajador && (<div className='btn btn-secondary mt-3' onClick={handleBuscar}>Buscar</div>)}

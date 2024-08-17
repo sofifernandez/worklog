@@ -19,7 +19,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
 
     @Override
     public Optional<Jornal[]> findJornalesByFiltros(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM JORNAL WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT * FROM jornal WHERE 1=1");
 
         if (persona != null) {
             sql.append(" AND persona_id = :personaId");
@@ -36,6 +36,8 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         if (obra != null) {
             sql.append(" AND obra_id = :obraId");
         }
+
+        sql.append(" ORDER BY fecha_jornal");
 
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
 
@@ -59,10 +61,11 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
     }
 
+
     @Override
     public Optional<Jornal[]> findJornalesByFechaObraPersona(LocalDate fecha, Obra obra, Persona persona) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM JORNAL WHERE fecha_jornal = :fecha");
+        sql.append("SELECT * FROM jornal WHERE fecha_jornal = :fecha");
         sql.append(" AND obra_id = :obraId");
         sql.append(" AND persona_id = :personaId");
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);

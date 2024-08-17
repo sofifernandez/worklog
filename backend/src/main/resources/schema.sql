@@ -121,4 +121,27 @@ CREATE TABLE IF NOT EXISTS modificacion(
     motivo varchar(200) not null,
     CONSTRAINT FK_MODIFICACION_JO FOREIGN KEY (responsable_id) references persona (id),
     CONSTRAINT FK_MODIFICACION_JORNAL FOREIGN KEY (jornal_id) references jornal (id)
-    )
+    );
+
+CREATE TABLE IF NOT EXISTS jornal_eliminado
+(
+    id          bigint     primary key,
+    persona_id  bigint      not null,
+    obra_id  bigint      not null,
+    fecha_jornal  date   not null,
+    hora_comienzo datetime(6)   not null,
+    hora_fin datetime(6)    null,
+    modificado      bit         not null,
+    tipo_jornal      bigint      not null,
+    confirmado bit not null,
+    responsable_id  bigint      not null,
+    fecha_eliminado datetime(6)   not null,
+    CONSTRAINT FK_JORNALELIMINADO_PERSONA
+    foreign key (persona_id) references persona (id),
+    CONSTRAINT FK_JORNALELIMINADO_OBRA
+    foreign key (obra_id) references obra (id),
+    CONSTRAINT FK_JORNALELIMINADO_TIPO_JORNAL
+    foreign key (tipo_jornal) references tipo_jornal (id),
+    CONSTRAINT FK_JORNALELIMINADO_RESPONSABLE
+    foreign key (responsable_id) references persona (id)
+    );

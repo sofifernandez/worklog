@@ -7,10 +7,14 @@ import com.worklog.backend.repository.ObraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,5 +69,15 @@ public class ObraService {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}
         return obra;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Obra> getObrasByIds(List<Long> ids) {
+        return ids.stream()
+                .map(obraRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }

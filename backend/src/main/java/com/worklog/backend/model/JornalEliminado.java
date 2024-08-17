@@ -1,16 +1,14 @@
 package com.worklog.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "jornal", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
-public class Jornal {
+@Table(name = "jornal_eliminado", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+public class JornalEliminado {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
@@ -41,6 +39,12 @@ public class Jornal {
     @Column(name = "confirmado", nullable = false)
     private Boolean confirmado;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "responsable_id", nullable = false)
+    private Persona responsable;
+
+    @Column(name = "fecha_eliminado", nullable = false, length = 19)
+    private Timestamp fechaEliminado;
 
     public Long getId() {
         return id;
@@ -105,4 +109,19 @@ public class Jornal {
     public void setConfirmado(Boolean confirmado) {
         this.confirmado = confirmado;
     }
+
+    public Persona getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Persona responsable) {
+        this.responsable = responsable;
+    }
+
+    public Timestamp getFechaEliminado() {
+        return fechaEliminado;
+    }
+
+    public void setFechaEliminado(Timestamp fechaEliminado) { this.fechaEliminado = fechaEliminado; }
+
 }

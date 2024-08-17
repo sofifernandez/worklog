@@ -1,12 +1,11 @@
 package com.worklog.backend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.JornalNotFoundException;
 import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.*;
 import com.worklog.backend.repository.JornalRepository;
-import com.worklog.backend.util.DateUtil;
+import com.worklog.backend.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,10 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class JornalService {
@@ -32,6 +29,8 @@ public class JornalService {
     private ObraService obraService;
     @Autowired
     private ModificacionService modificacionService;
+    @Autowired
+    private JornalEliminadoService jornalEliminadoService;
 
     private final RolService rolService= new RolService();
 
@@ -136,10 +135,26 @@ public class JornalService {
 
     @Transactional
     public void deleteJornal(Long id) {
-        if (!jornalRepository.existsById(id)) {
-            throw new JornalNotFoundException(id.toString());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            if (!jornalRepository.existsById(id)) {
+                throw new JornalNotFoundException(id.toString());
+            }
+            Jornal jornal = jornalRepository.findById(id).get();
+            if (jornal.getModificado()){
+                List<Modificacion> modificaciones = modificacionService.findModificacionByJornalId(id);
+                for (Modificacion modificacion : modificaciones) {
+                    modificacionService.deleteModificacion(modificacion.getId());
+                }
+            }
+            String currentUserName = authentication.getName();
+            Persona responsable = personaService.findPersonaByUsername(currentUserName);
+            jornalEliminadoService.saveJornalEliminado(jornal, responsable);
+            jornalRepository.deleteById(id);
         }
-        jornalRepository.deleteById(id);
+        else{
+            System.err.println("No se puede eliminar un jornal sin estar autentificado");
+        }
     }
 
     public Optional<Jornal[]> findJornalesByPersona(Long personaId) {
@@ -153,12 +168,12 @@ public class JornalService {
         LocalDate startDate = null;
         LocalDate endDate = null;
         if (fechaDesde != null && !fechaDesde.isBlank()) {
-            startDate= DateUtil.parseLocalDate(fechaDesde);
+            startDate= DateTimeUtil.parseLocalDate(fechaDesde);
         }
         if (fechaHasta != null && !fechaHasta.isBlank()) {
-            endDate= DateUtil.parseLocalDate(fechaHasta);
+            endDate= DateTimeUtil.parseLocalDate(fechaHasta);
         }
-
+        DateTimeUtil.validateFechas(startDate, endDate);
         Persona persona = personaId > 0 ? personaService.getPersonaById(personaId) : null;
         Obra obra = obraId > 0 ? obraService.getObraById(obraId) : null;
         Optional<Jornal[]> jornales= jornalRepository.findJornalesByFiltros(startDate, endDate, obra, persona);
@@ -181,22 +196,22 @@ public class JornalService {
 
     @Transactional(readOnly = true)
     public List<Persona> getTrabajadoresByObraAndFecha(Long obraId, String fecha) {
-        LocalDate fechaJornal = DateUtil.parseLocalDate(fecha);
+        LocalDate fechaJornal = DateTimeUtil.parseLocalDate(fecha);
         //Caso la fecha es anterior a hoy, se obtienen los trabajadores que ingresaron ese día
         //no se cambia la fecha
 
         // Caso: la fecha es hoy pero es más temprano que el horario laboral
-        if (DateUtil.isDateToday(fechaJornal) && DateUtil.isBeforeStartOfWorkDay()) {
+        if (DateTimeUtil.isDateToday(fechaJornal) && DateTimeUtil.isBeforeStartOfWorkDay()) {
             // obtener los trabajadores que fueron ayer
             fechaJornal = LocalDate.now().minusDays(1);
         }
         // Caso: la fecha es mañana
-        if (DateUtil.isDateTomorrow(fechaJornal)) {
+        if (DateTimeUtil.isDateTomorrow(fechaJornal)) {
             // obtener los que ingresaron hoy
             fechaJornal = LocalDate.now();
         }
         // Caso: la fecha es posterior a mañana
-        if (DateUtil.isDateAfterTomorrowOrLater(fechaJornal)) {
+        if (DateTimeUtil.isDateAfterTomorrowOrLater(fechaJornal)) {
             // tirar error
             throw new InvalidDataException("No se puede marcar horario de lluvia en un día posterior a mañana.");
         }
@@ -227,7 +242,7 @@ public class JornalService {
         jornalAnterior.setObra(datosAnteriores.getObra());
         jornalAnterior.setFechaJornal(datosAnteriores.getFechaJornal());
         jornalAnterior.setHoraComienzo(datosAnteriores.getHoraComienzo());
-        jornalAnterior.setHoraFin(datosAnteriores.getHoraComienzo());
+        jornalAnterior.setHoraFin(datosAnteriores.getHoraFin());
         jornalAnterior.setModificado(datosAnteriores.getModificado());
         jornalAnterior.setConfirmado(datosAnteriores.getConfirmado());
         jornalAnterior.setTipoJornal(datosAnteriores.getTipoJornal());
@@ -246,6 +261,13 @@ public class JornalService {
         Optional<Jornal[]> jornales = jornalRepository.findJornalesNoConfirmado(obraId);
         System.out.println(jornales);
         return jornales;
+    @Transactional(readOnly = true)
+    public List<Obra> getAllObrasByDates(LocalDate fechaDesde, LocalDate fechaHasta){
+        return jornalRepository.getAllObrasByDates(fechaDesde,fechaHasta);
+    }
+
+    public List<Persona> getAllTrabajadoresDeObraByDates(Obra obra, LocalDate fechaDesde, LocalDate fechaHasta){
+        return jornalRepository.getAllTrabajadoresDeObraByDates(obra, fechaDesde, fechaHasta);
     }
 
     private void validateJornal(Jornal jornal){
@@ -255,17 +277,17 @@ public class JornalService {
 
     public void validacionGeneralDeDatos(Jornal jornal){
         transformToCorrectTimeZone(jornal);
-        if (!DateUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())){throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");};
+        if (!DateTimeUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())){throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");};
         //Los jornales COMUNES no pueden marcarse en fecha posterior a hoy
         if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN)){
-            if(DateUtil.isFuture(jornal.getFechaJornal())){
+            if(DateTimeUtil.isFuture(jornal.getFechaJornal())){
                 {throw new InvalidDataException("El jornal no puede ser marcado a futuro");}
             }
         }
 
         if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
-            if(!DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
-                    !DateUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())){
+            if(!DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
+                    !DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())){
                 throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
             }
         }
@@ -275,16 +297,16 @@ public class JornalService {
     private void validacionPersonal(Jornal jornal){
         if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
             boolean allDayRain=false;
-            if(DateUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateUtil.MONDAY_TO_FRIDAY_START) &&
-                    DateUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateUtil.MONDAY_TO_THURSDAY_END
+            if(DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateTimeUtil.MONDAY_TO_FRIDAY_START) &&
+                    DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateTimeUtil.MONDAY_TO_THURSDAY_END
                     ))
             {
                 allDayRain=true;
-                jornal.setHoraFin(DateUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
+                jornal.setHoraFin(DateTimeUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
             }
             if(!allDayRain){//Si no es lluvia all day, solo se puede agregar el período de lluvia en trabajadores que haya ingresado ese día
                 Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona());
-                if (jornales.isEmpty() && (DateUtil.isBeforeToday(jornal.getFechaJornal()) || DateUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
+                if (jornales.isEmpty() && (DateTimeUtil.isBeforeToday(jornal.getFechaJornal()) || DateTimeUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
                     throw new JornalNotSavedException(jornal.getPersona().getApellido(), "No hay ingreso registrado para la obra indicada.");
                 }
 
@@ -322,7 +344,7 @@ public class JornalService {
                 if(!(j.getId().equals(nuevoJornal.getId()))) {
                     if (j.getHoraFin() == null)
                         throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
-                    if (DateUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
+                    if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
                         throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
                     }
                 }
@@ -351,6 +373,24 @@ public class JornalService {
     }
 
 
+    public List<Jornal> convertOptionalArrayToList(Optional<Jornal[]> optionalJornalArray) {
+        if (optionalJornalArray.isPresent()) {
+            Jornal[] jornalArray = optionalJornalArray.get();
+            return Arrays.asList(jornalArray);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<Obra> getAllObrasByDates(String fechaDesde, String fechaHasta){
+        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
+        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
+        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
+        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+        DateTimeUtil.validateFechas(startDate, endDate);
+        return jornalRepository.getAllObrasByDates(startDate,endDate);
+
+    }
 
 
 }

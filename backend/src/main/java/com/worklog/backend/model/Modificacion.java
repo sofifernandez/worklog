@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "MODIFICACION", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+@Table(name = "modificacion", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Modificacion {
 
     @Transient
