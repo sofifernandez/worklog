@@ -41,8 +41,16 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<String> handleInvalidDataException(InvalidDataException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleInvalidDataException(InvalidDataException e) {
+        if (e.getFieldName() != null) {
+            // Create a structured response with field name
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put(e.getFieldName(), e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } else {
+            // Return just the message
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ExceptionHandler(ObraNotFoundException.class)
