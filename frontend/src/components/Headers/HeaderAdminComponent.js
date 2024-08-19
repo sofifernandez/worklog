@@ -49,6 +49,7 @@ const HeaderAdminComponent = () => {
                                 {/*<a className="dropdown-item" href="/jornal">Agregar</a>*/}
                                 <a className="dropdown-item" href="/add-rain">Agregar lluvia</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
+                                <a className="dropdown-item" href="/confirmar-jornal">A Confirmar</a>
                             </div>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
