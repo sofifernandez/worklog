@@ -8,7 +8,6 @@ const ConfirmarJornalComponent = ({ jornal, jornales, onError, onSuccess }) => {
             await JornalService.confirmarJornal(jornal);
             onSuccess(`${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} confirmado exitosamente.`);
         } catch (error) {
-            console.log(error)
             onError(error.response?.data || `${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} no se pudo confirmar.`);
         }
     };
@@ -19,7 +18,6 @@ const ConfirmarJornalComponent = ({ jornal, jornales, onError, onSuccess }) => {
                 await JornalService.confirmarJornal(jornal);
                 return { success: true, jornal };
             } catch (error) {
-                console.log(error)
                 return { success: false, error: error.response?.data || `${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} no se pudo confirmar.` };
             }
         }));

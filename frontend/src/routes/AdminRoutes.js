@@ -12,6 +12,7 @@ import GenerarReporteComponent from '../components/GenerarReporteComponent'
 import AddRainToObra from '../components/AddRainToObra'
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 import DeleteJornalComponent from '../components/DeleteJornalComponent';
+import JornalesParaConfirmarAdminComponent from '../components/functionalComponents/JornalesParaConfirmarAdminComponent';
 
 const AdminRoutes = () => {
   return (
@@ -33,6 +34,7 @@ const AdminRoutes = () => {
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
       <Route exact path='/reporte' element={<GenerarReporteComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
+      <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
     </Routes>
   );
 };

@@ -257,140 +257,145 @@ public class JornalService {
     }
 
     @Transactional
-    public Optional<Jornal[]> findJornalesNoConfirmado(long obraId){
+    public Optional<Jornal[]> findJornalesNoConfirmado(long obraId) {
         Optional<Jornal[]> jornales = jornalRepository.findJornalesNoConfirmado(obraId);
-        System.out.println(jornales);
         return jornales;
-    @Transactional(readOnly = true)
-    public List<Obra> getAllObrasByDates(LocalDate fechaDesde, LocalDate fechaHasta){
-        return jornalRepository.getAllObrasByDates(fechaDesde,fechaHasta);
     }
-
-    public List<Persona> getAllTrabajadoresDeObraByDates(Obra obra, LocalDate fechaDesde, LocalDate fechaHasta){
-        return jornalRepository.getAllTrabajadoresDeObraByDates(obra, fechaDesde, fechaHasta);
-    }
-
-    private void validateJornal(Jornal jornal){
-        validacionGeneralDeDatos(jornal);
-        validacionPersonal(jornal);
-    }
-
-    public void validacionGeneralDeDatos(Jornal jornal){
-        transformToCorrectTimeZone(jornal);
-        if (!DateTimeUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())){throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");};
-        //Los jornales COMUNES no pueden marcarse en fecha posterior a hoy
-        if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN)){
-            if(DateTimeUtil.isFuture(jornal.getFechaJornal())){
-                {throw new InvalidDataException("El jornal no puede ser marcado a futuro");}
-            }
+        @Transactional(readOnly = true)
+        public List<Obra> getAllObrasByDates (LocalDate fechaDesde, LocalDate fechaHasta){
+            return jornalRepository.getAllObrasByDates(fechaDesde, fechaHasta);
         }
 
-        if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
-            if(!DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
-                    !DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())){
-                throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
-            }
+        public List<Persona> getAllTrabajadoresDeObraByDates (Obra obra, LocalDate fechaDesde, LocalDate fechaHasta){
+            return jornalRepository.getAllTrabajadoresDeObraByDates(obra, fechaDesde, fechaHasta);
         }
 
-    }
+        private void validateJornal (Jornal jornal){
+            validacionGeneralDeDatos(jornal);
+            validacionPersonal(jornal);
+        }
 
-    private void validacionPersonal(Jornal jornal){
-        if(jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)){
-            boolean allDayRain=false;
-            if(DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateTimeUtil.MONDAY_TO_FRIDAY_START) &&
-                    DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateTimeUtil.MONDAY_TO_THURSDAY_END
-                    ))
-            {
-                allDayRain=true;
-                jornal.setHoraFin(DateTimeUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
+        public void validacionGeneralDeDatos (Jornal jornal){
+            transformToCorrectTimeZone(jornal);
+            if (!DateTimeUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())) {
+                throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");
             }
-            if(!allDayRain){//Si no es lluvia all day, solo se puede agregar el período de lluvia en trabajadores que haya ingresado ese día
-                Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona());
-                if (jornales.isEmpty() && (DateTimeUtil.isBeforeToday(jornal.getFechaJornal()) || DateTimeUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
-                    throw new JornalNotSavedException(jornal.getPersona().getApellido(), "No hay ingreso registrado para la obra indicada.");
+            ;
+            //Los jornales COMUNES no pueden marcarse en fecha posterior a hoy
+            if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN)) {
+                if (DateTimeUtil.isFuture(jornal.getFechaJornal())) {
+                    {
+                        throw new InvalidDataException("El jornal no puede ser marcado a futuro");
+                    }
                 }
-
             }
+
+            if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)) {
+                if (!DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraComienzo()) ||
+                        !DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())) {
+                    throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
+                }
+            }
+
         }
 
-        //En una misma fecha una persona no puede tener jornales superpuestos en otras obras, sin importar el tipo
-        Optional<Jornal[]> jornalesFecha=jornalRepository.findByPersonaAndFechaAndNotObra( jornal.getPersona(), jornal.getFechaJornal(), jornal.getObra());
-        try {
-            validateNoOverlap(jornalesFecha,jornal);
-        } catch (InvalidDataException e) {
-            throw new InvalidDataException(jornal.getPersona().getApellido() + " ya tiene un jornal sin finalizar en otra obra para este día");
+        private void validacionPersonal (Jornal jornal){
+            if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)) {
+                boolean allDayRain = false;
+                if (DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateTimeUtil.MONDAY_TO_FRIDAY_START) &&
+                        DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateTimeUtil.MONDAY_TO_THURSDAY_END
+                        )) {
+                    allDayRain = true;
+                    jornal.setHoraFin(DateTimeUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
+                }
+                if (!allDayRain) {//Si no es lluvia all day, solo se puede agregar el período de lluvia en trabajadores que haya ingresado ese día
+                    Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona());
+                    if (jornales.isEmpty() && (DateTimeUtil.isBeforeToday(jornal.getFechaJornal()) || DateTimeUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
+                        throw new JornalNotSavedException(jornal.getPersona().getApellido(), "No hay ingreso registrado para la obra indicada.");
+                    }
+
+                }
+            }
+
+            //En una misma fecha una persona no puede tener jornales superpuestos en otras obras, sin importar el tipo
+            Optional<Jornal[]> jornalesFecha = jornalRepository.findByPersonaAndFechaAndNotObra(jornal.getPersona(), jornal.getFechaJornal(), jornal.getObra());
+            try {
+                validateNoOverlap(jornalesFecha, jornal);
+            } catch (InvalidDataException e) {
+                throw new InvalidDataException(jornal.getPersona().getApellido() + " ya tiene un jornal sin finalizar en otra obra para este día");
+            }
+
+            //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
+            Optional<Jornal[]> jornalesFechaObraTipo = jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona(), jornal.getTipoJornal());
+            validateNoOverlap(jornalesFechaObraTipo, jornal);
         }
 
-        //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
-        Optional<Jornal[]> jornalesFechaObraTipo=jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona(),jornal.getTipoJornal());
-        validateNoOverlap(jornalesFechaObraTipo,jornal);
-    }
+        public void confirmarJornal (Jornal jornal){
+            validateJornal(jornal);
+            jornal.setConfirmado(true);
+            jornalRepository.save(jornal);
+        }
 
-    public void confirmarJornal(Jornal jornal){
-        validateJornal(jornal);
-        jornal.setConfirmado(true);
-        //jornalRepository.save(jornal);
-    }
+        private void validateNoOverlap (Optional < Jornal[]>jornales, Jornal nuevoJornal){
+            //Validar que no haya ya un que quede superpuesto con este
+            if (jornales.isEmpty()) return;
+            if (jornales.isPresent()) {
+                // Get the array of Jornal
+                Jornal[] jornalArray = jornales.get();
 
-    private void validateNoOverlap(Optional<Jornal[]> jornales, Jornal nuevoJornal) {
-        //Validar que no haya ya un que quede superpuesto con este
-        if (jornales.isEmpty()) return;
-        if (jornales.isPresent()) {
-            // Get the array of Jornal
-            Jornal[] jornalArray = jornales.get();
-
-            // Iterate over the Jornal array
-            for (Jornal j : jornalArray) {
-                if(!(j.getId().equals(nuevoJornal.getId()))) {
-                    if (j.getHoraFin() == null)
-                        throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
-                    if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
-                        throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
+                // Iterate over the Jornal array
+                for (Jornal j : jornalArray) {
+                    if (!(j.getId().equals(nuevoJornal.getId()))) {
+                        if (j.getHoraFin() == null)
+                            throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
+                        if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
+                            throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
+                        }
                     }
                 }
             }
         }
-    }
 
-    private void transformToCorrectTimeZone(Jornal jornal){
-        ZoneId uruguayZoneId = ZoneId.of("America/Montevideo");
+        private void transformToCorrectTimeZone (Jornal jornal){
+            ZoneId uruguayZoneId = ZoneId.of("America/Montevideo");
 
-        // Convert LocalDateTime to ZonedDateTime in Uruguay timezone
-        ZonedDateTime zonedHoraComienzo = jornal.getHoraComienzo().toLocalDateTime().atZone(uruguayZoneId);
-        ZonedDateTime zonedHoraFin = jornal.getHoraFin().toLocalDateTime().atZone(uruguayZoneId);
+            // Convert LocalDateTime to ZonedDateTime in Uruguay timezone
+            ZonedDateTime zonedHoraComienzo = jornal.getHoraComienzo().toLocalDateTime().atZone(uruguayZoneId);
+            ZonedDateTime zonedHoraFin = jornal.getHoraFin().toLocalDateTime().atZone(uruguayZoneId);
 
-        // Convert ZonedDateTime to UTC
-        ZonedDateTime utcHoraComienzo = zonedHoraComienzo.withZoneSameInstant(ZoneId.of("UTC"));
-        ZonedDateTime utcHoraFin = zonedHoraFin.withZoneSameInstant(ZoneId.of("UTC"));
+            // Convert ZonedDateTime to UTC
+            ZonedDateTime utcHoraComienzo = zonedHoraComienzo.withZoneSameInstant(ZoneId.of("UTC"));
+            ZonedDateTime utcHoraFin = zonedHoraFin.withZoneSameInstant(ZoneId.of("UTC"));
 
-        // Convert ZonedDateTime to Timestamp
-        Timestamp horaComienzo = Timestamp.valueOf(utcHoraComienzo.toLocalDateTime());
-        Timestamp horaFin = Timestamp.valueOf(utcHoraFin.toLocalDateTime());
+            // Convert ZonedDateTime to Timestamp
+            Timestamp horaComienzo = Timestamp.valueOf(utcHoraComienzo.toLocalDateTime());
+            Timestamp horaFin = Timestamp.valueOf(utcHoraFin.toLocalDateTime());
 
-        jornal.setHoraComienzo(horaComienzo);
-        jornal.setHoraFin(horaFin);
+            jornal.setHoraComienzo(horaComienzo);
+            jornal.setHoraFin(horaFin);
 
-    }
-
-
-    public List<Jornal> convertOptionalArrayToList(Optional<Jornal[]> optionalJornalArray) {
-        if (optionalJornalArray.isPresent()) {
-            Jornal[] jornalArray = optionalJornalArray.get();
-            return Arrays.asList(jornalArray);
-        } else {
-            return Collections.emptyList();
         }
+
+
+        public List<Jornal> convertOptionalArrayToList (Optional < Jornal[]>optionalJornalArray){
+            if (optionalJornalArray.isPresent()) {
+                Jornal[] jornalArray = optionalJornalArray.get();
+                return Arrays.asList(jornalArray);
+            } else {
+                return Collections.emptyList();
+            }
+        }
+
+        public List<Obra> getAllObrasByDates (String fechaDesde, String fechaHasta){
+            if (fechaDesde == null || fechaDesde.isEmpty())
+                throw new InvalidDataException("Selecciona una fecha desde");
+            if (fechaHasta == null || fechaHasta.isEmpty())
+                throw new InvalidDataException("Selecciona una fecha hasta");
+            LocalDate startDate = DateTimeUtil.parseLocalDate(fechaDesde);
+            LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+            DateTimeUtil.validateFechas(startDate, endDate);
+            return jornalRepository.getAllObrasByDates(startDate, endDate);
+
+        }
+
     }
-
-    public List<Obra> getAllObrasByDates(String fechaDesde, String fechaHasta){
-        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
-        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
-        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
-        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
-        DateTimeUtil.validateFechas(startDate, endDate);
-        return jornalRepository.getAllObrasByDates(startDate,endDate);
-
-    }
-
-
-}

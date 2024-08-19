@@ -11,9 +11,8 @@ import Swal from 'sweetalert2';
 
 
 
-const DatoPersonaComponent = ({ jornal: initialJornal, onlyRows, adminView, confirmar, onError, onSuccess }) => {
+const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError, onSuccess }) => {
 
-    const [jornal, setJornal] = useState(initialJornal);
     const [modalShow, setModalShow] = useState(false);
     const [modalType, setModalType] = useState('');
     const [currentJornalId, setCurrentJornalId] = useState(null);
@@ -62,26 +61,28 @@ const DatoPersonaComponent = ({ jornal: initialJornal, onlyRows, adminView, conf
 
     const saveTime = async (time, type) => {
         let updatedJornal = { ...jornal };
-    
+        let motivo = ''
         if (type === 'horaFin') {
             updatedJornal.horaFin = time;
             updatedJornal.horaComienzo = formatTimeWithOffset(jornal.horaComienzo, -3);
+            motivo = 'Trabajador no marcó salida'
         } else if (type === 'horaComienzo') {
             updatedJornal.horaComienzo = time;
             updatedJornal.horaFin = formatTimeWithOffset(jornal.horaFin, -3);
+            motivo = 'Trabajador no marcó entrada'
         }
     
         try {
-            await JornalService.updateJornal(jornal.id, 'Fata de marcaje', updatedJornal);
+            await JornalService.updateJornal(currentJornalId, motivo, updatedJornal);
     
             Swal.fire({
-                title: `Jornal ${type} actualizado con éxito`,
+                title: `Jornal actualizado con éxito`,
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false,
                 timerProgressBar: true,
                 didClose: () => {
-                    window.location.reload(); // Recargar la página
+                    window.location.reload(); 
                 }
             });
     
@@ -228,6 +229,7 @@ const DatoPersonaComponent = ({ jornal: initialJornal, onlyRows, adminView, conf
                                 onError={onError}
                                 onSuccess={onSuccess}
                             />
+                            <Link className='btn btn-info mx-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
                         </td>
                     )}
                 </tr>

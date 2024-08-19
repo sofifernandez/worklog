@@ -19,15 +19,17 @@ const HeaderJefeComponent = () => {
                         <li className="nav-item active mx-2 px-2 ">
                             <a className="nav-link" href="/home">Inicio</a>
                         </li>
+                        <li className="nav-item active mx-2 px-2 ">
+                            <a className="nav-link" href="/my-jornales">Mis Jornales</a>
+                        </li>
                         <li className="nav-item dropdown mx-2 px-2">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Jornales
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
                                 <a className="dropdown-item" href="/add-jornal">Agregar</a>
-                                <a className="dropdown-item" href="/personas">Modificar</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
-                                <a className="dropdown-item" href="/assign-rol">Confirmar</a>
+                                <a className="dropdown-item" href="/home">A Confirmar</a>
                             </div>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
@@ -36,7 +38,7 @@ const HeaderJefeComponent = () => {
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkObras">
                                 <a className="dropdown-item" href="/add-rain">Agregar</a>
-                                <a className="dropdown-item" href="/obras">Modificar horario</a>
+                                {/* <a className="dropdown-item" href="/obras">Modificar horario</a> */}
                             </div>
                         </li>
                     </ul>
