@@ -9,6 +9,7 @@ const TrabajadorRoutes = () => {
   return (
     <Routes>
       <Route exact path='/' element={<IndexTrabComponent />} />
+      <Route exact path='/home' element={<IndexTrabComponent />} />
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent/>}/>
       <Route exact path='/jornalQr/:id' element={<QrJornalComponent/>}/>
       <Route exact path='/logout' element={<LogoutComponent />} />
