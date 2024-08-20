@@ -3,7 +3,7 @@ import HeaderAdminComponent from './components/Headers/HeaderAdminComponent';
 import HeaderTrabajadorComponent from './components/Headers/HeaderTrabajadorComponent';
 import HeaderJefeComponent from './components/Headers/HeaderJefeComponent';
 import { BrowserRouter } from 'react-router-dom';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import LoginComponent from './components/LoginComponent';
 import LogoutComponent from './components/LogoutComponent'
@@ -19,6 +19,8 @@ initAxiosInterceptors();
 
 function MainApp() {
   const { personaRolLoggeado } = useAuth();
+const location = useLocation();
+const isChangePasswordPage = location.pathname.includes('/resetpassword/')
 
 
   const renderRoutes = () => {
@@ -34,16 +36,16 @@ function MainApp() {
     }
   };
 
-
+  
 
   if ((window.localStorage.getItem('appJornalesToken') !== null) && isValidToken()) {
     console.log(personaRolLoggeado)
     return (
 
       <div className="App justify-content-center">
-        {personaRolLoggeado?.personaRol?.rol?.rol === "ADMINISTRADOR" && (<HeaderAdminComponent />)}
-        {personaRolLoggeado?.personaRol?.rol?.rol === "JEFE_OBRA" && (<HeaderJefeComponent />)}
-        {personaRolLoggeado?.personaRol?.rol?.rol === "TRABAJADOR" && (<HeaderTrabajadorComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "ADMINISTRADOR" && !isChangePasswordPage && (<HeaderAdminComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "JEFE_OBRA" && !isChangePasswordPage && (<HeaderJefeComponent />)}
+        {personaRolLoggeado?.personaRol?.rol?.rol === "TRABAJADOR" && !isChangePasswordPage && (<HeaderTrabajadorComponent />)}
         {!personaRolLoggeado && ( <Routes>
           <Route exact path='/' element={<LoginComponent />} />
           <Route exact path='/logout' element={<LogoutComponent />} />

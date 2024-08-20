@@ -8,6 +8,7 @@ import AddObraComponent from '../components/AddObraComponent';
 import AssignJefeObraComponent from '../components/AssignJefeObraComponent';
 import AssignRolComponent from '../components/AssignRolComponent';
 import ContainerBuscadorJornalComponent from '../components/functionalComponents/ContainerBuscadorJornalComponent';
+import ChangePassword from '../components/functionalComponents/ChangePassword';
 import GenerarReporteComponent from '../components/GenerarReporteComponent'
 import AddRainToObra from '../components/AddRainToObra'
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
@@ -32,6 +33,7 @@ const AdminRoutes = () => {
       <Route exact path='/add-jornal/' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/delete-jornal/:id' element={<DeleteJornalComponent />} />
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
+      <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
       <Route exact path='/reporte' element={<GenerarReporteComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
       <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
