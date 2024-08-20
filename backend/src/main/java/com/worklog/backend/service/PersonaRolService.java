@@ -1,9 +1,11 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.PersonaNotFoundException;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.PersonaRol;
+import com.worklog.backend.model.Rol;
 import com.worklog.backend.repository.PersonaRepository;
 import com.worklog.backend.repository.PersonaRolRepository;
 import jakarta.persistence.EntityManager;
@@ -26,6 +28,9 @@ public class PersonaRolService {
 
     @Autowired
     private PersonaRolRepository personaRolRepository;
+
+    @Autowired
+    private JefeObraService jefeObraService;
 
     @Transactional
     public PersonaRol savePersonaRol(PersonaRol newPersonaRol) {
@@ -55,6 +60,12 @@ public class PersonaRolService {
     public PersonaRol updatePersonaRol(PersonaRol newPersonaRol, Long id) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newPersonaRol.setFechaModif(currentTimestamp);
+        if(jefeObraService.existsByPersona(newPersonaRol.getPersona())){
+            String nombreObra=jefeObraService.getNombreDeObraByPersona(newPersonaRol.getPersona());
+           throw new InvalidDataException("La persona es JEFE y tiene asginada la obra: " + nombreObra);
+        }
+
+
         return personaRolRepository.findById(id)
                 .map(personaRol -> {
                     personaRol.setRol(newPersonaRol.getRol());

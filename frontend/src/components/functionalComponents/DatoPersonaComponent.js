@@ -23,7 +23,7 @@ const DatoPersonaComponent = ({ persona, onlyRows, minimalData, handleRowClick }
                         </thead>
                         <tbody>
                             <tr key={persona.id}>
-                                <td ><Link className='btn btn-info' to={`/edit-persona/${persona.id}`}>Actualizar</Link></td>
+                                <td ><Link className='btn btnActualizar' to={`/edit-persona/${persona.id}`}>Actualizar</Link></td>
                                 <td >{persona.nombre} {persona.apellido}</td>
                                 <td >{persona.ci}</td>
                                 <td>{persona.fechaNacimiento}</td>
@@ -69,7 +69,7 @@ const DatoPersonaComponent = ({ persona, onlyRows, minimalData, handleRowClick }
 
             {onlyRows && (
                 <tr key={persona.id}>
-                    <td ><Link className='btn btn-info' to={`/edit-persona/${persona.id}`}>Actualizar</Link></td>
+                    <td ><Link className='btn btnActualizar' to={`/edit-persona/${persona.id}`}>Actualizar</Link></td>
                     <td >{persona.nombre} {persona.apellido}</td>
                     <td >{persona.ci}</td>
                     <td>{persona.fechaNacimiento}</td>

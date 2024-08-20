@@ -99,5 +99,15 @@ input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute
   cursor: pointer;
 }
 
+.btnActualizar{
+  background-color: #CDCBFF;
+  border: 2px solid black;
+  font-size: 0.8rem;
+}
+
+.btnActualizar:hover {
+  background-color: #5628D2;
+  color: white;
+}
 
 

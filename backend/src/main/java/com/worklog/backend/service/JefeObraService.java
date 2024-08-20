@@ -31,6 +31,7 @@ public class JefeObraService {
     @Autowired
     private PersonaService personaService;
 
+
     @Transactional
     public JefeObra saveJefeObra(JefeObra newJefeObra) {
         try{
@@ -77,11 +78,24 @@ public class JefeObraService {
         jefeObraRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Obra getObraByJefe(Long id){
         Persona persona = personaService.getPersonaById(id);
         Obra obra = jefeObraRepository.getObraByJefe(persona);
         if (obra == null) {throw new ObraNotFoundException("No tienes obras asignadas");}
         return obra;
+    }
+
+    public boolean existsByPersona(Persona persona){
+        return jefeObraRepository.existsByPersona(persona);
+    }
+
+    @Transactional(readOnly = true)
+    public String getNombreDeObraByPersona(Persona persona){
+        String nombre= "";
+        Obra obra =getObraByJefe(persona.getId());
+        if(obra!=null){nombre= obra.getNombre();};
+        return nombre;
     }
 
 }

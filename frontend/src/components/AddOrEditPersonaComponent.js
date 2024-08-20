@@ -26,7 +26,6 @@ export const AddPersonaComponent = () => {
         e.preventDefault()
         const formattedFechaNacimiento = fechaNacimiento ? format(fechaNacimiento, 'yyyy-MM-dd') + 'T12:00:00' : null;
         const persona = { nombre, apellido, ci, fechaNacimiento: formattedFechaNacimiento , numeroTelefono, activo }
-        console.log(persona)
         if (id) {
             PersonaService.updatePersona(id, persona).then((res) => {
                 let timerInterval;
@@ -77,7 +76,6 @@ export const AddPersonaComponent = () => {
                 setErrors({});
                 navigate('/edit-persona/' + res.data.id);
             }).catch(error => {
-                console.log(error)
                 if (error.response?.data === 'Error de integridad de datos') {
                     setErrors({ ci: 'Cédula ya registrada' });
                 } else if(error.response?.data?.length===0 && fechaNacimiento===null) {
@@ -177,7 +175,7 @@ export const AddPersonaComponent = () => {
                         </div>
                         {id && (
                             <Link to={`/assign-rol/${id}`} className='btn btn-info ml-2'>
-                                Agregar rol
+                                Asignar rol
                             </Link>
                         )}
                         <button className='btn btn-success mx-2' onClick={(e) => saveOrUpdatePersona(e)}>Guardar</button>

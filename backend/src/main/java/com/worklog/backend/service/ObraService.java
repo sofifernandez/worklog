@@ -37,10 +37,12 @@ public class ObraService {
         return obraRepository.save(newObra);
     }
 
+    @Transactional(readOnly = true)
     public List<Obra> getAllObras() {
         return obraRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Obra getObraById(Long id) {
         return obraRepository.findById(id).orElseThrow(() -> new ObraNotFoundException(id.toString()));
     }
@@ -65,6 +67,7 @@ public class ObraService {
         obraRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Obra getObraByBPS(String bps) {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}

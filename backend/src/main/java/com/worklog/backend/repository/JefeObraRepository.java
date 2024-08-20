@@ -11,4 +11,6 @@ public interface JefeObraRepository extends JpaRepository<JefeObra,Long> {
 
     @Query(value = "SELECT JO.obra FROM JefeObra JO WHERE JO.persona = :persona")
     Obra getObraByJefe(@Param("persona") Persona persona);
+
+    Boolean existsByPersona(Persona persona);
 }

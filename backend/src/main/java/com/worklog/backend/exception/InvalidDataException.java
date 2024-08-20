@@ -6,7 +6,8 @@ public class InvalidDataException extends RuntimeException {
 
     @Getter
     private String fieldName;
-    private String message;
+    @Getter
+    private String fieldMessage;
 
     public InvalidDataException(String message) {
         super(message);
@@ -19,12 +20,7 @@ public class InvalidDataException extends RuntimeException {
     public InvalidDataException(String fieldName, String message) {
         super(message);
         this.fieldName = fieldName;
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+        this.fieldMessage = message;
     }
 
 }

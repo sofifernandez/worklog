@@ -45,7 +45,7 @@ public class ExceptionController {
         if (e.getFieldName() != null) {
             // Create a structured response with field name
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put(e.getFieldName(), e.getMessage());
+            errorResponse.put(e.getFieldName(), e.getFieldMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } else {
             // Return just the message
