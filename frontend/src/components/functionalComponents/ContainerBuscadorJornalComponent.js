@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import BuscadorJornalComponent from './BuscadorJornalComponent';
 import ContainerDatoJornalComponent from './ContainerDatoJornalComponent';
+import ErrorMessage from './ErrorMessageComponent'
 import { useNavigate } from 'react-router-dom';
 
 const ContainerBuscadorJornalComponent = ({ adminView }) => {
@@ -27,6 +28,9 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
         navigate('/home');
     }
 
+    const handleAlertCloseError = (index) => {
+        setMensajeError('');
+    };
 
     return (
         <div className='row justify-content-center px-0'>
@@ -34,7 +38,7 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
                 <BuscadorJornalComponent onJornalesFound={handleJornalFound} onMensajeError={handleMensajeError} onCancelar={handleCancelar} />
             </div>)}
             {jornales?.length > 0 &&
-                (<div className=' row justify-content-center col-lg-8 mt-2'>
+                (<div className=' row justify-content-center col-lg-9 mt-2'>
                     <div className='table-responsive mt-2 mx-auto'>
                         <ContainerDatoJornalComponent jornales={jornales.slice(0, 10)} adminView={adminView} />
                     </div>
@@ -47,7 +51,9 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
             {jornales?.length === 0 && (
                 <><div>No hay resultados</div><div className='btn btn-secondary' onClick={handleVolver}>Volver</div></>
             )}
-            {mensajeError && <div className='alert alert-light mt-3' role='alert'>{mensajeError}</div>}
+            <div className='row justify-content-center mt-4'>
+                {mensajeError?.length > 0 && <ErrorMessage mensajeError={mensajeError} handleAlertClose={handleAlertCloseError} />}
+            </div>
         </div>
     );
 };

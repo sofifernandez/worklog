@@ -3,9 +3,10 @@ package com.worklog.backend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "JORNAL", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+@Table(name = "jornal", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Jornal {
 
     @Id
@@ -14,15 +15,15 @@ public class Jornal {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "persona_id")
+    @JoinColumn(name = "persona_id", nullable = false)
     private Persona persona;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "obra_id")
+    @JoinColumn(name = "obra_id", nullable = false)
     private Obra obra;
 
     @Column(name = "fecha_jornal", nullable = false, length = 19)
-    private Timestamp fechaJornal;
+    private LocalDate fechaJornal;
 
     @Column(name = "hora_comienzo", nullable = false, length = 19)
     private Timestamp horaComienzo;
@@ -34,7 +35,7 @@ public class Jornal {
     private Boolean modificado;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tipo_jornal")
+    @JoinColumn(name = "tipo_jornal", nullable = false)
     private TipoJornal tipoJornal;
 
     @Column(name = "confirmado", nullable = false)
@@ -65,11 +66,11 @@ public class Jornal {
         this.obra = obra;
     }
 
-    public Timestamp getFechaJornal() {
+    public LocalDate getFechaJornal() {
         return fechaJornal;
     }
 
-    public void setFechaJornal(Timestamp fechaJornal) {
+    public void setFechaJornal(LocalDate fechaJornal) {
         this.fechaJornal = fechaJornal;
     }
 
@@ -87,7 +88,7 @@ public class Jornal {
 
     public Boolean getModificado() { return modificado; }
 
-    public void setModificado(Boolean activo) { this.modificado = activo; }
+    public void setModificado(Boolean modificado) { this.modificado = modificado; }
 
     public TipoJornal getTipoJornal() {
         return tipoJornal;

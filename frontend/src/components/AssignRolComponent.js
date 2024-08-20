@@ -4,14 +4,16 @@ import PersonaService from '../services/PersonaService';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
 import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
+import Swal from 'sweetalert2';
 
 export const AssignRolComponent = () => {
     const [personaRol, setPersonaRol] = useState();
     const [persona, setPersona] = useState();
     const [rolSeleccionado, setRolSeleccionado] = useState();
     const [mensajeError, setMensajeError] = useState();
-
+    
     const navigate = useNavigate();
+    
     const { id } = useParams();
 
     useEffect(() => {
@@ -60,17 +62,50 @@ export const AssignRolComponent = () => {
         e.preventDefault();
         if (personaRol) {
             const nuevaPersonaRol = { ...personaRol, rol: { id: rolSeleccionado }, persona: persona };
-            PersonaRolService.updatePersonaRol(personaRol.id, nuevaPersonaRol)
-                .then(() => navigate('/personas'))
-                .catch(e => setMensajeError(e.response.data));
+            PersonaRolService.updatePersonaRol(personaRol.id, nuevaPersonaRol).then((res) => {
+                let timerInterval;
+                Swal.fire({
+                   title: 'Rol modificado con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/personas');
+                    }
+                   });
+                navigate('/personas')
+            }).catch(error => {
+                    setMensajeError(error.response.data);
+            })
         } else {
             const newPersonaRol = { rol: { id: rolSeleccionado }, persona: persona };
-            PersonaRolService.createPersonaRol(newPersonaRol)
-                .then((res) => {
-                    setPersonaRol(res.data);
-                    navigate('/personas');
-                })
-                .catch(e => setMensajeError(e.response));
+            PersonaRolService.createPersonaRol(newPersonaRol).then((res) => {
+                let timerInterval;
+                Swal.fire({
+                   title: 'Rol agregado con éxito',
+                   timer: 2000,
+                   timerProgressBar: true,
+                   didOpen: () => {
+                       Swal.showLoading();
+                    },
+                   willClose: () => {
+                    clearInterval(timerInterval);
+                   }
+                   }).then((result) => {
+                     if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/personas');
+                    }
+                   });
+                navigate('/personas')
+            }).catch(error => {
+                    setMensajeError(error.response.data);
+            })
         }
     };
 

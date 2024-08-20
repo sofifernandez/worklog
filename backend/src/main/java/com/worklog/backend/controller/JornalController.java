@@ -1,25 +1,20 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.exception.JornalNotFoundException;
+import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.Jornal;
-import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.JornalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class JornalController {
 
@@ -31,10 +26,24 @@ public class JornalController {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(JornalNotSavedException.class)
+    public ResponseEntity<String> handleJornalNotSaved(JornalNotSavedException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PostMapping("/jornal")
     public ResponseEntity<Object> newJornal(@Valid @RequestBody Jornal newJornal) {
         Jornal savedJornal = jornalService.saveJornal(newJornal);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/jornal/agregarLluvia")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Object> newJornalLLuvia(@Valid @RequestBody Jornal newJornal) {
+        Jornal savedJornal = jornalService.saveJornal(newJornal);
+        String message = savedJornal.getPersona().getApellido() + ":  horario de lluvia agregado";
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     @GetMapping("/jornales")
@@ -49,9 +58,9 @@ public class JornalController {
         return new ResponseEntity<>(jornal, HttpStatus.OK);
     }
 
-    @PutMapping("/jornal/{id}")
-    public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id) {
-        Jornal updatedJornal = jornalService.updateJornal(newJornal, id);
+    @PutMapping("/jornal/{id}/{motivo}")
+    public ResponseEntity<Object> updateJornal(@Valid @RequestBody Jornal newJornal, @PathVariable Long id, @PathVariable String motivo) {
+        Jornal updatedJornal = jornalService.updateJornalWithValidations(newJornal, id, motivo);
         return new ResponseEntity<>(updatedJornal, HttpStatus.OK);
     }
 
@@ -61,6 +70,11 @@ public class JornalController {
         return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
     }
 
+    @PostMapping("/jornalQr")
+    public ResponseEntity<Object> jornalQr(@Valid @RequestBody Jornal newJornal) {
+        Jornal savedJornal = jornalService.saveJornalQr(newJornal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
+    }
 
     @GetMapping("/jornal/jornalByPersona/{personaId}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
@@ -78,6 +92,26 @@ public class JornalController {
             @RequestParam Long personaId) {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @GetMapping("/jornal/jornalNoConfirmado/{obraId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Optional<Jornal[]>> findJornalesNoConfirmado(@PathVariable Long obraId){
+        Optional<Jornal[]> jornales = jornalService.findJornalesNoConfirmado(obraId);
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @PostMapping("jornal/confirmarJornal")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity<Object> confirmarJornal(@Valid @RequestBody Jornal jornal) {
+        jornalService.confirmarJornal(jornal);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/jornal/validateGeneral")
+    public ResponseEntity<Object> validateGeneral(@Valid @RequestBody Jornal jornal) {
+        jornalService.validacionGeneralDeDatos(jornal);
+        return ResponseEntity.ok().build();
     }
 
 

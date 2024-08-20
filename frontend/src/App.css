@@ -6,6 +6,7 @@
   --alerts-attention-color: #FFC20D;
   --gris-oscuro:#686867;
   --gris-claro: #E7E7E9;
+  --success:#30A373;
 }
 
 
@@ -24,6 +25,7 @@ body {
   border-radius: 10px;
   border: #370EA3 2px solid;
   box-shadow: #c0c0be 2px 2px;
+  background-color: #E7E7E9;
 }
 
 .lluvia {
@@ -43,6 +45,59 @@ input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute
 }
 
 
+.labelCard{
+ background-color: #CDCBFF;
+ border-radius: 3px;
+ font-weight: 700;
+ padding: 5px;
+}
+
+
+.table-hover-row tbody tr:hover {
+  background-color: #FFC20D;
+  cursor: pointer;
+}
+
+.trabDiv{
+ background-color: #cececc;
+ border-radius: 3px;
+ font-weight: 500;
+ font-size: 0.9rem;
+}
+
+.trabDiv:hover {
+  background-color: white;
+}
+
+.miniAlert{
+  font-size: small !important;
+}
+
+#btnGenerar{
+  background-color: #30A373;
+  border-color: #30A373;
+}
+
+.form-check-input:checked {
+  background-color:var(--bs-dark) !important;
+  border-color:var(--bs-dark)
+}
+
+.btn-active-dark{
+  background-color: #212529;
+  color: white;
+}
+
+.btn-inactive-dark{
+  background-color: white;
+  color: #212529;
+}
+
+.trashcan:hover{
+  color: red;
+  border: black;
+  cursor: pointer;
+}
 
 
 

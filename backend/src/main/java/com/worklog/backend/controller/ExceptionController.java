@@ -1,5 +1,7 @@
 package com.worklog.backend.controller;
 
+import com.worklog.backend.exception.InvalidDataException;
+import com.worklog.backend.exception.ObraNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -36,7 +38,18 @@ public class ExceptionController {
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
             String errorMessage = "Error de integridad de datos";
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-        }
+    }
+
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<String> handleInvalidDataException(InvalidDataException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ObraNotFoundException.class)
+    public ResponseEntity<String> handleObraNotFound(ObraNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 
     // Otros manejadores de excepciones
 }

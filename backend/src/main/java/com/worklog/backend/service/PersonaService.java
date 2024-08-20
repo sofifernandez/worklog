@@ -1,6 +1,8 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.PersonaNotFoundException;
+import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.PersonaRepository;
 import com.worklog.backend.repository.UsuarioRepository;
@@ -15,11 +17,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonaService {
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private PersonaRepository personaRepository;
@@ -86,6 +87,7 @@ public class PersonaService {
 
     @Transactional(readOnly = true)
     public Persona findPersonaByCi(String ci) {
+        if(ci==null || ci.isEmpty() || ci.isBlank()) throw new InvalidDataException("Ingrese un parámetro de búsqueda");
         return personaRepository.findByCi(ci)
                 .orElseThrow(() -> new PersonaNotFoundException(ci));
     }
@@ -99,4 +101,30 @@ public class PersonaService {
     public Optional<Persona[]> getAllTrabajadoresActivos() {
         return personaRepository.getAllTrabajadoresActivos();
     }
+
+    @Transactional(readOnly = true)
+    public List<Persona> getPersonasByNombre(String parametro) {
+       if(parametro==null || parametro.isEmpty() || parametro.isBlank()) throw new InvalidDataException("Ingrese un parámetro de búsqueda");
+       if (parametro.contains(" ") && !parametro.trim().equals(parametro)) {
+           String[] parts = parametro.split(" ", 2);
+           String nombre = "%" + parts[0] + "%";
+           String apellido = "%" + parts[1] + "%";
+           return personaRepository.getPersonasByNombreyApellido(nombre, apellido);
+       } else {
+           String nombrePattern = "%" + parametro + "%";
+           return personaRepository.getPersonasByNombreOApellido(nombrePattern);
+       }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Persona> getPersonasByIds(List<Long> ids) {
+        return ids.stream()
+                .map(personaRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

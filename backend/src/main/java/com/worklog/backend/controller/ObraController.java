@@ -1,17 +1,14 @@
 package com.worklog.backend.controller;
 
-import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.service.JornalService;
 import com.worklog.backend.service.ObraService;
-import com.worklog.backend.repository.ObraRepository;
-import com.worklog.backend.service.QrCodeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
@@ -21,10 +18,13 @@ public class ObraController {
     @Autowired
     private ObraService obraService;
 
-    @ExceptionHandler(ObraNotFoundException.class)
-    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+    @Autowired
+    private JornalService jornalService;
+
+//    @ExceptionHandler(ObraNotFoundException.class)
+//    public ResponseEntity<String> handleObraNotFoundException(ObraNotFoundException ex, WebRequest request) {
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping("/obra")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -48,7 +48,7 @@ public class ObraController {
     }
 
     @PutMapping("/obra/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    //@PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Obra> updateObra(@Valid @RequestBody Obra newObra, @PathVariable Long id) {
         Obra updatedObra = obraService.updateObra(newObra, id);
         return new ResponseEntity<>(updatedObra, HttpStatus.OK);
@@ -67,4 +67,15 @@ public class ObraController {
         Obra obra = obraService.getObraByBPS(bps);
         return new ResponseEntity<>(obra, HttpStatus.OK);
     }
+
+    @GetMapping("/getAllObrasByDates/")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<List<Obra>> getAllObrasByDates(
+            @RequestParam String fechaDesde,
+            @RequestParam String fechaHasta) {
+        List<Obra> obras = jornalService.getAllObrasByDates(fechaDesde,fechaHasta);
+        return new ResponseEntity<>(obras, HttpStatus.OK);
+    }
+
+
 }

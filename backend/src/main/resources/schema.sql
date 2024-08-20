@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS tipo_jornal
     );
 
 # INSERT INTO TIPO_JORNAL VALUES(DEFAULT, 'COMUN'), (DEFAULT, 'LLUVIA'), (DEFAULT, 'EXTRA');
+# INSERT INTO Rol VALUES(DEFAULT, 'ADMINISTRADOR'), (DEFAULT, 'JEFE_OBRA'), (DEFAULT, 'TRABAJADOR');
 
 CREATE TABLE IF NOT EXISTS jornal
 (
@@ -96,11 +97,11 @@ CREATE TABLE IF NOT EXISTS jornal
     primary key,
     persona_id  bigint      not null,
     obra_id  bigint      not null,
-    fecha_jornal  datetime(6)   not null,
+    fecha_jornal  date   not null,
     hora_comienzo datetime(6)   not null,
     hora_fin datetime(6)    null,
     modificado      bit         not null,
-    tipo_jornal      bigint      null,
+    tipo_jornal      bigint      not null,
     confirmado bit not null,
     CONSTRAINT FK_JORNAL_PERSONA
     foreign key (persona_id) references persona (id),
@@ -112,13 +113,36 @@ CREATE TABLE IF NOT EXISTS jornal
 
 CREATE TABLE IF NOT EXISTS modificacion(
     id          bigint auto_increment primary key,
-    jefe_id bigint      not null,
+    responsable_id bigint      not null,
     jornal_id bigint      not null,
     fecha_modificacion datetime(6) not null,
     campo_modificado varchar(50) not null,
     valor_anterior varchar(50) not null,
     valor_actual varchar(50) not null,
     motivo varchar(200) not null,
-    CONSTRAINT FK_MODIFICACION_JO FOREIGN KEY (jefe_id) references jefe_obra (id),
+    CONSTRAINT FK_MODIFICACION_JO FOREIGN KEY (responsable_id) references persona (id),
     CONSTRAINT FK_MODIFICACION_JORNAL FOREIGN KEY (jornal_id) references jornal (id)
-    )
+    );
+
+CREATE TABLE IF NOT EXISTS jornal_eliminado
+(
+    id          bigint     primary key,
+    persona_id  bigint      not null,
+    obra_id  bigint      not null,
+    fecha_jornal  date   not null,
+    hora_comienzo datetime(6)   not null,
+    hora_fin datetime(6)    null,
+    modificado      bit         not null,
+    tipo_jornal      bigint      not null,
+    confirmado bit not null,
+    responsable_id  bigint      not null,
+    fecha_eliminado datetime(6)   not null,
+    CONSTRAINT FK_JORNALELIMINADO_PERSONA
+    foreign key (persona_id) references persona (id),
+    CONSTRAINT FK_JORNALELIMINADO_OBRA
+    foreign key (obra_id) references obra (id),
+    CONSTRAINT FK_JORNALELIMINADO_TIPO_JORNAL
+    foreign key (tipo_jornal) references tipo_jornal (id),
+    CONSTRAINT FK_JORNALELIMINADO_RESPONSABLE
+    foreign key (responsable_id) references persona (id)
+    );

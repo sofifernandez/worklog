@@ -9,7 +9,7 @@ import org.hibernate.annotations.Where;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "OBRA", uniqueConstraints = @UniqueConstraint(columnNames = "bps"))
+@Table(name = "obra", uniqueConstraints = @UniqueConstraint(columnNames = "bps"))
 public class Obra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -103,5 +103,20 @@ public class Obra {
 
     public void setActivo(Boolean activo) {
         this.activo = activo;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Obra obra = (Obra) obj;
+
+        return id != null ? id.equals(obra.id) : obra.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

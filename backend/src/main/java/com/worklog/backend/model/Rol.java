@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "ROL", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+@Table(name = "rol", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Rol {
 
     @Transient
@@ -14,6 +14,13 @@ public class Rol {
     public static final Long ID_ROL_TRA = 3L;
     @Transient
     public static final Long ID_ROL_JO = 2L;
+    @Transient
+    public static final String ADMIN_ROL = "ADMINISTRADOR";
+    @Transient
+    public static final String JO_ROL = "JEFE_OBRA";
+    @Transient
+    public static final String TRABAJADOR_ROL = "TRABAJADOR";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

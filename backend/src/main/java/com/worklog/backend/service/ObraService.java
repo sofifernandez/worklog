@@ -2,13 +2,19 @@ package com.worklog.backend.service;
 
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.repository.ObraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,13 +24,15 @@ public class ObraService {
     private ObraRepository obraRepository;
     @Autowired
     private QrCodeService qrCodeService;
+    @Value("${servidor.frontend}")
+    private String servidorFrontend;
 
     public Obra saveObra(Obra newObra) {
         Timestamp currentTimestamp = new Timestamp(new Date().getTime());
         newObra.setFechaAlta(currentTimestamp);
         newObra.setFechaModif(currentTimestamp);
         Obra savedObra = obraRepository.save(newObra); // Primero lo guardo asi se genera el ID
-        String qrCodeUrl = "http://localhost:3000/edit-obra/" + savedObra.getId(); // Luego hay que cambiar esta URL
+        String qrCodeUrl = servidorFrontend + "/jornalQr/" + savedObra.getId(); // Luego hay que cambiar esta URL
         qrCodeService.saveCodeQR(newObra, qrCodeUrl );
         return obraRepository.save(newObra);
     }
@@ -61,5 +69,15 @@ public class ObraService {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}
         return obra;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Obra> getObrasByIds(List<Long> ids) {
+        return ids.stream()
+                .map(obraRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }

@@ -59,11 +59,7 @@ const isChangePasswordPage = location.pathname.includes('/resetpassword/')
   } else {
 
     return (
-      <Routes>
-        <Route exact path='/' element={<LoginComponent />} />
-      </Routes>
-
-
+      <LoginComponent />
     );
   }
 }

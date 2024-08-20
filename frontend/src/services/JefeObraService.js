@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const JEFE_OBRA_BASE_REST_API_URL = "http://localhost:8080/"
-//const LOGIN_BASE_REST_API_URL = "http://18.205.219.216:8080/login"
+//const JEFE_OBRA_BASE_REST_API_URL = "http://3.233.21.8:8080/login"
 
 class JefeObraService{
 
@@ -25,6 +25,9 @@ class JefeObraService{
         return axios.delete(JEFE_OBRA_BASE_REST_API_URL +  'jefeObra/' + jefeObraId)
     }
     
+    getObraByJefeId(id){
+        return axios.get(JEFE_OBRA_BASE_REST_API_URL +  'getObraByJefe/' + id)
+    }
 }
 
 export default new JefeObraService();
