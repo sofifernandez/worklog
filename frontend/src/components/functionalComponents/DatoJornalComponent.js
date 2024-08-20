@@ -80,7 +80,7 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError,
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false,
-                timerProgressBar: true,
+                timerProgressBar: true, 
                 didClose: () => {
                     window.location.reload(); 
                 }
