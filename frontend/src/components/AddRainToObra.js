@@ -258,27 +258,24 @@ export const AddRainToObra = () => {
     };
 
 
-    const agregarALista = async (e) => {
+    const agregarALista = (persona) => {
         setTrabajadoresSugeridos(prevTrabajadores => {
-            // Check if personaFound is already in the array
-            const exists = prevTrabajadores.some(trabajador => trabajador.id === personaFound.id);
-            // If not, add it to the array
+            // Verifica si la persona ya está en la lista
+            const exists = prevTrabajadores.some(trabajador => trabajador.id === persona.id);
+            // Si no está, agrégala a la lista
             if (!exists) {
-                return [...prevTrabajadores, personaFound];
+                return [...prevTrabajadores, persona];
             }
-            // Otherwise, return the previous array unchanged
+            // De lo contrario, devuelve la lista previa sin cambios
             return prevTrabajadores;
         });
-        cancelarBusqueda()
-    }
+    };
 
     const handleSeleccionarTodos = (e) => {
         e.preventDefault();
         seleccionarTodos && setSeleccionarTodos(false);
         !seleccionarTodos && setSeleccionarTodos(true);
     }
-
-    console.log(obra)
 
 
     return (

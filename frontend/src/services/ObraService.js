@@ -40,6 +40,10 @@ class ObraService {
             }
         });
     }
+    
+    getObraByNombre(nombre){
+        return axios.get(OBRA_BASE_REST_API_URL + '/getObraByNombre/' + nombre)
+    }
 
 }
 // eslint-disable-next-line import/no-anonymous-default-export
