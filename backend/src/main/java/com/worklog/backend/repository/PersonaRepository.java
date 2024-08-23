@@ -23,7 +23,7 @@ public interface PersonaRepository extends JpaRepository<Persona,Long> {
     @Query(value= "SELECT P FROM Persona P WHERE P.nombre LIKE :nombre AND P.apellido LIKE :apellido")
     List<Persona> getPersonasByNombreyApellido(@Param("nombre") String nombre, @Param("apellido") String apellido);
 
-    @Query(value= "SELECT P FROM Persona P WHERE P.nombre LIKE :nombre OR P.apellido LIKE :nombrePattern")
+    @Query(value= "SELECT P FROM Persona P WHERE P.nombre LIKE :nombrePattern OR P.apellido LIKE :nombrePattern")
     List<Persona> getPersonasByNombreOApellido(@Param("nombrePattern") String nombrePattern);
 
 }

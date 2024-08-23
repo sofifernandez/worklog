@@ -21,6 +21,7 @@ export const AddOrModifyJornalComponent = () => {
     const { personaRolLoggeado } = useAuth();
     const navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState();
+    const [isJefeObra, setIsJefeObra] = useState();
     const [obra, setObra] = useState();
     const [obrasActivas, setObrasActivas] = useState();
     const [fechaJornal, setFechaJornal] = useState();
@@ -83,11 +84,13 @@ export const AddOrModifyJornalComponent = () => {
 
     useEffect(() => {
         if (personaRolLoggeado.personaRol.rol.rol === 'JEFE_OBRA') {
+            setIsJefeObra(true)
             setIsAdmin(false)
             fetchObraByJefe(personaRolLoggeado.id)
         }
         if (personaRolLoggeado.personaRol.rol.rol === 'ADMINISTRADOR') {
             setIsAdmin(true)
+            setIsJefeObra(false)
             fetchAllObras()
         }
         const formattedDate = format(new Date(), 'yyyy-MM-dd');
@@ -259,6 +262,7 @@ export const AddOrModifyJornalComponent = () => {
     }
 
     const handleBuscar = () => {
+        setPersona(null)
         setBuscarTrabajador(true);
     }
 
@@ -355,7 +359,7 @@ export const AddOrModifyJornalComponent = () => {
                             )
                         }
                         {/*--------- FECHA--------------------------- */}
-                        {isAdmin ?
+                        {(isAdmin || (isJefeObra && !id)) ?
                         <div className='form-group mt-3'>
                             <label className='form-label me-4 labelCard'>Fecha</label>
                             <DatePicker
@@ -385,7 +389,7 @@ export const AddOrModifyJornalComponent = () => {
                         )}                     
 
                         {/*--------- OPCIONES HORAS--------------------------- */}
-                        {!id && isAdmin && (
+                        {!id && (isAdmin || isJefeObra) && (
                         <div className='form-group mt-3'>
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
                             <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
@@ -429,17 +433,17 @@ export const AddOrModifyJornalComponent = () => {
                                 )
                             }
 
-                            {isAdmin && !id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
-                            {isAdmin && !id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
+                            {(isAdmin || isJefeObra) && !id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
+                            {(isAdmin || isJefeObra) && !id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
                         </div>
                         {/*--------- BUSCADOR--------------------------- */}
-                        {isAdmin && buscarTrabajador && (
+                        {(isAdmin || isJefeObra) && buscarTrabajador && (
                             <div className='row justify-content-center'>
                                 <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerBuscadorByCIComponent>
                             </div>)
                         }
                         {/*--------- TIPO JORNAL--------------------------- */}
-                        {isAdmin && tipoJornal && (
+                        {(isAdmin || isJefeObra) && tipoJornal && (
                         <div className='form-group mt-3'>
 
                             <label className='form-label me-4 labelCard'>Tipo de Jornal</label>
