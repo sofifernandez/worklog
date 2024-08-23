@@ -22,7 +22,7 @@ const JefeObraRoutes = () => {
       <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
       <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
-      <Route exact path='/add-jornal' element={<AddJornalComponent/>}/>
+      <Route exact path='/add-jornal' element={<AddOrModifyJornalComponent/>}/>
       <Route exact path='/my-jornales' element={<ListMyJornalesComponent/>}/>
     </Routes>
   );
