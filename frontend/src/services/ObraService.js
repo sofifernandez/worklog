@@ -40,6 +40,10 @@ class ObraService {
             }
         });
     }
+    
+    getObraByNombre(nombre){
+        return axios.get(OBRA_BASE_REST_API_URL + '/getObraByNombre/' + nombre)
+    }
 
     getObrasActivasEntreFechasyTrabajador(fechaDesde, fechaHasta, persona_id){
         return axios.get(`${OBRA_BASE_REST_API_URL}/getAllObrasByDatesAndTrabajador/`, {

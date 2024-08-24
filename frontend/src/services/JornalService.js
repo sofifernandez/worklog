@@ -52,6 +52,14 @@ class JornalService{
         return axios.post(JORNALES_BASE_REST_API_URL + '/getJornalesByFiltros', jornalDataRequest)
     }
 
+    getJornalesSinConfirmar(obraId){
+        return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalNoConfirmado/`+ obraId);
+    }
+
+    confirmarJornal(jornal){
+        return axios.post(`${JORNALES_BASE_REST_API_URL}/confirmarJornal`, jornal);
+    }
+
     agregarLluvia(jornal){
         return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', jornal);
     }
@@ -87,6 +95,8 @@ class JornalService{
         };
         return axios.post(JORNALES_BASE_REST_API_URL + '/validateGeneral', jornal)
     }
+
+
 
 }
 // eslint-disable-next-line import/no-anonymous-default-export

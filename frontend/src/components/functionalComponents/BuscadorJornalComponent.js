@@ -6,6 +6,7 @@ import ObraService from '../../services/ObraService'
 import JornalService from '../../services/JornalService';
 import { useAuth } from '../../context/AuthContext';
 import PersonaService from '../../services/PersonaService';
+import JefeObraService from '../../services/JefeObraService';
 
 const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }) => {
     const { personaRolLoggeado } = useAuth();
@@ -13,34 +14,47 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
     const [fechaDesde, setFechaDesde] = useState("");
     const [fechaHasta, setFechaHasta] = useState("");
     const [obraSeleccionada, setObraSeleccionada] = useState("0");
-    const [obras, setObras] = useState();
+    const [obras, setObras] = useState([]);
     const [trabajadorId, setTrabajadorId] = useState("0")
     const [trabajadoresActivos, setTrabajadoresActivos] = useState()
     const [isRolConAutorizacion, setIsRolConAutorizacion] = useState()
-    
-
 
     useEffect(() => {
-        fetchObras()
         if (personaRolLoggeado.personaRol.rol.rol === "TRABAJADOR") {
-            setTrabajadorId(personaRolLoggeado.id)
-            setIsRolConAutorizacion(false)
+            setTrabajadorId(personaRolLoggeado.id);
+            setIsRolConAutorizacion(false);
+            fetchObras();
         }
         if (personaRolLoggeado.personaRol.rol.rol === "ADMINISTRADOR" || personaRolLoggeado.personaRol.rol.rol === "JEFE_OBRA") {
-            setIsRolConAutorizacion(true)
-            fetchTrabajadoresActivos()
+            setIsRolConAutorizacion(true);
+            fetchTrabajadoresActivos();
+            if (personaRolLoggeado.personaRol.rol.rol === "JEFE_OBRA") {
+                const jefeObraId = personaRolLoggeado.id;
+                fetchObras(jefeObraId);
+            } else {
+                fetchObras(); // Fetch todas las obras para ADMINISTRADOR
+            }
         }
+    }, []);
 
-    }, [])
 
+    const fetchObras = (jefeObraId = null) => {
+        if (jefeObraId) {
 
-    const fetchObras = () => {
-        ObraService.getAllObras().then(res => {
-            setObras(res.data)
-        }).catch(error => {
-            onMensajeError(error.response.data)
-        })
-    }
+            JefeObraService.getObraByJefeId(jefeObraId).then(res => {
+                setObras([res.data]);
+            }).catch(error => {
+                console.log(error.response.data)
+                onMensajeError(error.response.data);
+            });
+        } else {
+            ObraService.getAllObras().then(res => {
+                setObras(res.data);
+            }).catch(error => {
+                onMensajeError(error.response.data);
+            });
+        }
+    };
 
     const fetchTrabajadoresActivos = () => {
         PersonaService.getAllTrabajadoresActivos().then(res => {
@@ -68,6 +82,10 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
             }
         }
     }
+
+    const handleObraChange = (e) => {
+        setObraSeleccionada(e.target.value);
+    };
 
     const cancelar = () => {
         setFechaDesde()
@@ -110,15 +128,19 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                          {/*--------- OBRAS--------------------------- */}
                         <div className='row form-group mt-3'>
                             <label className='form-label labelCard fs-5'>Obra</label>
-                            <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setObraSeleccionada(e.target.value)}>
-                                <option defaultValue="0">TODAS</option>
-                                {obras && (
-                                    obras.map(obra => (
-                                        <option key={obra.id} value={obra.id}>
-                                            {obra.nombre}
-                                        </option>
-                                    ))
+                            <select
+                                value={obraSeleccionada || ""}
+                                onChange={handleObraChange}
+                                disabled={personaRolLoggeado.personaRol.rol.rol === "JEFE_OBRA"}
+                            >
+                                {personaRolLoggeado.personaRol.rol.rol === "ADMINISTRADOR" && (
+                                    <option defaultValue="0">TODAS</option>
                                 )}
+                                {obras.map(obra => (
+                                    <option key={obra.id} value={obra.id}>
+                                        {obra.nombre}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -140,7 +162,14 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                             )
                         }
                         <div className='row justify-content-center mt-4'>
-                            <button className="btn btn-primary col-5 col-lg-3 ms-3 mb-3" type="button" onClick={getJornalesPorFiltros}>Buscar</button>
+                            <button
+                                className="btn btn-primary col-5 col-lg-3 ms-3 mb-3"
+                                type="button"
+                                onClick={getJornalesPorFiltros}
+                                disabled={!obras || obras.length === 0}
+                            >
+                                Buscar
+                            </button>
                             <button className="btn btn-danger col-5 col-lg-3 ms-3 mb-3 " type="button" onClick={cancelar}>Cancelar</button>
                         </div>
                     </form>

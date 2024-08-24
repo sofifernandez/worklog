@@ -1,6 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.model.Obra;
+import com.worklog.backend.model.Persona;
 import com.worklog.backend.service.JornalService;
 import com.worklog.backend.service.ObraService;
 import jakarta.validation.Valid;
@@ -66,6 +67,13 @@ public class ObraController {
     public ResponseEntity<Obra> getObraByBPS(@PathVariable String bps) {
         Obra obra = obraService.getObraByBPS(bps);
         return new ResponseEntity<>(obra, HttpStatus.OK);
+    }
+
+    @GetMapping("/getObraByNombre/{nombre}")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
+    public ResponseEntity< List<Obra>> getObraByNombre(@PathVariable String nombre) {
+        List<Obra> obras = obraService.getObraByNombre(nombre);
+        return new ResponseEntity<>(obras, HttpStatus.OK);
     }
 
     @GetMapping("/getAllObrasByDates/")

@@ -122,7 +122,7 @@ public class PersonaService {
     @Transactional(readOnly = true)
     public List<Persona> getPersonasByNombre(String parametro) {
        if(parametro==null || parametro.isEmpty() || parametro.isBlank()) throw new InvalidDataException("Ingrese un parámetro de búsqueda");
-       if (parametro.contains(" ") && !parametro.trim().equals(parametro)) {
+       if (parametro.contains(" ") && parametro.equals(parametro.trim())) {
            String[] parts = parametro.split(" ", 2);
            String nombre = "%" + parts[0] + "%";
            String apellido = "%" + parts[1] + "%";

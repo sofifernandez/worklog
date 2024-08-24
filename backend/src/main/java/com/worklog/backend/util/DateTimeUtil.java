@@ -92,10 +92,10 @@ public class DateTimeUtil {
         LocalDateTime localDateTime = timestamp.toLocalDateTime();
         LocalTime currentTime = localDateTime.toLocalTime();
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-        boolean isAfterStartOfDay = currentTime.isAfter(MONDAY_TO_FRIDAY_START);
+        boolean isAfterStartOfDay = currentTime.isAfter(MONDAY_TO_FRIDAY_START) || currentTime.equals(MONDAY_TO_FRIDAY_START);
         boolean isBeforeEndOfDay =false;
         if(dayOfWeek == DayOfWeek.FRIDAY){
-            isBeforeEndOfDay=currentTime.isBefore(FRIDAY_END);
+            isBeforeEndOfDay = currentTime.isBefore(FRIDAY_END) || currentTime.equals(FRIDAY_END);;
         } else {
             isBeforeEndOfDay=currentTime.isBefore(MONDAY_TO_THURSDAY_END);
         }

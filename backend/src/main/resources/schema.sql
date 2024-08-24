@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS usuario
     persona_id  bigint      not null,
     username           varchar(50) not null,
     password           varchar(50) not null,
+    password_reset      boolean not null,
     CONSTRAINT UNIQUE_USUARIO_USRNAME UNIQUE (username),
     CONSTRAINT UNIQUE_USUARIO_PERSONA UNIQUE (persona_id),
     constraint FK_USUARIO_PERSONA
@@ -88,6 +89,7 @@ CREATE TABLE IF NOT EXISTS tipo_jornal
     );
 
 # INSERT INTO TIPO_JORNAL VALUES(DEFAULT, 'COMUN'), (DEFAULT, 'LLUVIA'), (DEFAULT, 'EXTRA');
+# INSERT INTO Rol VALUES(DEFAULT, 'ADMINISTRADOR'), (DEFAULT, 'JEFE_OBRA'), (DEFAULT, 'TRABAJADOR');
 
 CREATE TABLE IF NOT EXISTS jornal
 (

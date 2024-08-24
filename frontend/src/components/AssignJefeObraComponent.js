@@ -77,7 +77,6 @@ export const AssignJefeObraComponent = () => {
 
 
     const asignarJefeObra = async (e) => {
-        e.preventDefault()
         if (isJefeObra) {
             const nuevoJefeObra = { obra: obra, persona: persona }
             JefeObraService.createJefeObra(nuevoJefeObra).then((res) => {
@@ -100,7 +99,7 @@ export const AssignJefeObraComponent = () => {
                 </div>
             )}
             {!persona && (<div className='row justify-content-center'>
-                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerBuscadorByCIComponent>
+                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} minimalData={true} onCancelar={volver} handleRowClick={asignarJefeObra}></ContainerBuscadorByCIComponent>
             </div>)}
             {persona && (
                 <div className='col-12 col-lg-7 row justify-content-center'>

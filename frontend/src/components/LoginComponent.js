@@ -1,6 +1,7 @@
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import LoginService from '../services/LoginService';
 import PersonaService from '../services/PersonaService';
+import UsuarioService from '../services/UsuarioService';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,8 +11,8 @@ const LoginComponent = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [errors, setErrors] = useState({});
-    const {personaRolLoggeado, setPersonaRolLoggeado } = useAuth();
-    
+    const { personaRolLoggeado, setPersonaRolLoggeado } = useAuth();
+
 
     const navigate = useNavigate();
     //const mostrarMenu = event => navigate('/', { replace: true });
@@ -19,13 +20,17 @@ const LoginComponent = () => {
     const intentarLogin = (e) => {
         e.preventDefault()
         const credenciales = { username, password }
-        LoginService.iniciarSesion(credenciales).then((res) => {
-            getDatosByUsername(username);
+        LoginService.iniciarSesion(credenciales).then(async (res) => {
             window.localStorage.setItem(
                 'appJornalesToken', res.data.token
             )
-            console.log(personaRolLoggeado)
-            //navigate('/home');
+            const persona = await getDatosByUsername(username);
+            const reset = await UsuarioService.isResetPassword(persona?.id)
+            if (reset.data) {
+                navigate(`/resetpassword/${persona.id}`)
+            } else {
+                navigate('/home');
+            }
         }).catch(error => {
             if (error.response && error.response.status === 403) {
                 setErrors({ login: 'Usuario y/o contraseña incorrecto/s' });
@@ -38,11 +43,15 @@ const LoginComponent = () => {
     const getDatosByUsername = async (username) => {
         try {
             const personaData = await PersonaService.getPersonaByUsername(username);
-            if (personaData.data) {
+            if (personaData && personaData.data) {
                 setPersonaRolLoggeado(personaData.data);
+                return personaData.data;
+            } else {
+                return null;
             }
         } catch (error) {
-            setErrors(error.response?.data || 'An error occurred while fetching the data.');
+            setErrors(error.response?.data || 'Ocurrió un error al obtener los datos.');
+            return null;
         }
     };
 

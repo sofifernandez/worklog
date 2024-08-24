@@ -25,8 +25,8 @@ const HeaderAdminComponent = () => {
                                 Personas
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkPersonas">
-                                <a className="dropdown-item" href="/personas">Ver</a>
                                 <a className="dropdown-item" href="/add-persona">Agregar</a>
+                                <a className="dropdown-item" href="/personas">Buscar</a>
                                 <a className="dropdown-item" href="/assign-rol">Gestionar roles</a>
                             </div>
                         </li>
@@ -35,7 +35,6 @@ const HeaderAdminComponent = () => {
                                 Obras
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkObras">
-                            <a className="dropdown-item" href="/obras">Ver</a>
                                 <a className="dropdown-item" href="/add-obra">Agregar</a>
                                {/*  <a className="dropdown-item" href="#">Asignar Jefe de Obra</a> */}
                             </div>
@@ -50,6 +49,7 @@ const HeaderAdminComponent = () => {
                                 <a className="dropdown-item" href="/add-rain">Agregar lluvia</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
                                 <a className="dropdown-item" href="/buscar-jornal-dos">Buscar Dos</a>
+                                <a className="dropdown-item" href="/confirmar-jornal">A Confirmar</a>
                             </div>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">

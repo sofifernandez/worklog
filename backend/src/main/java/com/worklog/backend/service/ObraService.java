@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
@@ -72,6 +73,13 @@ public class ObraService {
         Obra obra = obraRepository.findByBps(bps);
         if (obra == null) {throw new ObraNotFoundException(bps);}
         return obra;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Obra>  getObraByNombre(String nombre) {
+        if(nombre==null || nombre.isEmpty() || nombre.isBlank()) throw new InvalidDataException("Ingrese un parámetro de búsqueda");
+        String nombrePattern = "%" + nombre + "%";
+        return obraRepository.getObrasByNombre(nombrePattern);
     }
 
 
