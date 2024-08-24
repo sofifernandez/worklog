@@ -77,5 +77,15 @@ public class ObraController {
         return new ResponseEntity<>(obras, HttpStatus.OK);
     }
 
+    @GetMapping("/getAllObrasByDatesAndTrabajador/")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<List<Obra>> getAllObrasByDatesAndTrabajador(
+            @RequestParam String fechaDesde,
+            @RequestParam String fechaHasta,
+            @RequestParam Long persona_id) {
+        List<Obra> obras = jornalService.getAllObrasByDatesAndTrabajador(fechaDesde,fechaHasta, persona_id);
+        return new ResponseEntity<>(obras, HttpStatus.OK);
+    }
+
 
 }

@@ -9,7 +9,6 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
     const navigate = useNavigate();
 
     const handleJornalFound = (jornales) => {
-        console.log(jornales)
         setJornales(jornales);
     };
 
@@ -47,7 +46,7 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
             {jornales?.length === 0 && (
                 <><div>No hay resultados</div><div className='btn btn-secondary' onClick={handleVolver}>Volver</div></>
             )}
-            {mensajeError && <div className='alert alert-light mt-3' role='alert'>{mensajeError}</div>}
+            {mensajeError && <div className='alert alert-danger mt-3 col-6' role='alert'>{mensajeError}</div>}
         </div>
     );
 };

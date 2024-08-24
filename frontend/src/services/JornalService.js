@@ -48,6 +48,10 @@ class JornalService{
         });
     }
 
+    getJornalesByFiltrosWithDTO(jornalDataRequest){
+        return axios.post(JORNALES_BASE_REST_API_URL + '/getJornalesByFiltros', jornalDataRequest)
+    }
+
     agregarLluvia(jornal){
         return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', jornal);
     }

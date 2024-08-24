@@ -47,7 +47,6 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
             const sortedData = res.data.sort((a, b) => a.apellido.localeCompare(b.apellido));
             setTrabajadoresActivos(sortedData);
         }).catch(error => {
-            console.log(error)
             onMensajeError(error.response.data);
         });
     }
@@ -55,17 +54,13 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
 
 
     const getJornalesPorFiltros = async () => {
-        console.log('click')
         try {
             const result = await JornalService.getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, trabajadorId);
-            console.log(result)
-            console.log(onJornalesFound)
             if (onJornalesFound) {
-                console.log(result.data)
                 onJornalesFound(result.data);
+                onMensajeError();
             }
         } catch (error) {
-            console.log(error.response)
             if (error.response && error.response.status === 404) {
                 onMensajeError(error.response.data);
             } else {
@@ -89,26 +84,32 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                 </div>
                 <div className='card-body'>
                     <form>
-                        <div className='form-group mt-3'>
-                            <label className='form-label me-4'>Desde</label>
-                            <DatePicker
-                                onChange={date => setFechaDesde(format(date, 'yyyy-MM-dd'))}
-                                className='form-control'
-                                dateFormat='yyyy-MM-dd'
-                                value={fechaDesde}
-                            />
+                    <div className="row form-group mx-auto">
+                            {/*--------- FECHA DESDE--------------------------- */}
+                            <div className='mt-3 col-md-6 ps-0'>
+                                <label className='form-label me-4 labelCard fs-5'>Desde</label>
+                                <DatePicker
+                                    onChange={date => setFechaDesde(format(date, 'yyyy-MM-dd'))}
+                                    className='form-control'
+                                    dateFormat='yyyy-MM-dd'
+                                    value={fechaDesde}
+                                />
+                            </div>
+
+                            {/*--------- FECHA HASTA--------------------------- */}
+                            <div className='mt-3 col-md-6 ps-0'>
+                                <label className='form-label me-4 labelCard fs-5'>Hasta</label>
+                                <DatePicker
+                                    onChange={date => setFechaHasta(format(date, 'yyyy-MM-dd'))}
+                                    className='form-control'
+                                    dateFormat='yyyy-MM-dd'
+                                    value={fechaHasta}
+                                />
+                            </div>
                         </div>
-                        <div className='form-group mt-3'>
-                            <label className='form-label me-4'>Hasta</label>
-                            <DatePicker
-                                onChange={date => setFechaHasta(format(date, 'yyyy-MM-dd'))}
-                                className='form-control'
-                                dateFormat='yyyy-MM-dd'
-                                value={fechaHasta}
-                            />
-                        </div>
+                         {/*--------- OBRAS--------------------------- */}
                         <div className='row form-group mt-3'>
-                            <label className='form-label'>Obra</label>
+                            <label className='form-label labelCard fs-5'>Obra</label>
                             <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setObraSeleccionada(e.target.value)}>
                                 <option defaultValue="0">TODAS</option>
                                 {obras && (
@@ -124,7 +125,7 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                         {isRolConAutorizacion &&
                             (
                                 <div className='row form-group mt-3'>
-                                    <label className='form-label'>Trabajador</label>
+                                    <label className='form-label labelCard fs-5'>Trabajador</label>
                                     <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setTrabajadorId(e.target.value)}>
                                         <option defaultValue="0">TODOS</option>
                                         {trabajadoresActivos && (

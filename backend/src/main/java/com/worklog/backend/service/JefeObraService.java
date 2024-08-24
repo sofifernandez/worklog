@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.JefeObraNotFoundException;
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
@@ -34,15 +35,12 @@ public class JefeObraService {
 
     @Transactional
     public JefeObra saveJefeObra(JefeObra newJefeObra) {
-        try{
             Timestamp currentTimestamp = new Timestamp(new Date().getTime());
             newJefeObra.setFechaAlta(currentTimestamp);
             newJefeObra.setFechaModif(currentTimestamp);
             newJefeObra.setActivo(true);
+            if(jefeObraRepository.existsByPersona(newJefeObra.getPersona())) throw new InvalidDataException("La persona seleccionada ya es jefe de una obra.");
             return jefeObraRepository.save(newJefeObra);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     @Transactional(readOnly = true)

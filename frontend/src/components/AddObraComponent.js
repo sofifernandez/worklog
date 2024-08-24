@@ -38,7 +38,7 @@ export const AddObraComponent = () => {
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
                     if (error.response.data === 'Error de integridad de datos') {
-                        setMensajeError({ bps: 'Numero de BPS ya registrado' });
+                        setMensajeError({ bps: 'Número de BPS ya registrado'});
                     } else {
                         setMensajeError(error.response.data)
                     }
@@ -66,7 +66,7 @@ export const AddObraComponent = () => {
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
                     if (error.response.data === 'Error de integridad de datos') {
-                        setMensajeError({ bps: 'Numero de BPS ya registrado' });
+                        setMensajeError({ bps: 'Número de BPS ya registrado' });
                     } else {
                         setMensajeError(error.response.data)
                     }

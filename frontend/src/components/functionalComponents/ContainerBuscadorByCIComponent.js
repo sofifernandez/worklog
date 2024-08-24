@@ -24,8 +24,9 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
 
 
     return (
-        <div>
-            {!persona && (<div className='row justify-content-center px-0'>
+        <div className='row row justify-content-center'>
+            {!persona && (
+            <div className='row justify-content-center px-0'>
                 <BuscadorByCedulaComponent onPersonaFound={handlePersonaFound} onMensajeError={handleMensajeError} onCancelar={onCancelar} />
             </div>)}
             {persona && (
@@ -35,7 +36,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
                     <button className='btn btn-secondary col-3' onClick={volver}> Volver a buscar</button>
                 </div>
             )}
-            {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}
+            {mensajeError && <div className='alert alert-danger col-md-8 col-lg-6' role='alert'>{mensajeError}</div>}
         </div>
 
     );

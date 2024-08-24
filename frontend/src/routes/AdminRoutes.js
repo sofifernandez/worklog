@@ -12,6 +12,8 @@ import GenerarReporteComponent from '../components/GenerarReporteComponent'
 import AddRainToObra from '../components/AddRainToObra'
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 import DeleteJornalComponent from '../components/DeleteJornalComponent';
+import GenerarReportePruebaComponent from '../components/GenerarReportePruebaComponent';
+import BuscarJornalComponent from '../components/BuscarJornalComponent';
 
 const AdminRoutes = () => {
   return (
@@ -33,6 +35,8 @@ const AdminRoutes = () => {
       <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
       <Route exact path='/reporte' element={<GenerarReporteComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
+      <Route exact path='/reporte-dos' element={<GenerarReportePruebaComponent/>}/>
+      <Route exact path='/buscar-jornal-dos' element={<BuscarJornalComponent showTrabajadores={true} adminView={true}/>}/>
     </Routes>
   );
 };
