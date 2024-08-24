@@ -1,5 +1,6 @@
 package com.worklog.backend.controller;
 
+import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.exception.JornalNotFoundException;
 import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.Jornal;
@@ -93,6 +94,16 @@ public class JornalController {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
+
+    @PostMapping("/jornal/getJornalesByFiltros")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
+    public ResponseEntity<Optional<Jornal[]>> getJornalesByFiltros(@RequestBody JornalDataRequestDTO jornalDataRequest) {
+        Optional<Jornal[]> jornales = jornalService.findJornalesByFiltrosWithDTO(jornalDataRequest);
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+
+
 
     @GetMapping("/jornal/jornalNoConfirmado/{obraId}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")

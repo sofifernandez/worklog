@@ -3,18 +3,18 @@ import DatoObraComponent from "./DatoObraComponent";
 
 const ContainerDatoObraComponent = ({ obras, onRefrescarDatos }) => {
     console.log(obras)
-    const onRefrescarDatosParent=()=>{
+    const onRefrescarDatosParent = () => {
         onRefrescarDatos()
     }
 
     return (
         <table className='table table-sm table-bordered table-striped mt-3'>
             <thead>
+                <th></th>
                 <th>Nombre</th>
-                <th>Numero BPS</th>
-                <th>Activo</th>
+                <th>Número BPS</th>
+                <th className='text-center'>Activo</th>
                 <th>Jefe de Obra</th>
-                <th>Acciones</th>
                 <th>Codigo QR</th>
             </thead>
             <tbody>

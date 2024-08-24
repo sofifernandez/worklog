@@ -1,7 +1,7 @@
 package com.worklog.backend.service;
 
 import com.worklog.backend.dto.DetalleHorasJornalDTO;
-import com.worklog.backend.dto.ExportRequestDTO;
+import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.model.*;
 import com.worklog.backend.repository.JornalRepository;
@@ -135,7 +135,7 @@ public class ReporteService {
         return cellStyle;
     }
 
-    public List<DetalleHorasJornalDTO> fetchDataForExport(ExportRequestDTO exportRequest) {
+    public List<DetalleHorasJornalDTO> fetchDataForExport(JornalDataRequestDTO exportRequest) {
         exportRequest.validateData();
 
         LocalDate fechaDesde = LocalDate.parse(exportRequest.getFechaDesde());
@@ -235,7 +235,7 @@ public class ReporteService {
         return total;
     }
 
-    public List<Modificacion> getModificacionesByFechasAndObras(ExportRequestDTO expReq){
+    public List<Modificacion> getModificacionesByFechasAndObras(JornalDataRequestDTO expReq){
         List<Modificacion> mod=null;
         LocalDate fechaDesde = LocalDate.parse(expReq.getFechaDesde());
         LocalDate fechaHasta = LocalDate.parse(expReq.getFechaHasta());

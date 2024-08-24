@@ -10,7 +10,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class ExportRequestDTO {
+public class JornalDataRequestDTO {
     private String fechaDesde;
     private String fechaHasta;
     private List<Long> obras;

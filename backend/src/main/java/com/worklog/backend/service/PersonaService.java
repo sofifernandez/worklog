@@ -14,9 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,23 +29,41 @@ public class PersonaService {
 
     @Transactional
     public Persona savePersona(Persona newPersona) {
-        try {
-            Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-            newPersona.setFechaAlta(currentTimestamp);
-            newPersona.setFechaModif(currentTimestamp);
-            Persona persona = personaRepository.save(newPersona);
-            usuarioService.newUsuario(persona);
-            return persona;
-        } catch (Exception e) {
-            // Handle the exception, e.g., log it and/or rethrow it as a custom exception
-            System.err.println("An error occurred while saving the Persona: " + e.getMessage());
-            // You can also log the stack trace for more detailed error information
-            e.printStackTrace();
+        validarFechaDeNacimiento(newPersona.getFechaNacimiento());
+        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+        newPersona.setFechaAlta(currentTimestamp);
+        newPersona.setFechaModif(currentTimestamp);
+        Persona persona = personaRepository.save(newPersona);
+        usuarioService.newUsuario(persona);
+        return persona;
+    }
 
-            // Optionally, rethrow the exception or return a default/fallback value
-            // throw new CustomException("Failed to save Persona", e);
-            return null; // or you might choose to return a default Persona object or handle it in another way
+    private void validarFechaDeNacimiento(Date fechaDeNacimiento) throws InvalidDataException {
+        // Define the expected time zone (replace with your specific time zone if necessary)
+        ZoneId timeZone = ZoneId.of("America/Montevideo");
+
+        LocalDate birthDate = adjustDateToLocalDate(fechaDeNacimiento, timeZone);
+        LocalDate today = LocalDate.now();
+        int age = Period.between(birthDate, today).getYears();
+
+        if (age < 18) {
+            throw new InvalidDataException("fechaNacimiento", "Fecha de nacimiento incorrecta. Debe tener al menos 18 años.");
         }
+    }
+
+
+    private LocalDate adjustDateToLocalDate(Date fechaDeNacimiento, ZoneId zoneId) throws InvalidDataException {
+        if (fechaDeNacimiento == null) {
+            throw new InvalidDataException("La fecha de nacimiento no puede ser nula");
+        }
+
+        // Use Calendar to handle the date and adjust for timezone
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaDeNacimiento);
+        ZonedDateTime zonedDateTime = calendar.toInstant().atZone(zoneId);
+
+        // Extract LocalDate from ZonedDateTime
+        return zonedDateTime.toLocalDate();
     }
 
     @Transactional(readOnly = true)

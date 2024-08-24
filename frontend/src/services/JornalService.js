@@ -48,6 +48,10 @@ class JornalService{
         });
     }
 
+    getJornalesByFiltrosWithDTO(jornalDataRequest){
+        return axios.post(JORNALES_BASE_REST_API_URL + '/getJornalesByFiltros', jornalDataRequest)
+    }
+
     getJornalesSinConfirmar(obraId){
         return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalNoConfirmado/`+ obraId);
     }
@@ -92,7 +96,7 @@ class JornalService{
         return axios.post(JORNALES_BASE_REST_API_URL + '/validateGeneral', jornal)
     }
 
-    
+
 
 }
 // eslint-disable-next-line import/no-anonymous-default-export

@@ -19,7 +19,7 @@ public class Obra {
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
-    @Digits(integer = 20, fraction = 0, message = "El numero de BPS debe tener X digitos")
+    @Digits(integer = 20, fraction = 0, message = "El número de BPS debe tener X digitos")
     @Column(name = "bps", nullable = false, length = 50)
     private String bps;
 

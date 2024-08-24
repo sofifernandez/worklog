@@ -10,7 +10,6 @@ const ContainerBuscadorJornalComponent = ({ adminView }) => {
     const navigate = useNavigate();
 
     const handleJornalFound = (jornales) => {
-        console.log(jornales)
         setJornales(jornales);
     };
 

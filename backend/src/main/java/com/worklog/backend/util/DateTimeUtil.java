@@ -199,7 +199,7 @@ public class DateTimeUtil {
 
     public static void areDatesWithinSixMonths(LocalDate date1, LocalDate date2) {
         long monthsBetween = ChronoUnit.MONTHS.between(date1, date2);
-        if(Math.abs(monthsBetween) >6) throw new InvalidDataException("No se puede generar un reporte con un rango de fechas mayor a 6 meses");
+        if(Math.abs(monthsBetween) >6) throw new InvalidDataException("No se pueden seleccionar fechas con un rango mayor a 6 meses");
     }
 
 }

@@ -18,7 +18,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
     private EntityManager entityManager;
 
     @Override
-    public Optional<Jornal[]> findJornalesByFiltros(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona) {
+    public Optional<Jornal[]> findJornalesByRangoDeFechasObraPersona(LocalDate startDate, LocalDate endDate, Obra obra, Persona persona) {
         StringBuilder sql = new StringBuilder("SELECT * FROM jornal WHERE 1=1");
 
         if (persona != null) {
@@ -76,5 +76,39 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         List<Jornal> result = query.getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
     }
+
+    @Override
+    public Optional<Jornal[]> findJornalesByFechasObrasyPersonas(LocalDate startDate, LocalDate endDate, List<Long> obrasID, List<Long> personasID) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM jornal WHERE ");
+
+        sql.append(" fecha_jornal >= :startDate");
+        sql.append(" AND fecha_jornal <= :endDate");
+
+        if (personasID != null && !personasID.isEmpty()) {
+            sql.append(" AND persona_id IN (:personasID)");
+        }
+
+        if (obrasID != null && !obrasID.isEmpty()) {
+            sql.append(" AND obra_id IN (:obrasID)");
+        }
+
+        sql.append(" ORDER BY fecha_jornal DESC");
+
+        Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+
+        if (personasID != null && !personasID.isEmpty()) {
+            query.setParameter("personasID", personasID);
+        }
+
+        if (obrasID != null && !obrasID.isEmpty()) {
+            query.setParameter("obrasID", obrasID);
+        }
+
+        List<Jornal> result = query.getResultList();
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
+    }
+
 
 }

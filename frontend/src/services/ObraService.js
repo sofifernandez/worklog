@@ -45,6 +45,16 @@ class ObraService {
         return axios.get(OBRA_BASE_REST_API_URL + '/getObraByNombre/' + nombre)
     }
 
+    getObrasActivasEntreFechasyTrabajador(fechaDesde, fechaHasta, persona_id){
+        return axios.get(`${OBRA_BASE_REST_API_URL}/getAllObrasByDatesAndTrabajador/`, {
+            params: {
+                fechaDesde: fechaDesde,
+                fechaHasta: fechaHasta,
+                persona_id: persona_id
+            }
+        });
+    }
+
 }
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new ObraService()

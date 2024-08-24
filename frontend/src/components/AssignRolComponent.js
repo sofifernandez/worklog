@@ -81,6 +81,7 @@ export const AssignRolComponent = () => {
                    });
                 navigate('/personas')
             }).catch(error => {
+                console.log(error)
                     setMensajeError(error.response.data);
             })
         } else {
@@ -154,7 +155,7 @@ export const AssignRolComponent = () => {
                     </div>
                 </div>
             )}
-            {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}
+            {mensajeError && <div className='alert alert-danger' role='alert'>{mensajeError}</div>}
         </div>
     );
 };

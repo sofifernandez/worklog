@@ -1,7 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.dto.DetalleHorasJornalDTO;
-import com.worklog.backend.dto.ExportRequestDTO;
+import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.model.Modificacion;
 import com.worklog.backend.service.ReporteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ReporteController {
     @PostMapping("/reporte")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<byte[]> exportToExcel(
-            @RequestBody ExportRequestDTO exportRequest) throws IOException {
+            @RequestBody JornalDataRequestDTO exportRequest) throws IOException {
         // Fetch the data for the Excel export
         List<DetalleHorasJornalDTO> jornalDataList = reporteService.fetchDataForExport(exportRequest);
         List<Modificacion> modificaciones = reporteService.getModificacionesByFechasAndObras(exportRequest);

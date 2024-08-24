@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.JefeObraNotFoundException;
 import com.worklog.backend.exception.ObraNotFoundException;
 import com.worklog.backend.exception.PersonaRolNotFoundException;
@@ -31,17 +32,15 @@ public class JefeObraService {
     @Autowired
     private PersonaService personaService;
 
+
     @Transactional
     public JefeObra saveJefeObra(JefeObra newJefeObra) {
-        try{
             Timestamp currentTimestamp = new Timestamp(new Date().getTime());
             newJefeObra.setFechaAlta(currentTimestamp);
             newJefeObra.setFechaModif(currentTimestamp);
             newJefeObra.setActivo(true);
+            if(jefeObraRepository.existsByPersona(newJefeObra.getPersona())) throw new InvalidDataException("La persona seleccionada ya es jefe de una obra.");
             return jefeObraRepository.save(newJefeObra);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     @Transactional(readOnly = true)
@@ -77,11 +76,24 @@ public class JefeObraService {
         jefeObraRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Obra getObraByJefe(Long id){
         Persona persona = personaService.getPersonaById(id);
         Obra obra = jefeObraRepository.getObraByJefe(persona);
         if (obra == null) {throw new ObraNotFoundException("No tienes obras asignadas");}
         return obra;
+    }
+
+    public boolean existsByPersona(Persona persona){
+        return jefeObraRepository.existsByPersona(persona);
+    }
+
+    @Transactional(readOnly = true)
+    public String getNombreDeObraByPersona(Persona persona){
+        String nombre= "";
+        Obra obra =getObraByJefe(persona.getId());
+        if(obra!=null){nombre= obra.getNombre();};
+        return nombre;
     }
 
 }

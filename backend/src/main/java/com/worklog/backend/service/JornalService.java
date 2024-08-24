@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.JornalNotFoundException;
 import com.worklog.backend.exception.JornalNotSavedException;
@@ -176,7 +177,7 @@ public class JornalService {
         DateTimeUtil.validateFechas(startDate, endDate);
         Persona persona = personaId > 0 ? personaService.getPersonaById(personaId) : null;
         Obra obra = obraId > 0 ? obraService.getObraById(obraId) : null;
-        Optional<Jornal[]> jornales= jornalRepository.findJornalesByFiltros(startDate, endDate, obra, persona);
+        Optional<Jornal[]> jornales= jornalRepository.findJornalesByRangoDeFechasObraPersona(startDate, endDate, obra, persona);
         if (jornales.isPresent()) {
             Jornal[] jornalesArray = jornales.get();
             if (jornalesArray.length == 0) {
@@ -187,6 +188,36 @@ public class JornalService {
             throw new JornalNotFoundException("");
         }
     }
+
+
+    @Transactional(readOnly = true)
+    public Optional<Jornal[]> findJornalesByFiltrosWithDTO(JornalDataRequestDTO jornalDataRequest) {
+        jornalDataRequest.validateData();
+
+        LocalDate fechaDesde = LocalDate.parse(jornalDataRequest.getFechaDesde());
+        LocalDate fechaHasta = LocalDate.parse(jornalDataRequest.getFechaHasta());
+        List<Long> obrasSeleccionadas = jornalDataRequest.getObras();
+        List<Long> personasSeleccionadas = jornalDataRequest.getPersonas();
+
+        boolean allActiveObras = obrasSeleccionadas.size()==1 && obrasSeleccionadas.getFirst().equals(0L);
+        boolean allActiveTrabajadores= personasSeleccionadas.size()==1 && personasSeleccionadas.getFirst().equals(0L);
+
+        if(allActiveTrabajadores) personasSeleccionadas=null;
+        if(allActiveObras) obrasSeleccionadas=null;
+
+        Optional<Jornal[]> jornales= jornalRepository.findJornalesByFechasObrasyPersonas(fechaDesde, fechaHasta, obrasSeleccionadas, personasSeleccionadas);
+        if (jornales.isPresent()) {
+            Jornal[] jornalesArray = jornales.get();
+            if (jornalesArray.length == 0) {
+                throw new JornalNotFoundException("");
+            }
+            return jornales;
+        } else {
+            throw new JornalNotFoundException("");
+        }
+    }
+
+
 
     @Transactional(readOnly = true)
     public List<Persona> getAllTrabajadoresDeObra(Long obraId) {
@@ -398,4 +429,15 @@ public class JornalService {
 
         }
 
+    public List<Obra> getAllObrasByDatesAndTrabajador(String fechaDesde, String fechaHasta, Long trabajadorId){
+        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
+        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
+        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
+        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+        DateTimeUtil.validateFechas(startDate, endDate);
+        return jornalRepository.getAllObrasByDatesAndTrabajador(startDate,endDate, trabajadorId);
+
     }
+
+
+}

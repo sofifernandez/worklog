@@ -17,7 +17,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
     };
 
     const handlePersonaClick = (persona) => {
-        onPersonaFound(persona); 
+        onPersonaFound(persona);
         handleRowClick(persona) // Pasa la persona específica al padre
     };
 
@@ -32,7 +32,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
     };
 
     return (
-        <div>
+        <div className='row row justify-content-center'>
             {!personas.length && (
                 <div className='row justify-content-center px-0'>
                     <BuscadorByCIComponent onPersonasFound={handlePersonasFound} onMensajeError={handleMensajeError} onCancelar={onCancelar} />
@@ -57,7 +57,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
                     <h5 className='px-0'>Resultado:</h5>
                     {personas.map(p => (
                         <DatoPersonaComponent
-                            key={p.id} 
+                            key={p.id}
                             persona={p}
                             minimalData={minimalData}
                             handleRowClick={handlePersonaClick}
@@ -66,7 +66,7 @@ const ContainerBuscadorByCIComponent = ({ onPersonaFound, onCancelar, minimalDat
                     <button className='btn btn-secondary col-3' onClick={volver}>Volver a buscar</button>
                 </div>
             )}
-            {mensajeError && <div className='alert alert-light' role='alert'>{mensajeError}</div>}
+            {mensajeError && <div className='alert alert-danger col-md-8 col-lg-6' role='alert'>{mensajeError}</div>}
         </div>
     );
 };
