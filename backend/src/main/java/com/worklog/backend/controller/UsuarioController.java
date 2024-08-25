@@ -1,6 +1,6 @@
 package com.worklog.backend.controller;
 
-import com.worklog.backend.DTOs.PasswordUpadteDTO;
+import com.worklog.backend.dto.PasswordUpadteDTO;
 import com.worklog.backend.exception.UsuarioNotFoundException;
 import com.worklog.backend.model.Usuario;
 import com.worklog.backend.repository.UsuarioRepository;
@@ -76,9 +76,10 @@ public class UsuarioController {
 
     @PutMapping("usuario/new-password")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
-    public ResponseEntity<String> updatePassword(@RequestBody PasswordUpadteDTO request) {
+    public ResponseEntity<Object> updatePassword(@RequestBody PasswordUpadteDTO request) {
         long personaId = request.getPersonaId();
         String newPassword = request.getNewPassword();
-        return usuarioService.changePassword(personaId, newPassword);
+        usuarioService.changePassword(personaId, newPassword);
+        return ResponseEntity.ok().build();
     }
 }
