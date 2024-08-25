@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.UsuarioNotFoundException;
 import com.worklog.backend.model.Persona;
 import com.worklog.backend.model.Usuario;
@@ -50,9 +51,9 @@ public class UsuarioService {
     }
 
     @Transactional
-    public ResponseEntity<String> changePassword(long id, String password) {
+    public void changePassword(long id, String password) {
         if(!isValidPassword(password)) {
-            return ResponseEntity.badRequest().body("La contraseña debe tener al menos 4 caracteres");
+            throw new InvalidDataException("La contraseña debe tener al menos 4 caracteres");
         }
         Usuario usuario = usuarioRepository.findByPersonaId(id).orElse(null);
         if (usuario == null) {
@@ -61,7 +62,6 @@ public class UsuarioService {
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setPasswordResetRequired(false);
         usuarioRepository.save(usuario);
-        return ResponseEntity.ok("Contraseña cambiada exitosamente.");
     }
 
     private boolean isValidPassword(String password) {

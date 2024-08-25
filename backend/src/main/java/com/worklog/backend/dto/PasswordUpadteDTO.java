@@ -1,4 +1,4 @@
-package com.worklog.backend.DTOs;
+package com.worklog.backend.dto;
 
 public class PasswordUpadteDTO {
     private long personaId;
