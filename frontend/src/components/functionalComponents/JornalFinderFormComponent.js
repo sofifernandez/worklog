@@ -42,14 +42,14 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
      }, [fechaDesde, fechaHasta]);
  
 
-    const agregarALista = async (e) => {
+    const agregarALista =  async (persona) => {
         setSeleccionarAllTrabajadores(false)
         setTrabajadoresSeleccionados(prevTrabajadores => {
             // Check if personaFound is already in the array
-            const exists = prevTrabajadores.some(trabajador => trabajador.id === personaFound.id);
+            const exists = prevTrabajadores.some(trabajador => trabajador.id === persona.id);
             // If not, add it to the array
             if (!exists) {
-                return [...prevTrabajadores, personaFound];
+                return [...prevTrabajadores, persona];
             }
             // Otherwise, return the previous array unchanged
             return prevTrabajadores;
