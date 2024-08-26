@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-import ContainerBuscadorByCIComponent from './ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './ContainerPersonaFinderComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -43,6 +43,7 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
  
 
     const agregarALista =  async (persona) => {
+        console.log('click')
         setSeleccionarAllTrabajadores(false)
         setTrabajadoresSeleccionados(prevTrabajadores => {
             // Check if personaFound is already in the array
@@ -213,7 +214,7 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
                         {showTrabajadores && (
                              seleccionarTrabajadoresManual && (
                                 <div className='row justify-content-center mt-5'>
-                                    <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerBuscadorByCIComponent>
+                                    <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
                                 </div>)
                             
                         )}

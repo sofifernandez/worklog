@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PersonaRolService from '../services/PersonaRolService';
 import PersonaService from '../services/PersonaService';
 import { useNavigate, useParams } from 'react-router-dom';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
+import ContainerDatoPersonaComponent from './functionalComponents/ContainerDatoPersonaComponent';
 import Swal from 'sweetalert2';
 
 export const AssignRolComponent = () => {
@@ -131,12 +132,12 @@ export const AssignRolComponent = () => {
         <div className='mt-5 row justify-content-center col-12'>
             {!persona && (
                 <div>
-                    <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerBuscadorByCIComponent>
+                    <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerPersonaFinderComponent>
                 </div>)}
 
             {persona && (
                 <div className='row justify-content-center'>
-                    <DatoPersonaComponent persona={persona}/>
+                    <ContainerDatoPersonaComponent personas={persona}/>
                     <div className='col-12 col-lg-6 row justify-content-center'>
                         <h5 className='mt-5 px-0'>Selecciona un rol:</h5>
                         <div className="btn-group-vertical col-lg-9 mt-3" aria-label="Basic radio toggle button group">

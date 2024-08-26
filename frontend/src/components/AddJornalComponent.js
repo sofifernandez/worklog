@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import JornalService from '../services/JornalService';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import ContainerBuscadorByBPSComponent from './functionalComponents/ContainerBuscadorByBPSComponent';
 import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
 import DatoObraComponent from './functionalComponents/DatoObraComponent';
@@ -219,7 +219,7 @@ export const AddJornalComponent = () => {
                 )}
                 {!personaTemp && (
                   <div className='row justify-content-center'>
-                    <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={volver} />
+                    <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={volver} />
                   </div>
                 )}
                 { !persona && personaTemp && (

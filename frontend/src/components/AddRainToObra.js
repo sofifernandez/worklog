@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, setHours, setMinutes, addHours } from 'date-fns';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import ErrorMessage from './functionalComponents/ErrorMessageComponent';
 import SuccessMessage from './functionalComponents/SuccessMessageComponent';
 
@@ -400,7 +400,7 @@ export const AddRainToObra = () => {
                         {/*--------- BUSCADOR--------------------------- */}
                         {buscarTrabajador && (
                             <div className='row justify-content-center'>
-                                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerBuscadorByCIComponent>
+                                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
 
