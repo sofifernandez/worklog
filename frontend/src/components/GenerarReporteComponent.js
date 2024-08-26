@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import ObraService from "../services/ObraService";
@@ -251,7 +251,7 @@ const GenerarReporteComponent = () => {
                         {/*--------- BUSCADOR--------------------------- */}
                         {seleccionarTrabajadoresManual && (
                             <div className='row justify-content-center mt-5'>
-                                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerBuscadorByCIComponent>
+                                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
 

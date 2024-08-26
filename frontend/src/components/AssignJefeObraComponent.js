@@ -3,8 +3,8 @@ import PersonaRolService from '../services/PersonaRolService';
 import { useNavigate, useParams } from 'react-router-dom';
 import JefeObraService from '../services/JefeObraService';
 import ObraService from '../services/ObraService';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
-import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
+import ContainerDatoPersonaComponent from './functionalComponents/ContainerDatoPersonaComponent';
 import DatoObraComponent from './functionalComponents/DatoObraComponent'
 
 
@@ -12,7 +12,6 @@ export const AssignJefeObraComponent = () => {
     const [persona, setPersona] = useState();
     const [isJefeObra, setIsJefeObra] = useState(false)
     const [mensajeError, setMensajeError] = useState();
-    const [personaRol, setPersonaRol] = useState()
     const [obra, setObra] = useState();
     const { id } = useParams()
 
@@ -31,16 +30,20 @@ export const AssignJefeObraComponent = () => {
 
     };
 
+    console.log(persona)
+
     const handlePersonaFound = (persona) => {
         setPersona(persona);
-        persona && setPersonaRol(persona.personaRol);
     };
+
+    const handleClick= (persona)=>{
+        setPersona(persona)
+    }
 
 
     const cancelar = (e) => {
         e.preventDefault();
         setPersona(null);
-        setPersonaRol(null)
         setMensajeError()
     };
 
@@ -98,19 +101,20 @@ export const AssignJefeObraComponent = () => {
                     </div>
                 </div>
             )}
+
             {!persona && (<div className='row justify-content-center'>
-                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} minimalData={true} onCancelar={volver} handleRowClick={asignarJefeObra}></ContainerBuscadorByCIComponent>
+                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} minimalData={true} onCancelar={volver} handleRowClick={handleClick}></ContainerPersonaFinderComponent>
             </div>)}
             {persona && (
                 <div className='col-12 col-lg-7 row justify-content-center'>
                     <h5 className='px-0'>Resultado:</h5>
-                    <DatoPersonaComponent persona={persona} personaRol={personaRol ? personaRol.rol.rol : 'Sin rol'} />
+                    <ContainerDatoPersonaComponent personas={persona}/>
                     {isJefeObra === true && (<><button className="btn btn-success py-2 m-3 col-4" type="submit" onClick={(e) => asignarJefeObra(e)}>Asignar</button>
-                    <button className="btn btn-danger py-2 m-3 col-4" type="submit" onClick={cancelar}>Cancelar</button></>)}
+                        <button className="btn btn-danger py-2 m-3 col-4" type="submit" onClick={cancelar}>Cancelar</button></>)}
                 </div>
             )}
 
-            {isJefeObra === false && persona && (
+            {!isJefeObra && persona && (
                 <div className='col-12 col-lg-7 row justify-content-center'>
                     <div className='alert alert-danger' role='alert'>La persona encontrada no tiene el rol adecuado para ser jefe de obra</div>
                     <button className="btn btn-danger py-2 m-3 col-4" type="submit" onClick={volver}>Volver</button>

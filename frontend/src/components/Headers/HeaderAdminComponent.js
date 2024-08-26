@@ -36,6 +36,7 @@ const HeaderAdminComponent = () => {
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkObras">
                                 <a className="dropdown-item" href="/add-obra">Agregar</a>
+                                <a className="dropdown-item" href="/obras">Buscar</a>
                                {/*  <a className="dropdown-item" href="#">Asignar Jefe de Obra</a> */}
                             </div>
                         </li>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PersonaService from '../services/PersonaService'
 import { Link } from 'react-router-dom'
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import ContainerDatoPersonaComponent from './functionalComponents/ContainerDatoPersonaComponent';
 
 export const ListPersonasComponent = () => {
@@ -31,7 +31,7 @@ export const ListPersonasComponent = () => {
                 <ContainerDatoPersonaComponent personas={personas}/>
             </div>
             <div className='my-5'>
-                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={handleCancelar}></ContainerBuscadorByCIComponent>
+                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={handleCancelar}></ContainerPersonaFinderComponent>
             </div>
         </div >
     )

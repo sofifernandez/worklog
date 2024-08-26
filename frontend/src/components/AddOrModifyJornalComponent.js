@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { format, setHours, setMinutes, addHours } from 'date-fns';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import ContainerBuscadorByCIComponent from './functionalComponents/ContainerBuscadorByCIComponent';
+import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
 import ErrorMessage from './functionalComponents/ErrorMessageComponent';
 import SuccessMessage from './functionalComponents/SuccessMessageComponent';
 import Swal from 'sweetalert2';
@@ -439,7 +439,7 @@ export const AddOrModifyJornalComponent = () => {
                         {/*--------- BUSCADOR--------------------------- */}
                         {(isAdmin || isJefeObra) && buscarTrabajador && (
                             <div className='row justify-content-center'>
-                                <ContainerBuscadorByCIComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerBuscadorByCIComponent>
+                                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
                         {/*--------- TIPO JORNAL--------------------------- */}

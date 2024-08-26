@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PersonaService from '../../services/PersonaService';
 
-const BuscadorByCIComponent = ({ onPersonasFound, onMensajeError, onCancelar }) => {
+const PersonaFinderComponent = ({ onPersonasFound, onMensajeError, onCancelar }) => {
     
     const [valorBusqueda, setValorBusqueda] = useState('');
 
@@ -13,7 +13,7 @@ const BuscadorByCIComponent = ({ onPersonasFound, onMensajeError, onCancelar }) 
             } else {
                 let result;
                 // Si el valor es solo números, asumimos que es una cédula
-                if (/^\d+$/.test(valorBusqueda)) {
+                if (/^\d/.test(valorBusqueda)) {
                     result = await PersonaService.getPersonaByCI(valorBusqueda);
                     onPersonasFound(result ? [result.data] : []);
                 } else {
@@ -53,4 +53,4 @@ const BuscadorByCIComponent = ({ onPersonasFound, onMensajeError, onCancelar }) 
     );
 };
 
-export default BuscadorByCIComponent;
+export default PersonaFinderComponent;
