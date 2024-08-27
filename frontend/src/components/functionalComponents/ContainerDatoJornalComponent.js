@@ -1,21 +1,21 @@
 
 import DatoJornalComponent from "./DatoJornalComponent";
 
-const ContainerDatoJornalComponent = ({ jornales, adminView, confirmar, onError = () => {}, onSuccess = () => {} }) => {
+const ContainerDatoJornalComponent = ({ jornales, adminView, jefeView, onError = () => {}, onSuccess = () => {} }) => {
 
     return (
         <table className='table table-sm table-bordered table-striped mt-3'>
             <thead>
                 <tr>
                     {/* <th> </th> */}
-                    {adminView &&(<th className="text-center">Nombre</th>)}
+                    {(adminView || jefeView) &&(<th className="text-center">Nombre</th>)}
                     <th className="text-center">Tipo </th>
                     <th className="text-center">Fecha</th>
                     <th className="text-center">Obra</th>
                     <th className="text-center">Ingreso</th>
                     <th className="text-center">Salida</th>
-                    {adminView &&(<th className="text-center">Confirmado</th>)}
-                    {adminView &&(<th className="text-center">Acciones</th>)}
+                    {(adminView || jefeView) &&(<th className="text-center">Confirmado</th>)}
+                    {(adminView || jefeView) &&(<th className="text-center">Acciones</th>)}
                 </tr>
             </thead>
             <tbody>
@@ -23,9 +23,8 @@ const ContainerDatoJornalComponent = ({ jornales, adminView, confirmar, onError 
                     <DatoJornalComponent
                         key={p.id}
                         jornal={p}
-                        onlyRows={true}
                         adminView={adminView}
-                        confirmar={confirmar}
+                        jefeView={jefeView}
                         onError={onError}
                         onSuccess={onSuccess}
                     />

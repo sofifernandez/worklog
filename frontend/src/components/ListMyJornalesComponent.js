@@ -8,8 +8,8 @@ import { useAuth } from '../context/AuthContext';
 
 export const ListMyJornalesComponent = () => {
   const { personaRolLoggeado } = useAuth();
-
   const [jornales, setJornales] = useState([])
+  
 
   const listarJornales = () => {
     JornalService.getJornalesByPersonaId(personaRolLoggeado.id).then(res => {
@@ -34,7 +34,7 @@ export const ListMyJornalesComponent = () => {
         :
         <div>Sin datos</div>
       }
-      <Link to='/buscar-jornal' className='btn btn-secondary col-md-6'>Buscar</Link>
+       <Link to={personaRolLoggeado.personaRol.rol.rol === "JEFE_OBRA" ? '/buscar-my-jornal' : '/buscar-jornal'} className='btn btn-secondary col-md-6'>Buscar</Link>
     </div>
   )
 }

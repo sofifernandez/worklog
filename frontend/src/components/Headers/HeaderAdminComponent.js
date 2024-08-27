@@ -37,7 +37,7 @@ const HeaderAdminComponent = () => {
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkObras">
                                 <a className="dropdown-item" href="/add-obra">Agregar</a>
                                 <a className="dropdown-item" href="/obras">Buscar</a>
-                               {/*  <a className="dropdown-item" href="#">Asignar Jefe de Obra</a> */}
+                                {/*  <a className="dropdown-item" href="#">Asignar Jefe de Obra</a> */}
                             </div>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
@@ -50,7 +50,7 @@ const HeaderAdminComponent = () => {
                                 <a className="dropdown-item" href="/add-rain">Agregar lluvia</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
                                 <a className="dropdown-item" href="/buscar-jornal-dos">Buscar Dos</a>
-                                <a className="dropdown-item" href="/confirmar-jornal">A Confirmar</a>
+                                <a className="dropdown-item" href="/confirmar-jornal">Confirmar</a>
                             </div>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
@@ -67,7 +67,7 @@ const HeaderAdminComponent = () => {
                     </ul>
                     <div className="row my-2 my-lg-0 mx-0">
                         <div className='d-none d-lg-block col-lg-7 my-auto' id="nombreUsuario">Hola {personaRolLoggeado.nombre}!</div>
-                        <div className='col-lg-5'><LogoutComponent/></div>
+                        <div className='col-lg-5'><LogoutComponent /></div>
                     </div>
                 </div>
             </nav>

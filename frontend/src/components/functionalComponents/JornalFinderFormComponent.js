@@ -220,8 +220,8 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
                         )}
 
                         <div className='row justify-content-between mt-5'>
-                            <button id="btnGenerar" className="btn btn-primary col-5 col-md-3 ms-3 mb-3" type="button" onClick={handleSubmitJornalData}>{titleFromParent.split(' ')[0]}</button>
                             <button className="btn btn-danger col-5 col-md-3 ms-3 mb-3 " type="button" onClick={cancelar}>Cancelar</button>
+                            <button id="btnGenerar" className="btn btn-primary col-5 col-md-3 ms-3 mb-3" type="button" onClick={handleSubmitJornalData}>{titleFromParent.split(' ')[0]}</button>
                         </div>
                     </form>
                 </div>

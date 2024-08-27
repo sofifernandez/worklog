@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+/* import React, { useState } from 'react'
 import BuscadorJornalComponent from './BuscadorJornalComponent';
 import ContainerDatoJornalComponent from './ContainerDatoJornalComponent';
 import ErrorMessage from './ErrorMessageComponent'
@@ -67,3 +67,4 @@ export default ContainerBuscadorJornalComponent;
 
 
 
+ */

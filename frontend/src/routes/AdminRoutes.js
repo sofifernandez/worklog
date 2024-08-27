@@ -34,13 +34,13 @@ const AdminRoutes = () => {
       <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-jornal/' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/delete-jornal/:id' element={<DeleteJornalComponent />} />
-      <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/>
+      {/* <Route exact path='/buscar-jornal' element={<ContainerBuscadorJornalComponent adminView={true}/>}/> */}
       <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
       <Route exact path='/reporte' element={<GenerarReporteComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
       <Route exact path='/reporte-dos' element={<GenerarReportePruebaComponent/>}/>
-      <Route exact path='/buscar-jornal-dos' element={<BuscarJornalComponent showTrabajadores={true} adminView={true}/>}/>
-        <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
+      <Route exact path='/buscar-jornal' element={<BuscarJornalComponent showTrabajadores={true} adminView={true}/>}/>
+      <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
     </Routes>
   );
 };
