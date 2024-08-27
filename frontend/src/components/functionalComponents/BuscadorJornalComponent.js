@@ -1,4 +1,4 @@
-import DatePicker from 'react-datepicker';
+/* import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns';
@@ -103,7 +103,7 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                 <div className='card-body'>
                     <form>
                     <div className="row form-group mx-auto">
-                            {/*--------- FECHA DESDE--------------------------- */}
+
                             <div className='mt-3 col-md-6 ps-0'>
                                 <label className='form-label me-4 labelCard fs-5'>Desde</label>
                                 <DatePicker
@@ -114,7 +114,7 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                                 />
                             </div>
 
-                            {/*--------- FECHA HASTA--------------------------- */}
+
                             <div className='mt-3 col-md-6 ps-0'>
                                 <label className='form-label me-4 labelCard fs-5'>Hasta</label>
                                 <DatePicker
@@ -125,7 +125,7 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
                                 />
                             </div>
                         </div>
-                         {/*--------- OBRAS--------------------------- */}
+
                         <div className='row form-group mt-3'>
                             <label className='form-label labelCard fs-5'>Obra</label>
                             <select
@@ -179,4 +179,4 @@ const BuscadorJornalComponent = ({ onJornalesFound, onMensajeError, onCancelar }
     );
 }
 
-export default BuscadorJornalComponent;
+export default BuscadorJornalComponent; */

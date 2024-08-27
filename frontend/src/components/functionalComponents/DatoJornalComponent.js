@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 
 
 
-const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError, onSuccess }) => {
+const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, onSuccess }) => {
 
     const [modalShow, setModalShow] = useState(false);
     const [modalType, setModalType] = useState('');
@@ -71,21 +71,21 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError,
             updatedJornal.horaFin = formatTimeWithOffset(jornal.horaFin, -3);
             motivo = 'Trabajador no marcó entrada'
         }
-    
+
         try {
             await JornalService.updateJornal(currentJornalId, motivo, updatedJornal);
-    
+
             Swal.fire({
                 title: `Jornal actualizado con éxito`,
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false,
-                timerProgressBar: true, 
+                timerProgressBar: true,
                 didClose: () => {
-                    window.location.reload(); 
+                    window.location.reload();
                 }
             });
-    
+
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 Swal.fire({
@@ -113,129 +113,82 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError,
     return (
 
         <>
-            {!onlyRows &&
+            <tr key={jornal.id}>
 
-                (
-                    <table className='table table-sm table-bordered table-striped mt-3'>
-                        <thead>
-                            <tr>
-                                {adminView && (<th className="text-center">Nombre</th>)}
-                                <th className="text-center">Tipo</th>
-                                <th className="text-center">Fecha</th>
-                                <th className="text-center">Obra</th>
-                                <th className="text-center">Ingreso</th>
-                                <th className="text-center">Salida</th>
-                                {adminView && (<th className="text-center">Confirmado</th>)}
-                                {adminView && (<th className="text-center">Acciones</th>)}
+                {/*----- NOMBRE -------- */}
+                {(adminView || jefeView) && (<th className="text-center">{jornal.persona.nombre} {jornal.persona.apellido} </th>)}
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr key={jornal.id}>
-                                {adminView && (<th className="text-center">{jornal.persona.nombre} {jornal.persona.apellido} </th>)}
-                                {/* <td ><Link className='btn editarJornal' to={`/edit-jornal/${jornal.id}`} title='Editar'><FontAwesomeIcon icon={faPenToSquare} /></Link></td> */}
-                                <td className="text-center lluvia" title='LLuvia'>
-                                    {jornal.tipoJornal.id === 1 && <FontAwesomeIcon icon={faCircle} />}
-                                    {jornal.tipoJornal.id === 2 && <FontAwesomeIcon icon={faCloudRain} />}
-                                    {jornal.tipoJornal.id === 3 && <FontAwesomeIcon icon={faE} />}
-                                </td>
-                                <td className="text-center">{formatDate(jornal.fechaJornal)}</td>
-                                <td className="text-center">{jornal.obra.nombre}</td>
-                                <td className="text-center">
-                                    {jornal.horaComienzo ? (
-                                        formatTime(jornal.horaComienzo)
-                                    ) : (
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => openModal(jornal.id, 'horaComienzo')}
-                                        >
-                                            Agregar Hora de Inicio
-                                        </button>
-                                    )}
-                                </td>
+                {/*----- TIPO -------- */}
+                <td className="text-center lluvia" >
+                    {jornal.tipoJornal.id === 1 && <FontAwesomeIcon icon={faClock} title='Común' />}
+                    {jornal.tipoJornal.id === 2 && <FontAwesomeIcon icon={faCloudRain} title='Lluvia' />}
+                    {jornal.tipoJornal.id === 3 && <FontAwesomeIcon icon={faE} title='Extra' />}
+                </td>
+                {/*----- FECHA -------- */}
+                <td className="text-center">{formatDate(jornal.fechaJornal)}</td>
+                {/*----- OBRA -------- */}
+                <td className="text-center">{jornal.obra.nombre}</td>
+                {/*----- HORA COMIENZO -------- */}
+                <td className="text-center">
+                    {jornal.horaComienzo ? (
+                        formatTime(jornal.horaComienzo)
+                    ) : (
+                        <button
+                            className="btn btn-danger"
+                            onClick={() => openModal(jornal.id, 'horaComienzo')}
+                        >
+                            Agregar Hora de Inicio
+                        </button>
+                    )}
+                </td>
 
-                                <td className="text-center">
-                                    {jornal.horaFin ? (
-                                        formatTime(jornal.horaFin)
-                                    ) : (
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => openModal(jornal.id, 'horaFin')}
-                                        >
-                                            Agregar Hora de Fin
-                                        </button>
-                                    )}
-                                </td>
-                                {adminView && (<td className="text-center">
-                                    <Link className='btn btn-info mx-1' to={`/edit-obra/${jornal.id}`}>Modificar</Link>
-                                    <button className='btn btn-danger mx-1' onClick={() => formatDate(jornal.id)}>Eliminar</button>
-                                </td>)}
-                            </tr>
-                        </tbody>
-                    </table>
+                {/*----- HORA FIN -------- */}
+                <td className="text-center">
+                    {jornal.horaFin ? (
+                        formatTime(jornal.horaFin)
+                    ) : (
+                        <button
+                            className="btn btn-danger"
+                            onClick={() => openModal(jornal.id, 'horaFin')}
+                        >
+                            Agregar salida
+                        </button>
+                    )}
+                </td>
+                {/*----- STATUS CONFIRMADO -------- */}
+                {(adminView || jefeView) && (<td className="text-center"> <FontAwesomeIcon
+                    icon={faCircle}
+                    style={{ color: jornal.confirmado ? 'green' : 'red' }}
+                /> </td>)
+                }
+
+                {/*----- ACCIONES -------- */}
+                {adminView && (
+                    <td className="text-center">
+                        <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
+                        <Link className='btn btn-danger m-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
+                        {!jornal.confirmado && (<ConfirmarJornalComponent
+                            jornal={jornal}
+                            onError={onError}
+                            onSuccess={onSuccess}
+                        />)}
+                    </td>
                 )}
 
-            {onlyRows && (
-                <tr key={jornal.id}>
-                    {adminView && (<th className="text-center">{jornal.persona.nombre} {jornal.persona.apellido} </th>)}
-                    {/* <td ><Link className='btn editarJornal' to={`/edit-jornal/${jornal.id}`} title='Editar'><FontAwesomeIcon icon={faPenToSquare} /></Link></td> */}
-                    <td className="text-center lluvia" title='LLuvia'>
-                        {jornal.tipoJornal.id === 1 && <FontAwesomeIcon icon={faClock} />}
-                        {jornal.tipoJornal.id === 2 && <FontAwesomeIcon icon={faCloudRain} />}
-                        {jornal.tipoJornal.id === 3 && <FontAwesomeIcon icon={faE} />}
-                    </td>
-                    <td className="text-center">{formatDate(jornal.fechaJornal)}</td>
-                    <td className="text-center">{jornal.obra.nombre}</td>
+                {jefeView && (
                     <td className="text-center">
-                        {jornal.horaComienzo ? (
-                            formatTime(jornal.horaComienzo)
-                        ) : (
-                            <button
-                                className="btn btn-danger"
-                                onClick={() => openModal(jornal.id, 'horaComienzo')}
-                            >
-                                Agregar Hora de Inicio
-                            </button>
-                        )}
-                    </td>
-
-                    <td className="text-center">
-                        {jornal.horaFin ? (
-                            formatTime(jornal.horaFin)
-                        ) : (
-                            <button
-                                className="btn btn-danger"
-                                onClick={() => openModal(jornal.id, 'horaFin')}
-                            >
-                                Agregar salida
-                            </button>
-                        )}
-                    </td>
-                    {adminView && (<td className="text-center"> <FontAwesomeIcon
-                        icon={faCircle}
-                        style={{ color: jornal.confirmado ? 'green' : 'red' }}
-                    /> </td>)
-                    }
-                    {adminView && !confirmar && (
-                        <td className="text-center">
-                            <Link className='btn btn-info mx-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                            <Link className='btn btn-danger mx-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
-                        </td>
-                    )}
-                    {adminView && confirmar && (
-                        <td className="text-center">
-                            <ConfirmarJornalComponent
+                        {!jornal.confirmado && (
+                            <><ConfirmarJornalComponent
                                 jornal={jornal}
                                 onError={onError}
-                                onSuccess={onSuccess}
-                            />
-                            <Link className='btn btn-info mx-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                        </td>
-                    )}
-                </tr>
+                                onSuccess={onSuccess} />
+                                <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
+                            </>
+                        )}
+                    </td>
+                )}
+            </tr>
 
-            )
-            }
             <TimeModal
                 show={modalShow}
                 handleClose={closeModal}
@@ -253,7 +206,7 @@ const DatoPersonaComponent = ({ jornal, onlyRows, adminView, confirmar, onError,
 
 };
 
-export default DatoPersonaComponent;
+export default DatoJornalComponent;
 
 
 

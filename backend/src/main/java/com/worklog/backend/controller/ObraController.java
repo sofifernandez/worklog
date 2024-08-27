@@ -86,7 +86,7 @@ public class ObraController {
     }
 
     @GetMapping("/getAllObrasByDatesAndTrabajador/")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
     public ResponseEntity<List<Obra>> getAllObrasByDatesAndTrabajador(
             @RequestParam String fechaDesde,
             @RequestParam String fechaHasta,
