@@ -34,7 +34,7 @@ const AdminRoutes = () => {
       <Route exact path='/delete-jornal/:id' element={<DeleteJornalComponent />} />
       <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
-      <Route exact path='/reporte-dos' element={<GenerarReporteComponent/>}/>
+      <Route exact path='/reporte' element={<GenerarReporteComponent/>}/>
       <Route exact path='/buscar-jornal' element={<BuscarJornalComponent showTrabajadores={true} adminView={true}/>}/>
       <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
     </Routes>
