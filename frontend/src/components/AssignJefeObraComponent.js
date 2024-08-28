@@ -32,9 +32,6 @@ export const AssignJefeObraComponent = () => {
 
     console.log(persona)
 
-    const handlePersonaFound = (persona) => {
-        setPersona(persona);
-    };
 
     const handleClick= (persona)=>{
         setPersona(persona)
@@ -103,7 +100,7 @@ export const AssignJefeObraComponent = () => {
             )}
 
             {!persona && (<div className='row justify-content-center'>
-                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} minimalData={true} onCancelar={volver} handleRowClick={handleClick}></ContainerPersonaFinderComponent>
+                <ContainerPersonaFinderComponent minimalData={true} onCancelar={volver} handleRowClick={handleClick}></ContainerPersonaFinderComponent>
             </div>)}
             {persona && (
                 <div className='col-12 col-lg-7 row justify-content-center'>

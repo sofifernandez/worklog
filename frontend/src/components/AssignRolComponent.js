@@ -3,7 +3,6 @@ import PersonaRolService from '../services/PersonaRolService';
 import PersonaService from '../services/PersonaService';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
-import DatoPersonaComponent from './functionalComponents/DatoPersonaComponent';
 import ContainerDatoPersonaComponent from './functionalComponents/ContainerDatoPersonaComponent';
 import Swal from 'sweetalert2';
 
@@ -32,12 +31,6 @@ export const AssignRolComponent = () => {
     const volver =()=>{
         navigate('/personas')
     }
-
-    const handlePersonaFound = (persona) => {
-        setPersona(persona);
-        persona && setPersonaRol(persona.personaRol);
-        persona?.personaRol && setRolSeleccionado(persona?.personaRol?.rol.id);
-    };
 
 
     const seleccionarRol = (e) => {
@@ -132,7 +125,7 @@ export const AssignRolComponent = () => {
         <div className='mt-5 row justify-content-center col-12'>
             {!persona && (
                 <div>
-                    <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={volver}></ContainerPersonaFinderComponent>
+                    <ContainerPersonaFinderComponent onCancelar={volver}></ContainerPersonaFinderComponent>
                 </div>)}
 
             {persona && (

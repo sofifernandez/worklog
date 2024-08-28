@@ -28,7 +28,7 @@ export const AddRainToObra = () => {
     const [trabajadoresSeleccionados, setTrabajadoresSeleccionados] = useState([]);
     const [mensajeError, setMensajeError] = useState([]);
     const [mensajeSuccess, setMensajeSuccess] = useState([]);
-    const [personaFound, setPersonaFound] = useState(null);
+    //const [personaFound, setPersonaFound] = useState(null);
 
     /*---- VARIABLES TIPO TOGGLE-------------- */
     const [radioSelection, setRadioSelection] = useState('radio_1_hora')
@@ -240,13 +240,8 @@ export const AddRainToObra = () => {
         setBuscarTrabajador(true);
     }
 
-    const handlePersonaFound = (persona) => {
-        setPersonaFound(persona)
-    }
-
     const cancelarBusqueda = () => {
         setBuscarTrabajador(false)
-        setPersonaFound(null)
     }
 
     const handleAlertCloseError = (index) => {
@@ -400,7 +395,7 @@ export const AddRainToObra = () => {
                         {/*--------- BUSCADOR--------------------------- */}
                         {buscarTrabajador && (
                             <div className='row justify-content-center'>
-                                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
+                                <ContainerPersonaFinderComponent onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
 

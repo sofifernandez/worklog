@@ -9,14 +9,14 @@ const ContainerPersonaFinderComponent = ({ onPersonaFound, onCancelar, minimalDa
     const handlePersonasFound = (personas) => {
         if (personas.length === 1) {
             setPersonas([personas[0]]);
-            onPersonaFound(personas[0]);
+            //onPersonaFound(personas[0]);
         } else {
             setPersonas(personas);
         }
     };
 
     const handlePersonaClick = (persona) => {
-        onPersonaFound(persona);
+        //onPersonaFound(persona);
         handleRowClick(persona) // Pasa la persona específica al padre 
     };
 
@@ -27,7 +27,7 @@ const ContainerPersonaFinderComponent = ({ onPersonaFound, onCancelar, minimalDa
     const volver = () => {
         setPersonas([]);
         setMensajeError(null);
-        onPersonaFound(null);
+        //onPersonaFound(null);
     };
 
     return (

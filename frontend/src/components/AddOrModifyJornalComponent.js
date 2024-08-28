@@ -34,7 +34,6 @@ export const AddOrModifyJornalComponent = () => {
     const [persona, setPersona] = useState();
     const [mensajeError, setMensajeError] = useState([]);
     const [mensajeSuccess, setMensajeSuccess] = useState([]);
-    const [personaFound, setPersonaFound] = useState(null); 
     const [seleccionarTodos, setSeleccionarTodos]=useState(false)
     /*---- VARIABLES TIPO TOGGLE-------------- */
     const [buscarTrabajador, setBuscarTrabajador] = useState(false)
@@ -266,10 +265,6 @@ export const AddOrModifyJornalComponent = () => {
         setBuscarTrabajador(true);
     }
 
-    const handlePersonaFound = (persona) => {
-        setPersonaFound(persona)
-    }
-
     const handleSetPersona = (persona) => {
         setPersona(persona)
         setBuscarTrabajador(false);
@@ -278,7 +273,6 @@ export const AddOrModifyJornalComponent = () => {
 
     const cancelarBusqueda = () => {
         setBuscarTrabajador(false)
-        setPersonaFound(null)
     }
 
     const handleAlertCloseError = (index) => {
@@ -439,7 +433,7 @@ export const AddOrModifyJornalComponent = () => {
                         {/*--------- BUSCADOR--------------------------- */}
                         {(isAdmin || isJefeObra) && buscarTrabajador && (
                             <div className='row justify-content-center'>
-                                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerPersonaFinderComponent>
+                                <ContainerPersonaFinderComponent onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
                         {/*--------- TIPO JORNAL--------------------------- */}
