@@ -173,9 +173,15 @@ public class DateTimeUtil {
     }
 
     public static boolean timeRangesOverlap(Timestamp A_Start, Timestamp A_End, Timestamp B_Start, Timestamp B_End) {
-        if(B_Start.after(A_Start) && B_Start.before(A_End)) return true; //el comienzo de B está en el rango
-        if(B_End.after(A_Start) && B_End.before(A_End)) return true; //el fin de B está en el rango
-        return A_Start.before(B_End) && A_End.after(B_Start);
+        if (B_End == null) {
+            // If B_End is null, check if B_Start falls within A's range
+            return B_Start != null && B_Start.after(A_Start) && B_Start.before(A_End);
+        }
+
+        // Regular checks if B_End is not null
+        if (B_Start.after(A_Start) && B_Start.before(A_End)) return true; // B start is within A's range
+        if (B_End.after(A_Start) && B_End.before(A_End)) return true; // B end is within A's range
+        return A_Start.before(B_End) && A_End.after(B_Start); // Check for overlap
     }
 
     public static void validateFechas(LocalDate fechaDesde, LocalDate fechaHasta){

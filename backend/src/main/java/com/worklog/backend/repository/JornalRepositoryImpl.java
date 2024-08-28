@@ -93,7 +93,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
             sql.append(" AND obra_id IN (:obrasID)");
         }
 
-        sql.append(" ORDER BY fecha_jornal DESC");
+        sql.append(" ORDER BY fecha_jornal DESC, hora_comienzo DESC");
 
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
         query.setParameter("startDate", startDate);

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -71,9 +72,11 @@ public class JornalController {
         return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/jornalQr")
-    public ResponseEntity<Object> jornalQr(@Valid @RequestBody Jornal newJornal) {
-        Jornal savedJornal = jornalService.saveJornalQr(newJornal);
+    public ResponseEntity<Object> jornalQr(@Valid @RequestBody Map<String, Long> body) {
+        Long obraID = body.get("obraID");
+        Jornal savedJornal = jornalService.saveJornalQr(obraID);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJornal);
     }
 

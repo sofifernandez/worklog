@@ -24,7 +24,7 @@ const HeaderTrabajadorComponent = () => {
                                 Jornal
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkJornales">
-                                <a className="dropdown-item" href="/">Entrada/Salida</a>
+                                <a className="dropdown-item" href="/">Historial</a>
                                 <a className="dropdown-item" href="/buscar-jornal">Buscar</a>
                             </div>
                         </li>

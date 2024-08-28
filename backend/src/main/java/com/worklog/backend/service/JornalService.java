@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class JornalService {
@@ -42,66 +41,51 @@ public class JornalService {
         return jornalRepository.save(newJornal);
     }
 
-    public Jornal saveJornalQr(Jornal newJornal) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (!(authentication instanceof AnonymousAuthenticationToken)) {
-                String currentUserName = authentication.getName();
-                Persona persona = personaService.findPersonaByUsername(currentUserName);
-                Obra obra = newJornal.getObra();
-                LocalDate currentDate = LocalDate.now();
-                Timestamp currentTimestamp = new Timestamp(new Date().getTime());
-                Optional<Jornal[]> jornalActual = jornalRepository.findByPersonaAndObraAndFechaJornalOrderByFechaJornalDesc(persona,obra,currentDate);
-                if(jornalActual.isPresent()){
-                    int i=0;
-                    while ((i < jornalActual.get().length)
-                            && (jornalActual.get()[i].getHoraFin() != null)
-                            && (jornalActual.get()[i].getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_COMUN))){
-                        i++;
-                    }
-                    if (i == jornalActual.get().length){
-                        TipoJornal tipoJornal = new TipoJornal();
-                        tipoJornal.setId(TipoJornal.ID_JORNAL_COMUN);
-                        newJornal.setPersona(persona);
-                        newJornal.setFechaJornal(currentDate);
-                        newJornal.setHoraComienzo(currentTimestamp);
-                        newJornal.setModificado(false);
-                        newJornal.setConfirmado(false);
-                        newJornal.setTipoJornal(tipoJornal);
-                        return jornalRepository.save(newJornal);
-                    }else {
-                        Jornal jornal = jornalActual.get()[i];
-                        jornal.setHoraFin(currentTimestamp);
-                        return jornalRepository.save(jornal);
-                    }
-                }else {
-                    TipoJornal tipoJornal = new TipoJornal();
-                    tipoJornal.setId(TipoJornal.ID_JORNAL_COMUN);
-                    newJornal.setPersona(persona);
-                    newJornal.setFechaJornal(currentDate);
-                    newJornal.setHoraComienzo(currentTimestamp);
-                    newJornal.setModificado(false);
-                    newJornal.setConfirmado(false);
-                    newJornal.setTipoJornal(tipoJornal);
-                    return jornalRepository.save(newJornal);
+    public Jornal saveJornalQr(Long obraID) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            throw new InvalidDataException("No se puede registrar un jornal sin estar autentificado");
+
+        String currentUserName = authentication.getName();
+        Persona persona = personaService.findPersonaByUsername(currentUserName);
+        Obra obra = obraService.getObraById(obraID);
+        LocalDate currentDate = LocalDate.now();
+        Optional<Jornal[]> jornalesComunesHoy = jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(currentDate, obra, persona, new TipoJornal(TipoJornal.ID_JORNAL_COMUN));
+        if (jornalesComunesHoy.isPresent()) {
+            Jornal[] jornales = jornalesComunesHoy.get();
+            //Validación por seguidad (que no se empiecen a agregar jornales infinitamente)
+            if (jornales.length > 4) { throw new InvalidDataException("No se pudo completar la solicitud. Por favor contacta a tu Administrador");};
+            for (Jornal jornal : jornales) {
+                if (jornal.getHoraFin() == null) {
+                    return nuevaSalidaDeObra(jornal);
                 }
             }
-            else{
-                System.err.println("No se puede registrar un jornal sin estar autentificado");
-                return null;
-            }
-
-
-        } catch (Exception e) {
-            // Handle the exception, e.g., log it and/or rethrow it as a custom exception
-            System.err.println("An error occurred while saving the Jornal: " + e.getMessage());
-            // You can also log the stack trace for more detailed error information
-            e.printStackTrace();
-
-            // Optionally, rethrow the exception or return a default/fallback value
-            // throw new CustomException("Failed to save Jornal", e);
-            return null; // or you might choose to return a default Jornal object or handle it in another way
+            return nuevoIngresoAObra(persona, obra);
+        } else {
+            //Insertar un nuevo ingreso (nuevo jornal)
+            return nuevoIngresoAObra(persona, obra);
         }
+
+    }
+
+    private Jornal nuevoIngresoAObra (Persona persona, Obra obra) {
+        Jornal newJornal= new Jornal();
+        TipoJornal tipoJornal = new TipoJornal(TipoJornal.ID_JORNAL_COMUN);
+        newJornal.setObra(obra);
+        newJornal.setPersona(persona);
+        newJornal.setFechaJornal(LocalDate.now());
+        newJornal.setHoraComienzo(new Timestamp(new Date().getTime()));
+        newJornal.setModificado(false);
+        newJornal.setConfirmado(false);
+        newJornal.setTipoJornal(tipoJornal);
+        validacionPersonal(newJornal);
+        return jornalRepository.save(newJornal);
+    }
+
+    private Jornal nuevaSalidaDeObra(Jornal jornal) {
+        jornal.setHoraFin(new Timestamp(new Date().getTime()));
+        validacionPersonal(jornal);
+        return jornalRepository.save(jornal);
     }
 
     @Transactional(readOnly = true)
@@ -354,7 +338,7 @@ public class JornalService {
             try {
                 validateNoOverlap(jornalesFecha, jornal);
             } catch (InvalidDataException e) {
-                throw new InvalidDataException(jornal.getPersona().getApellido() + " ya tiene un jornal sin finalizar en otra obra para este día");
+                throw new InvalidDataException(jornal.getPersona().getApellido() + ": ya tiene un jornal sin finalizar en otra obra para este día");
             }
 
             //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
@@ -368,25 +352,25 @@ public class JornalService {
             jornalRepository.save(jornal);
         }
 
-        private void validateNoOverlap (Optional < Jornal[]>jornales, Jornal nuevoJornal){
-            //Validar que no haya ya un que quede superpuesto con este
-            if (jornales.isEmpty()) return;
-            if (jornales.isPresent()) {
-                // Get the array of Jornal
-                Jornal[] jornalArray = jornales.get();
+    private void validateNoOverlap(Optional<Jornal[]> jornales, Jornal nuevoJornal) {
+        //Validar que no haya ya un que quede superpuesto con este
+        if (jornales.isEmpty()) return;
 
-                // Iterate over the Jornal array
-                for (Jornal j : jornalArray) {
-                    if (!(j.getId().equals(nuevoJornal.getId()))) {
-                        if (j.getHoraFin() == null)
-                            throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
-                        if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
-                            throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
-                        }
-                    }
+        // Get the array of Jornal
+        Jornal[] jornalArray = jornales.get();
+
+        // Iterate over the Jornal array
+        for (Jornal j : jornalArray) {
+            if (!(j.getId().equals(nuevoJornal.getId()))) {
+                if (j.getHoraFin() == null)
+                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
+                if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
+                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
                 }
             }
         }
+
+    }
 
         private void transformToCorrectTimeZone (Jornal jornal){
             ZoneId uruguayZoneId = ZoneId.of("America/Montevideo");

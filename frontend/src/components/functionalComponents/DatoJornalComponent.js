@@ -17,8 +17,6 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
     const [modalType, setModalType] = useState('');
     const [currentJornalId, setCurrentJornalId] = useState(null);
 
-    console.log(jornal)
-
     const formatTime = (timestamp, jornalId) => {
         if (!timestamp) {
             if (!adminView) {
@@ -144,16 +142,18 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
 
                 {/*----- HORA FIN -------- */}
                 <td className="text-center">
-                    {jornal.horaFin ? (
+                    {jornal.horaFin && (
                         formatTime(jornal.horaFin)
-                    ) : (
+                    )} 
+                    
+                    {!jornal.horaFin && (adminView || jefeView) && (
                         <button
-                            className="btn btn-danger"
-                            onClick={() => openModal(jornal.id, 'horaFin')}
-                        >
-                            Agregar salida
-                        </button>
-                    )}
+                        className="btn btn-danger"
+                        onClick={() => openModal(jornal.id, 'horaFin')}
+                    >
+                        Agregar salida
+                    </button>
+                    ) }
                 </td>
                 {/*----- STATUS CONFIRMADO -------- */}
                 {(adminView || jefeView) && (<td className="text-center"> <FontAwesomeIcon
