@@ -45,7 +45,7 @@ public class ObraService {
 
     @Transactional(readOnly = true)
     public Obra getObraById(Long id) {
-        return obraRepository.findById(id).orElseThrow(() -> new ObraNotFoundException(id.toString()));
+        return obraRepository.findById(id).orElseThrow(() -> new ObraNotFoundException("No se encontró la obra ingresada"));
     }
 
     public Obra updateObra(Obra newObra, Long id) {

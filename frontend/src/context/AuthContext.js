@@ -11,13 +11,15 @@ const AuthProvider = ({ children }) => {
     return savedRole ? JSON.parse(savedRole) :  null ;
   });
 
+  const [refreshJornales, setRefreshJornales]= useState(false);
+
   useEffect(() => {
     // Save the state to local storage whenever it changes
     localStorage.setItem('personaRolLoggeado', JSON.stringify(personaRolLoggeado));
   }, [personaRolLoggeado]);
 
   return (
-    <AuthContext.Provider value={{ personaRolLoggeado, setPersonaRolLoggeado }}>
+    <AuthContext.Provider value={{ personaRolLoggeado, setPersonaRolLoggeado,refreshJornales, setRefreshJornales }}>
       {children}
     </AuthContext.Provider>
   );

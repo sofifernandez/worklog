@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 
 export const ListMyJornalesComponent = () => {
-  const { personaRolLoggeado } = useAuth();
+  const { personaRolLoggeado, refreshJornales } = useAuth();
   const [jornales, setJornales] = useState([])
   
 
@@ -21,18 +21,17 @@ export const ListMyJornalesComponent = () => {
 
   useEffect(() => {
     listarJornales()
-  }, [])
+  }, [refreshJornales])
 
   return (
     <div className="container mt-5 row justify-content-center">
-      <Link to='/entrada-jornada' className='btn btn-primary mb-2 col-lg-6 py-3'>Nuevo ingreso</Link>
       <h2 className='text-center mt-5'>Últimos registros</h2>
       {jornales.length > 0 ?
         <div className='table-responsive col-lg-8 mt-2'>
-          <ContainerDatoJornalComponent jornales={jornales.slice(0, 10)} />
+          <ContainerDatoJornalComponent jornales={jornales.slice(0, 30)} />
         </div>
         :
-        <div>Sin datos</div>
+        <div className='text-center'>Sin datos</div>
       }
        <Link to={personaRolLoggeado.personaRol.rol.rol === "JEFE_OBRA" ? '/buscar-my-jornal' : '/buscar-jornal'} className='btn btn-secondary col-md-6'>Buscar</Link>
     </div>

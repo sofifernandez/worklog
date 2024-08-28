@@ -21,7 +21,7 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
 
     Optional<Jornal[]> findByFechaJornalAndObraAndPersonaAndTipoJornal(LocalDate fechaJornal, Obra obra, Persona persona, TipoJornal tipoJornal);
 
-    @Query("SELECT j FROM Jornal j WHERE j.persona = :persona ORDER BY j.fechaJornal DESC")
+    @Query("SELECT j FROM Jornal j WHERE j.persona = :persona ORDER BY j.fechaJornal DESC, j.horaComienzo DESC")
     Optional<Jornal[]> findByPersonaOrderedByFechaJornalDesc(@Param("persona") Persona persona);
 
     @Query(value = "SELECT DISTINCT J.persona FROM Jornal J WHERE J.obra=:obra")
