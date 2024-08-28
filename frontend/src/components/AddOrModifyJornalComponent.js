@@ -453,6 +453,9 @@ export const AddOrModifyJornalComponent = () => {
 
                             <input type="radio" className="btn-check" name="options-outlined" id="tj_extra" autoComplete="off" checked={tipoJornal.id === 3} onChange={(e) => handleTipoJornal(3)} />
                             <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_extra">Extra</label>
+
+                            <input type="radio" className="btn-check" name="options-outlined" id="tj_lluvia" autoComplete="off" checked={tipoJornal.id === 2} onChange={(e) => handleTipoJornal(2)} />
+                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_lluvia">Lluvia</label>
                         </div>
                         )}
                         {/*--------- MOTIVO --------------------------- */}

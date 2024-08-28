@@ -46,7 +46,10 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
                                                @Param("fechaHasta") LocalDate fechaHasta,
                                                @Param("trabajadorId") Long trabajadorId);
 
-
+    @Query(value="SELECT J FROM Jornal J WHERE J.fechaJornal >= :fechaDesde AND J.fechaJornal <= :fechaHasta AND J.persona.id= :trabajadorId AND J.confirmado = true ")
+    List<Jornal> getAllJornalesByDatesAndTrabajador(@Param("fechaDesde") LocalDate fechaDesde,
+                                               @Param("fechaHasta") LocalDate fechaHasta,
+                                               @Param("trabajadorId") Long trabajadorId);
 
 
 

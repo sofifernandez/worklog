@@ -68,6 +68,7 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
         sql.append("SELECT * FROM jornal WHERE fecha_jornal = :fecha");
         sql.append(" AND obra_id = :obraId");
         sql.append(" AND persona_id = :personaId");
+        sql.append(" AND confirmado = true");
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
 
         query.setParameter("personaId", persona.getId());

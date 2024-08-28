@@ -20,6 +20,11 @@ public interface PersonaRepository extends JpaRepository<Persona,Long> {
             "WHERE p.activo=true AND pr.rol_id = 3", nativeQuery = true)
     Optional<Persona[]> getAllTrabajadoresActivos();
 
+    @Query(value = "SELECT p.* FROM persona p " +
+            "INNER JOIN persona_rol pr ON pr.persona_id=p.id " +
+            "WHERE p.activo=true", nativeQuery = true)
+    Optional<Persona[]> getAllPersonasActivos();
+
     @Query(value= "SELECT P FROM Persona P WHERE P.nombre LIKE :nombre AND P.apellido LIKE :apellido")
     List<Persona> getPersonasByNombreyApellido(@Param("nombre") String nombre, @Param("apellido") String apellido);
 

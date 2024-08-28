@@ -1,6 +1,7 @@
 package com.worklog.backend.controller;
 
 import com.worklog.backend.dto.DetalleHorasJornalDTO;
+import com.worklog.backend.dto.DetalleJornalGeneralDTO;
 import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.model.Modificacion;
 import com.worklog.backend.service.ReporteService;
@@ -35,9 +36,10 @@ public class ReporteController {
         // Fetch the data for the Excel export
         List<DetalleHorasJornalDTO> jornalDataList = reporteService.fetchDataForExport(exportRequest);
         List<Modificacion> modificaciones = reporteService.getModificacionesByFechasAndObras(exportRequest);
+        List<DetalleJornalGeneralDTO> general = reporteService.getJornalGeneralByFechas(exportRequest);
 
         // Generate Excel content
-        byte[] excelContent = reporteService.exportToExcel(jornalDataList, modificaciones);
+        byte[] excelContent = reporteService.exportToExcel(jornalDataList, modificaciones, general);
 
         // Set headers for file download
         HttpHeaders headers = new HttpHeaders();

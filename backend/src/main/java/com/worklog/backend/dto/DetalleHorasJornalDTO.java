@@ -1,7 +1,9 @@
 package com.worklog.backend.dto;
 
+import com.worklog.backend.model.Jornal;
 import com.worklog.backend.model.Obra;
 import com.worklog.backend.model.Persona;
+import com.worklog.backend.service.JornalService;
 import com.worklog.backend.util.DateTimeUtil;
 
 import java.time.DayOfWeek;
@@ -65,26 +67,20 @@ public class DetalleHorasJornalDTO {
         this.horasExtra = horasExtra;
     }
 
-    public void transformarHoras(){
-        DayOfWeek dayOfWeek = fechaJornal.getDayOfWeek();
 
-        //CALCULAR HORAS EXTRA
-        double horasExtraTemp;
-        if (dayOfWeek.equals(DayOfWeek.FRIDAY)){
-            horasExtraTemp=horasComun- DateTimeUtil.FRIDAY_WH;
-        } else {
-            horasExtraTemp=horasComun- DateTimeUtil.MONDAY_TO_THURSDAY_WH;
-        }
-        if (horasExtraTemp>=1){
-            this.horasExtra=this.horasExtra+horasExtraTemp;
-            this.horasComun= this.horasComun- this.horasExtra;
-        }
-        //HORAS LLUVIA
-        if(horasLluvia>=1){
-            this.horasComun= this.horasComun-this.horasLluvia;
-        }
+    public void transformarHoras() {
+        double horasNormalesDia = obtenerHorasNormalesDia(fechaJornal);
 
+        if (this.horasComun >= horasNormalesDia) {
+            this.horasExtra += this.horasComun - horasNormalesDia;
+            this.horasComun = Math.max(horasNormalesDia- this.horasLluvia, 0);
+        }
     }
+    
+    private double obtenerHorasNormalesDia(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.FRIDAY ? DateTimeUtil.FRIDAY_WH : DateTimeUtil.MONDAY_TO_THURSDAY_WH;
+    }
+
 }
 
 
