@@ -20,7 +20,6 @@ export const ListPersonasComponent = () => {
         listarPersonas()
     }, [])
 
-    const handlePersonaFound = () => {};
     const handleCancelar=()=>{};
 
     return (
@@ -31,7 +30,7 @@ export const ListPersonasComponent = () => {
                 <ContainerDatoPersonaComponent personas={personas}/>
             </div>
             <div className='my-5'>
-                <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={handleCancelar}></ContainerPersonaFinderComponent>
+                <ContainerPersonaFinderComponent onCancelar={handleCancelar}></ContainerPersonaFinderComponent>
             </div>
         </div >
     )

@@ -59,8 +59,7 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
     }
 
     const handleCancelar = () => {
-        setMensajeError(null)
-        navigate('/buscar-jornal');
+        navigate('/');
     }
 
 
@@ -74,6 +73,7 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
                 showTrabajadores={showTrabajadores}
                 onSubmitDataToParent={getJornalesPorFiltros} 
                 onFechasChange={fetchObrasActivasEntreFechas}
+                onCancelar={handleCancelar}
                 />
             )}
             {jornales?.length > 0 &&

@@ -7,12 +7,12 @@ import ContainerPersonaFinderComponent from './ContainerPersonaFinderComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, titleFromParent, obrasFromParent, showTrabajadores }) => {
+const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, titleFromParent, obrasFromParent, showTrabajadores, onCancelar }) => {
     const [fechaDesde, setFechaDesde] = useState();
     const [fechaHasta, setFechaHasta] = useState();
     const [obrasSeleccionadas, setObrasSeleccionadas] = useState('');
     const [trabajadoresSeleccionados, setTrabajadoresSeleccionados] = useState([]);
-    const [personaFound, setPersonaFound] = useState(null);
+    //const [personaFound, setPersonaFound] = useState(null);
     /*---- VARIABLES TIPO TOGGLE-------------- */
     const [seleccionarTrabajadoresManual, setSeleccionarTrabajadoresManual] = useState(false)
     const [seleccionarAllObras, setSeleccionarAllObras] = useState(false)
@@ -62,9 +62,6 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
         setTrabajadoresSeleccionados(prevState => prevState.filter(t => t.id !== id));
     };
 
-    const handlePersonaFound = (persona) => {
-        setPersonaFound(persona)
-    }
 
     const handleCheckboxChangeObras = (event, obraID) => {
         const isChecked = event.target.checked;
@@ -91,12 +88,12 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
         setFechaHasta()
         setObrasSeleccionadas()
         setTrabajadoresSeleccionados()
+        onCancelar()
     }
 
 
     const cancelarBusqueda = () => {
         setSeleccionarTrabajadoresManual(false)
-        setPersonaFound(null)
     }
 
 
@@ -214,7 +211,7 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
                         {showTrabajadores && (
                              seleccionarTrabajadoresManual && (
                                 <div className='row justify-content-center mt-5'>
-                                    <ContainerPersonaFinderComponent onPersonaFound={handlePersonaFound} onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
+                                    <ContainerPersonaFinderComponent onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => agregarALista(e)}></ContainerPersonaFinderComponent>
                                 </div>)
                             
                         )}
