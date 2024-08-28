@@ -14,7 +14,7 @@ const GenerarReportePruebaComponent = () => {
 
     const generarReporte = async (data) => {
         try {
-
+            console.log(data)
             const updatedData = {...data, completo:reporteCompleto}
             console.log(updatedData)
             const response = await ReporteService.getReporteEntreFechas(updatedData);
@@ -22,7 +22,7 @@ const GenerarReportePruebaComponent = () => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'jornal_data.xlsx'); // Default file name
+            link.setAttribute('download', `jornales_${data.fechaDesde}_al_${data.fechaHasta}.xlsx`); // Default file name
             document.body.appendChild(link);
             link.click();
 

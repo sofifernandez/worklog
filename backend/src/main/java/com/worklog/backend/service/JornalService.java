@@ -1,5 +1,6 @@
 package com.worklog.backend.service;
 
+import com.worklog.backend.dto.DetalleJornalGeneralDTO;
 import com.worklog.backend.dto.JornalDataRequestDTO;
 import com.worklog.backend.exception.InvalidDataException;
 import com.worklog.backend.exception.JornalNotFoundException;
@@ -438,6 +439,83 @@ public class JornalService {
         return jornalRepository.getAllObrasByDatesAndTrabajador(startDate,endDate, trabajadorId);
 
     }
+
+    public List<Jornal> getAllJornalesByDatesAndTrabajador(String fechaDesde, String fechaHasta, Long trabajadorId){
+        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
+        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
+        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
+        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+        DateTimeUtil.validateFechas(startDate, endDate);
+        return jornalRepository.getAllJornalesByDatesAndTrabajador(startDate,endDate, trabajadorId);
+
+    }
+
+    public DetalleJornalGeneralDTO calcularJornal(Persona persona, LocalDate fechaDesde, LocalDate fechaHasta) {
+        List<Jornal> jornalesTrabajados = getAllJornalesByDatesAndTrabajador(fechaDesde.toString(), fechaHasta.toString(), persona.getId());
+
+        double horasComunes = 0;
+        double horasLluvias = 0;
+        double horasExtras = 0;
+        List<LocalDate> faltas = new ArrayList<>();
+
+        for (LocalDate date = fechaDesde; !date.isAfter(fechaHasta); date = date.plusDays(1)) {
+
+            LocalDate finalDate = date;
+            List<Jornal> jornalesDelDia = jornalesTrabajados.stream()
+                    .filter(j -> j.getFechaJornal().equals(finalDate))
+                    .toList();
+
+            if (jornalesDelDia.isEmpty()) {
+                DayOfWeek dayOfWeek = date.getDayOfWeek();
+                if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+                    faltas.add(date);
+                }
+            } else {
+                double horasComunesDia = 0;
+                double horasLluviasDia = 0;
+                double horasExtrasDia = 0;
+
+                for (Jornal jornal : jornalesDelDia) {
+                    double horas = DateTimeUtil.calculateHoursDifference(jornal.getHoraComienzo(), jornal.getHoraFin());
+                    Long tipoId = jornal.getTipoJornal().getId();
+
+                    if (tipoId.equals(TipoJornal.ID_JORNAL_COMUN)) {
+                        horasComunesDia += horas;
+                    } else if (tipoId.equals(TipoJornal.ID_JORNAL_LLUVIA)) {
+                        horasLluviasDia += horas;
+                    } else if (tipoId.equals(TipoJornal.ID_JORNAL_EXTRA)) {
+                        horasExtrasDia += horas;
+                    }
+                }
+
+                double horasNormalesDia = obtenerHorasNormalesDia(date);
+                if (horasComunesDia >= horasNormalesDia) {
+                    horasExtrasDia += horasComunesDia - horasNormalesDia;
+                    horasComunesDia = Math.max(horasNormalesDia - horasLluviasDia, 0);
+                }
+
+                horasComunes += horasComunesDia;
+                horasLluvias += horasLluviasDia;
+                horasExtras += horasExtrasDia;
+            }
+        }
+
+
+        DetalleJornalGeneralDTO detalleDTO = new DetalleJornalGeneralDTO();
+        detalleDTO.setPersona(persona);
+        detalleDTO.setFechaJornal(fechaDesde);
+        detalleDTO.setHorasComunes(horasComunes);
+        detalleDTO.setHorasLluvias(horasLluvias);
+        detalleDTO.setHorasExtras(horasExtras);
+        detalleDTO.setFaltas(faltas);
+
+        return detalleDTO;
+    }
+
+    private double obtenerHorasNormalesDia(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.FRIDAY ? DateTimeUtil.FRIDAY_WH : DateTimeUtil.MONDAY_TO_THURSDAY_WH;
+    }
+
 
 
 }
