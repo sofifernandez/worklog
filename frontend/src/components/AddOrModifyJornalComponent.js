@@ -118,7 +118,7 @@ export const AddOrModifyJornalComponent = () => {
         if (radioSelection === 'radio_all_day') {
             setHoraComienzoManual(false)
             setHoraFinManual(false)
-            setHoraComienzo('07:30:00')
+            setHoraComienzo('07:00:00')
             setHoraFin('16:30:00');
         }
         if (radioSelection === 'radio_manual') {
@@ -213,7 +213,7 @@ export const AddOrModifyJornalComponent = () => {
                    navigate('/modify-jornal/'+id);
                 }
                });
-               navigate('/modify-jornal/'+id);
+               navigate('/home');
             }).catch(error => {
                 if (error.response) {
                     setMensajeError(error.response.data);
@@ -238,10 +238,10 @@ export const AddOrModifyJornalComponent = () => {
                     }
                }).then((result) => {
                  if (result.dismiss === Swal.DismissReason.timer) {
-                   navigate('/modify-jornal/'+res.data.id);
+                   navigate('/home');
                 }
                });
-               navigate('/modify-jornal/'+res.data.id);
+               navigate('/home');
             }).catch(error => {
                 if (error.response) {
                     setMensajeError(error.response.data);

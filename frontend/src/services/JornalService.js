@@ -7,66 +7,76 @@ const JORNALES_BASE_REST_API_URL = "http://localhost:8080/jornal"
 //initAxiosInterceptors();
 
 
-class JornalService{
+class JornalService {
 
-    getAllJornales(){
+    getAllJornales() {
         return axios.get(JORNALES_BASE_REST_API_URL + 'es')
     }
 
-    createJornal(jornal){
+    createJornal(jornal) {
         return axios.post(JORNALES_BASE_REST_API_URL, jornal)
     }
 
-    createOrUpdateJornalQr(obraID){
-        return axios.post(JORNALES_BASE_REST_API_URL + "Qr", {obraID:obraID})
+    createOrUpdateJornalQr(obraID) {
+        return axios.post(JORNALES_BASE_REST_API_URL + "Qr", { obraID: obraID })
     }
 
-    getJornalById(jornalId){
-        return axios.get(JORNALES_BASE_REST_API_URL +  '/' + jornalId)
+    getJornalById(jornalId) {
+        return axios.get(JORNALES_BASE_REST_API_URL + '/' + jornalId)
     }
 
-    updateJornal(jornalId, motivo, jornal){
+    updateJornal(jornalId, motivo, jornal) {
         return axios.put(JORNALES_BASE_REST_API_URL + '/' + jornalId + '/' + motivo, jornal)
     }
 
-    deleteJornal(jornalId){
-        return axios.delete((JORNALES_BASE_REST_API_URL +  '/' + jornalId))
+    deleteJornal(jornalId) {
+        return axios.delete((JORNALES_BASE_REST_API_URL + '/' + jornalId))
     }
-    
-    getJornalesByPersonaId(personaId){
+
+    getJornalesByPersonaId(personaId) {
         return axios.get(JORNALES_BASE_REST_API_URL + '/jornalByPersona/' + personaId)
     }
 
-    getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, personaId){
+    getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, personaId) {
         return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalByFiltros/`, {
             params: {
                 fechaDesde: fechaDesde,
                 fechaHasta: fechaHasta,
                 obraSeleccionada: obraSeleccionada,
-                personaId:personaId
+                personaId: personaId
             }
         });
     }
 
-    getJornalesByFiltrosWithDTO(jornalDataRequest){
+    getJornalesByFiltrosWithDTO(jornalDataRequest) {
         return axios.post(JORNALES_BASE_REST_API_URL + '/getJornalesByFiltros', jornalDataRequest)
     }
 
-    getJornalesSinConfirmar(obraId){
-        return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalNoConfirmado/`+ obraId);
+    getJornalesSinConfirmar(obraId) {
+        return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalNoConfirmado/` + obraId);
     }
 
-    confirmarJornal(jornal){
+    existsJornalesSinConfirmarByObraFecha(obraId, fechaDesde, fechaHasta) {
+        return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalSinConfirmar/`,{
+            params: {
+                fechaDesde: fechaDesde,
+                fechaHasta: fechaHasta,
+                obraId: obraId,
+            }
+        })
+    }
+
+    confirmarJornal(jornal) {
         return axios.post(`${JORNALES_BASE_REST_API_URL}/confirmarJornal`, jornal);
     }
 
-    agregarLluvia(jornal){
+    agregarLluvia(jornal) {
         return axios.post(JORNALES_BASE_REST_API_URL + '/agregarLluvia', jornal);
     }
 
-    validateDatos(persona, obra, fechaJornal, horaComienzoUnformatted, horaFinUnformatted, tipoJornal, confirmado, modificado){
-          // Validate common fields before processing personas
-          if (!fechaJornal) {
+    validateDatos(persona, obra, fechaJornal, horaComienzoUnformatted, horaFinUnformatted, tipoJornal, confirmado, modificado) {
+        // Validate common fields before processing personas
+        if (!fechaJornal) {
             throw new Error('La fecha no puede ser nula');
         }
         if (!horaComienzoUnformatted) {
@@ -84,14 +94,14 @@ class JornalService{
         const horaComienzoFormatted = fechaJornal + 'T' + horaComienzoUnformatted;
         const horaFinFormatted = fechaJornal + 'T' + horaFinUnformatted;
         const jornal = {
-            persona, 
-            obra, 
-            fechaJornal, 
-            horaComienzo: horaComienzoFormatted, 
-            horaFin: horaFinFormatted, 
-            modificado: false, 
-            tipoJornal, 
-            confirmado: true 
+            persona,
+            obra,
+            fechaJornal,
+            horaComienzo: horaComienzoFormatted,
+            horaFin: horaFinFormatted,
+            modificado: false,
+            tipoJornal,
+            confirmado: true
         };
         return axios.post(JORNALES_BASE_REST_API_URL + '/validateGeneral', jornal)
     }
