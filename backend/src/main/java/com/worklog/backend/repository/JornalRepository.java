@@ -52,5 +52,9 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
                                                @Param("trabajadorId") Long trabajadorId);
 
 
+    @Query("SELECT COUNT(j) > 0 FROM Jornal j WHERE j.obra.id = :obraId AND j.confirmado = false AND j.fechaJornal BETWEEN :startDate AND :endDate")
+    boolean existsJornalesSinConfirmarByObraFecha(@Param("startDate") LocalDate startDate,
+                                                  @Param("endDate") LocalDate endDate,
+                                                  @Param("obraId") Long obraId);
 
 }

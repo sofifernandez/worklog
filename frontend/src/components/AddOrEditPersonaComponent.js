@@ -184,7 +184,7 @@ export const AddPersonaComponent = () => {
                         )}
                         <button className='btn btn-success mx-2' onClick={(e) => saveOrUpdatePersona(e)}>Guardar</button>
                         <Link to={'/personas'} className='btn btn-danger ml-2'>Cancelar</Link>
-                        <button type='button' className='btn btn-primary mx-2' onClick={goToChangePassword}>Ir a Cambiar Contraseña</button>
+                        {id && <button type='button' className='btn btn-primary mx-2' onClick={goToChangePassword}>Ir a Cambiar Contraseña</button>}
                     </form>
                 </div>
             </div>

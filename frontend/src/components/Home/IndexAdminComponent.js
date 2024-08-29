@@ -47,9 +47,7 @@ export const AdminIndexComponent = () => {
               <p className="card-text">Generación de reportes.</p>
             </div>
             <ul className="list-group list-group-flush">
-            <Link title='Ir' to ='/' className='no-decoration'><li className="list-group-item itemLink">Generar un nuevo reporte</li></Link>
-            <Link title='Ir' to ='/' className='no-decoration'><li className="list-group-item itemLink">Historial</li></Link>
-            <Link title='Ir' to ='/' className='no-decoration'><li className="list-group-item itemLink">Configuración</li></Link>
+            <Link title='Ir' to ='/reporte' className='no-decoration'><li className="list-group-item itemLink">Generar un nuevo reporte</li></Link>
             </ul>
           </div>
         </div>

@@ -500,6 +500,15 @@ public class JornalService {
         return date.getDayOfWeek() == DayOfWeek.FRIDAY ? DateTimeUtil.FRIDAY_WH : DateTimeUtil.MONDAY_TO_THURSDAY_WH;
     }
 
+    public boolean existsJornalesSinConfirmarByObraFecha(String fechaDesde, String fechaHasta, Long obraId){
+        if (fechaDesde==null || fechaDesde.isEmpty()) throw new InvalidDataException("Selecciona una fecha desde");
+        if (fechaHasta==null || fechaHasta.isEmpty()) throw new InvalidDataException("Selecciona una fecha hasta");
+        LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
+        LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
+        return jornalRepository.existsJornalesSinConfirmarByObraFecha(startDate, endDate, obraId);
+
+    }
+
 
 
 }

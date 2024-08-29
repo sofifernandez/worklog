@@ -97,6 +97,15 @@ public class JornalController {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada,personaId);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
+    @GetMapping("/jornal/jornalSinConfirmar/")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    public ResponseEntity<Boolean>  existsJornalesSinConfirmarByObraFecha(
+            @RequestParam String fechaDesde,
+            @RequestParam String fechaHasta,
+            @RequestParam Long obraId) {
+        Boolean jornalSinConfirmar = jornalService.existsJornalesSinConfirmarByObraFecha(fechaDesde, fechaHasta, obraId);
+        return new ResponseEntity<>(jornalSinConfirmar, HttpStatus.OK);
+    }
 
     @PostMapping("/jornal/getJornalesByFiltros")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
