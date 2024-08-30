@@ -14,6 +14,8 @@ import DeleteJornalComponent from '../components/DeleteJornalComponent';
 import GenerarReporteComponent from '../components/GenerarReporteComponent';
 import BuscarJornalComponent from '../components/BuscarJornalComponent';
 import JornalesParaConfirmarAdminComponent from '../components/functionalComponents/JornalesParaConfirmarAdminComponent';
+import ContainerJornalEditorComponent from '../components/functionalComponents/ContainerJornalEditorComponent';
+import ListLastJornalesComponent from '../components/ListLastJornales';
 
 const AdminRoutes = () => {
   return (
@@ -29,14 +31,16 @@ const AdminRoutes = () => {
       <Route exact path='/assign-jefeObra/:id' element={<AssignJefeObraComponent />} />
       <Route exact path='/assign-rol' element={<AssignRolComponent />} />
       <Route exact path='/assign-rol/:id' element={<AssignRolComponent />} />
-      <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
-      <Route exact path='/add-jornal/' element={<AddOrModifyJornalComponent />} />
+      <Route exact path='/add-jornal/' element={<ContainerJornalEditorComponent />} />
+      <Route exact path='/modify-jornal/:id' element={<ContainerJornalEditorComponent />} />
+      {/* <Route exact path='/add-jornal/' element={<AddOrModifyJornalComponent />} /> */}
       <Route exact path='/delete-jornal/:id' element={<DeleteJornalComponent />} />
       <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
       <Route exact path='/reporte' element={<GenerarReporteComponent/>}/>
       <Route exact path='/buscar-jornal' element={<BuscarJornalComponent showTrabajadores={true} adminView={true}/>}/>
       <Route exact path='/confirmar-jornal' element={<JornalesParaConfirmarAdminComponent/>}/>
+      <Route exact path='/last-jornales' element={<ListLastJornalesComponent/>}/>
     </Routes>
   );
 };

@@ -37,7 +37,11 @@ class JornalService {
         return axios.get(JORNALES_BASE_REST_API_URL + '/jornalByPersona/' + personaId)
     }
 
-    getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, personaId) {
+    getLastJornales(){
+        return axios.get(JORNALES_BASE_REST_API_URL + '/lastJornales')
+    }
+
+    getJornalesByFiltros(fechaDesde, fechaHasta, obraSeleccionada, personaId){
         return axios.get(`${JORNALES_BASE_REST_API_URL}/jornalByFiltros/`, {
             params: {
                 fechaDesde: fechaDesde,
@@ -89,7 +93,7 @@ class JornalService {
             throw new Error('Debes seleccionar una obra');
         }
         if (!persona) {
-            throw new Error('Debes seleccionar al menos un trabajador');
+            throw new Error('Debes seleccionar un trabajador');
         }
         const horaComienzoFormatted = fechaJornal + 'T' + horaComienzoUnformatted;
         const horaFinFormatted = fechaJornal + 'T' + horaFinUnformatted;

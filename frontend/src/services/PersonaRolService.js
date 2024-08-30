@@ -33,10 +33,6 @@ class PersonaRolService{
         return axios.get(PERSONA_ROL_BASE_REST_API_URL + '/personaRolByCI/' + cedula)
     }
 
-    getPersonaRolActivoByUsername(username){
-        return axios.get(PERSONA_ROL_BASE_REST_API_URL + '/personaRolByUsername/' + username)
-    }
-
     getEsJefeObraByPersonaId(personaId){
         return axios.get(PERSONA_ROL_BASE_REST_API_URL + '/esJefe/' + personaId)
     }

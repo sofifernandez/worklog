@@ -8,6 +8,7 @@ import AddRainToObra from '../components/AddRainToObra';
 import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 import ListMyJornalesComponent from '../components/ListMyJornalesComponent';
 import BuscarJornalComponent from '../components/BuscarJornalComponent';
+import ContainerJornalEditorComponent from '../components/functionalComponents/ContainerJornalEditorComponent';
 
 const JefeObraRoutes = () => {
   return (
@@ -17,10 +18,9 @@ const JefeObraRoutes = () => {
       <Route exact path='/logout' element={<LogoutComponent />} />
       <Route exact path='/jornalQr/:id' element={<QrJornalComponent/>}/>
       <Route exact path='/resetpassword/:id' element={<ChangePassword />} />
-      <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
       <Route exact path='/add-rain' element={<AddRainToObra/>}/>
-      <Route exact path='/modify-jornal/:id' element={<AddOrModifyJornalComponent />} />
-      <Route exact path='/add-jornal' element={<AddOrModifyJornalComponent/>}/>
+      <Route exact path='/add-jornal/' element={<ContainerJornalEditorComponent />} />
+      <Route exact path='/modify-jornal/:id' element={<ContainerJornalEditorComponent />} />
       <Route exact path='/my-jornales' element={<ListMyJornalesComponent/>}/>
       <Route exact path='/buscar-jornal' element={<BuscarJornalComponent jefeView={true} showTrabajadores={true}/>}/>
       <Route exact path='/buscar-my-jornal' element={<BuscarJornalComponent workerView={true}/>}/>

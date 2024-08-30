@@ -16,6 +16,9 @@ public interface PersonaRolRepository extends JpaRepository<PersonaRol,Long> {
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM persona_rol pr WHERE pr.persona_id = :personaId AND pr.rol_id = :rolId AND pr.activo = true", nativeQuery = true)
     int existsByPersonaIdAndRolIdAndActivo(@Param("personaId") Long personaId, @Param("rolId") Long rolId);
 
+    @Query("SELECT pr FROM PersonaRol pr, Usuario u, Persona p WHERE pr.persona=u.persona AND u.username = :username AND pr.activo = true")
+    Optional<PersonaRol> findPersonaRolActivoByUsername(@Param("username") String username);
+
 
 
 }

@@ -49,11 +49,20 @@ public class JornalController {
     }
 
     @GetMapping("/jornales")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<List<Jornal>> getAllJornals() {
         List<Jornal> jornales = jornalService.getAllJornales();
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
 
+    @GetMapping("/jornal/lastJornales")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Optional<Jornal[]>> getLastJornales() {
+        Optional<Jornal[]> jornales = jornalService.getLastJornales();
+        return new ResponseEntity<>(jornales, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA', 'TRABAJADOR')")
     @GetMapping("/jornal/{id}")
     public ResponseEntity<Jornal> getJornalById(@PathVariable Long id) {
         Jornal jornal = jornalService.getJornalById(id);
@@ -67,6 +76,7 @@ public class JornalController {
     }
 
     @DeleteMapping("/jornal/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<String> deleteJornal(@PathVariable Long id) {
         jornalService.deleteJornal(id);
         return new ResponseEntity<>("Jornal with id " + id + " has been deleted successfully.", HttpStatus.OK);
@@ -113,8 +123,6 @@ public class JornalController {
         Optional<Jornal[]> jornales = jornalService.findJornalesByFiltrosWithDTO(jornalDataRequest);
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
-
-
 
 
     @GetMapping("/jornal/jornalNoConfirmado/{obraId}")

@@ -28,21 +28,19 @@ export const AddOrModifyJornalComponent = () => {
     const [horaComienzo, setHoraComienzo] = useState(format(new Date(), 'HH:mm:ss'));
     const [horaFin, setHoraFin] = useState();
     const [tipoJornal, setTipoJornal] = useState();
-    const [radioSelection, setRadioSelection]=useState('radio_1_hora')
-    const [trabajadoresSugeridos, setTrabajadoresSugeridos] = useState();
-    const [trabajadoresSeleccionados, setTrabajadoresSeleccionados] = useState([]);
+    const [radioSelection, setRadioSelection] = useState('')
     const [persona, setPersona] = useState();
+    const [motivo, setMotivo] = useState()
+    const [otroMotivo, setOtroMotivo] = useState('')
+    const [modificado, setModificado] = useState(false)
+    const [confirmado, setConfirmado] = useState(false)
     const [mensajeError, setMensajeError] = useState([]);
     const [mensajeSuccess, setMensajeSuccess] = useState([]);
-    const [seleccionarTodos, setSeleccionarTodos]=useState(false)
     /*---- VARIABLES TIPO TOGGLE-------------- */
     const [buscarTrabajador, setBuscarTrabajador] = useState(false)
     const [horaComienzoManual, setHoraComienzoManual] = useState(true)
     const [horaFinManual, setHoraFinManual] = useState(false)
-    const [modificado, setModificado] = useState(false)
-    const [confirmado, setConfirmado] = useState(false)
-    const [motivo, setMotivo] = useState()
-    const [otroMotivo, setOtroMotivo] = useState('')
+    const [showSelectorHoras, setShowSelectorHoras]=useState();
 
     const handleFetchError = (error, currentErrors) => {
         const newErrors = [...(currentErrors || [])]; // Create a copy of currentErrors or initialize as empty array
@@ -60,25 +58,25 @@ export const AddOrModifyJornalComponent = () => {
     }
 
     useEffect(() => {
-      if(id){
-        JornalService.getJornalById(id).then((res) => {
-            setObra(res.data.obra)
-            setFechaJornal(res.data.fechaJornal)
-            setHoraComienzo(format(res.data.horaComienzo, 'HH:mm:ss'))
-            setPersona(res.data.persona)
-            setTipoJornal(res.data.tipoJornal)
-            setModificado(res.data.modificado)
-            setConfirmado(res.data.confirmado)
-            if (res.data.horaFin){
-                setHoraFin(format(res.data.horaFin, 'HH:mm:ss'))
-            }
-        }).catch(e => {
-            console.log(e)
-        })
-      }
-      else {
-        setTipoJornal({id:1})
-      }
+        if (id) {
+            JornalService.getJornalById(id).then((res) => {
+                setObra(res.data.obra)
+                setFechaJornal(res.data.fechaJornal)
+                setHoraComienzo(format(res.data.horaComienzo, 'HH:mm:ss'))
+                setPersona(res.data.persona)
+                setTipoJornal(res.data.tipoJornal)
+                setModificado(res.data.modificado)
+                setConfirmado(res.data.confirmado)
+                if (res.data.horaFin) {
+                    setHoraFin(format(res.data.horaFin, 'HH:mm:ss'))
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+        }
+        else {
+            setTipoJornal({ id: 1 })
+        }
     }, [id])
 
     useEffect(() => {
@@ -97,44 +95,48 @@ export const AddOrModifyJornalComponent = () => {
     }, [personaRolLoggeado]);
 
     useEffect(() => {
-      if (!id) {
-        const [hours, minutes] = horaComienzo.split(':').map(Number);
-        const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
+        if (!id && showSelectorHoras) {
+            const [hours, minutes] = horaComienzo.split(':').map(Number);
+            const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
 
-        if (radioSelection === 'radio_1_hora') {
-            const oneHourLater = addHours(parsedDate, 1);
-            const formattedEndTime = format(oneHourLater, 'HH:mm:ss');
-            setHoraFinManual(false)
-            setHoraFin(formattedEndTime)
-            setHoraComienzoManual(true)
+            if (radioSelection === 'radio_1_hora') {
+                const oneHourLater = addHours(parsedDate, 1);
+                const formattedEndTime = format(oneHourLater, 'HH:mm:ss');
+                setHoraFinManual(false)
+                setHoraFin(formattedEndTime)
+                setHoraComienzoManual(true)
+            }
+            if (radioSelection === 'radio_2_hora') {
+                const twoHoursLater = addHours(parsedDate, 2);
+                const formattedEndTime = format(twoHoursLater, 'HH:mm:ss');
+                setHoraFin(formattedEndTime)
+                setHoraComienzoManual(true)
+                setHoraFinManual(false)
+            }
+            if (radioSelection === 'radio_all_day') {
+                setHoraComienzoManual(false)
+                setHoraFinManual(false)
+                setHoraComienzo('07:30:00')
+                setHoraFin('16:30:00');
+            }
+            if (radioSelection === 'radio_manual') {
+                setHoraComienzoManual(true)
+                setHoraFinManual(true)
+            }
         }
-        if (radioSelection === 'radio_2_hora') {
-            const twoHoursLater = addHours(parsedDate, 2);
-            const formattedEndTime = format(twoHoursLater, 'HH:mm:ss');
-            setHoraFin(formattedEndTime)
-            setHoraComienzoManual(true)
-            setHoraFinManual(false)
-        }
-        if (radioSelection === 'radio_all_day') {
-            setHoraComienzoManual(false)
-            setHoraFinManual(false)
-            setHoraComienzo('07:00:00')
-            setHoraFin('16:30:00');
-        }
-        if (radioSelection === 'radio_manual') {
-            setHoraComienzoManual(true)
-            setHoraFinManual(true)
-        }
-      }
-    }, [horaComienzo, radioSelection]);
+    }, [horaComienzo, radioSelection, showSelectorHoras, id]);
 
     useEffect(() => {
-        if (seleccionarTodos) {
-            setTrabajadoresSeleccionados(trabajadoresSugeridos);
-        } else {
-            setTrabajadoresSeleccionados([]);
-        }
-    }, [seleccionarTodos, trabajadoresSugeridos]);
+        tipoJornal?.id ===1 && setShowSelectorHoras(false); setRadioSelection('');
+        tipoJornal?.id ===2 && setShowSelectorHoras(true);
+        tipoJornal?.id ===3 && setShowSelectorHoras(true);
+    }, [tipoJornal]);
+
+
+
+
+
+
 
 
     const fetchObraByJefe = async (id) => {
@@ -156,14 +158,6 @@ export const AddOrModifyJornalComponent = () => {
     }
 
 
-    const fetchTrabajadoresSugeridos = async (obraId, fecha) => {
-        try {
-            const trabajadoresData = await PersonaService.getTrabajadoresDeObraPorFecha(obraId, fecha);
-            setTrabajadoresSugeridos(trabajadoresData.data);
-        } catch (error) {
-            setMensajeError((prevErrors) => handleFetchError(error, prevErrors));
-        }
-    };
 
     const handleConfirmar = async (e) => {
         setMensajeError([]);
@@ -192,11 +186,11 @@ export const AddOrModifyJornalComponent = () => {
         // Modify Update jornal
         const horaComienzoFormatted = fechaJornal + 'T' + horaComienzo;
         const horaFinFormatted = fechaJornal + 'T' + horaFin;
-        const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado}
-        if(id){
+        const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado }
+        if (id) {
             var motivoDefinitivo = '';
-            if (motivo === 'Otros') {motivoDefinitivo =  otroMotivo;}else{motivoDefinitivo = motivo}
-            JornalService.updateJornal(id, motivoDefinitivo, jornal).then((res) => {  
+            if (motivo === 'Otros') { motivoDefinitivo = otroMotivo; } else { motivoDefinitivo = motivo }
+            JornalService.updateJornal(id, motivoDefinitivo, jornal).then((res) => {
                 let timerInterval;
                 Swal.fire({
                     title: 'Jornal Modificado con éxito',
@@ -208,23 +202,23 @@ export const AddOrModifyJornalComponent = () => {
                     willClose: () => {
                         clearInterval(timerInterval);
                     }
-               }).then((result) => {
-                 if (result.dismiss === Swal.DismissReason.timer) {
-                   navigate('/modify-jornal/'+id);
-                }
-               });
-               navigate('/home');
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/home');
+                    }
+                });
+                navigate('/home');
             }).catch(error => {
                 if (error.response) {
                     setMensajeError(error.response.data);
-                }else if (error.request) {
+                } else if (error.request) {
                     setMensajeError('No hay respuesta del servidor');
-                }else{
+                } else {
                     setMensajeError(error.message);
                 }
             });
-        }else{
-            JornalService.createJornal(jornal).then((res) => {  
+        } else {
+            JornalService.createJornal(jornal).then((res) => {
                 let timerInterval;
                 Swal.fire({
                     title: 'Jornal Creado con éxito',
@@ -236,23 +230,23 @@ export const AddOrModifyJornalComponent = () => {
                     willClose: () => {
                         clearInterval(timerInterval);
                     }
-               }).then((result) => {
-                 if (result.dismiss === Swal.DismissReason.timer) {
-                   navigate('/home');
-                }
-               });
-               navigate('/home');
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        navigate('/home');
+                    }
+                });
+                navigate('/home' + res.data.id);
             }).catch(error => {
                 if (error.response) {
                     setMensajeError(error.response.data);
-                }else if (error.request) {
+                } else if (error.request) {
                     setMensajeError('No hay respuesta del servidor');
-                }else{
+                } else {
                     setMensajeError(error.message);
                 }
             });
         }
-        
+
     };
 
 
@@ -284,22 +278,20 @@ export const AddOrModifyJornalComponent = () => {
     };
 
     const handleSeleccionarObra = (e) => {
-        setObra({id: e});
-        if(!id) {
-            fetchTrabajadoresSugeridos(e,fechaJornal);
-        }
+        setObra({ id: e });
     }
+
     const handleTipoJornal = (tipoJornal) => {
-        switch (tipoJornal) {        
+        switch (tipoJornal) {
             case 1:
-                setTipoJornal({id:1,tipoJornal:"COMUN"})
-                break;  
+                setTipoJornal({ id: 1, tipoJornal: "COMUN" })
+                break;
             case 2:
-                setTipoJornal({id:2,tipoJornal:"LLUVIA"})
-                break; 
+                setTipoJornal({ id: 2, tipoJornal: "LLUVIA" })
+                break;
             case 3:
-                setTipoJornal({id:3,tipoJornal:"EXTRA"}); 
-          }
+                setTipoJornal({ id: 3, tipoJornal: "EXTRA" });
+        }
     }
 
 
@@ -315,7 +307,7 @@ export const AddOrModifyJornalComponent = () => {
                         {isAdmin ?
                             obra ?
                                 <div className='form-group mt-3'>
-                                    <label className='form-label labelCard'>Obra</label>
+                                    <label className='form-label labelCard fs-5'>Obra</label>
                                     <select className="form-select col-5" aria-label="Default select example" onChange={(e) => handleSeleccionarObra(e.target.value)}>
                                         <option defaultValue={obra.id}>{obra.nombre}</option>
                                         {obrasActivas && (
@@ -329,7 +321,7 @@ export const AddOrModifyJornalComponent = () => {
                                 </div>
                                 :
                                 <div className='form-group mt-3'>
-                                    <label className='form-label labelCard'>Obra</label>
+                                    <label className='form-label labelCard fs-5'>Obra</label>
                                     <select className="form-select col-5" aria-label="Default select example" onChange={(e) => handleSeleccionarObra(e.target.value)}>
                                         <option defaultValue>Seleccionar Obra Aquí</option>
                                         {obrasActivas && (
@@ -341,11 +333,11 @@ export const AddOrModifyJornalComponent = () => {
                                         )}
                                     </select>
                                 </div>
-                            
+
                             :
                             obra && (
                                 <div className='form-group mt-3'>
-                                    <label className='form-label labelCard'>Obra</label>
+                                    <label className='form-label labelCard fs-5'>Obra</label>
                                     <select className="form-select col-5" aria-label="Default select example" disabled>
                                         <option defaultValue={obra.id}>{obra.nombre}</option>
                                     </select>
@@ -354,25 +346,44 @@ export const AddOrModifyJornalComponent = () => {
                         }
                         {/*--------- FECHA--------------------------- */}
                         {(isAdmin || (isJefeObra && !id)) ?
-                        <div className='form-group mt-3'>
-                            <label className='form-label me-4 labelCard'>Fecha</label>
-                            <DatePicker
-                                onChange={date => setFechaJornal(format(date, 'yyyy-MM-dd'))}
-                                className='form-control'
-                                dateFormat='yyyy-MM-dd'
-                                value={fechaJornal}
-                            />
-                        </div>
-                        :
-                            <div className='form-group mt-3'>
-                                <label className='form-label me-4 labelCard'>Fecha</label>
-                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={fechaJornal} disabled />                            
+                            <div className='form-group my-4'>
+                                <label className='form-label me-4 labelCard fs-5'>Fecha</label>
+                                <DatePicker
+                                    onChange={date => setFechaJornal(format(date, 'yyyy-MM-dd'))}
+                                    className='form-control'
+                                    dateFormat='yyyy-MM-dd'
+                                    value={fechaJornal}
+                                />
+                            </div>
+                            :
+                            <div className='form-group my-4'>
+                                <label className='form-label me-4 labelCard fs-5'>Fecha</label>
+                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={fechaJornal} disabled />
                             </div>
                         }
+
+
+                        {/*--------- TIPO JORNAL--------------------------- */}
+                        {tipoJornal && (
+                            <div className='form-group my-4'>
+
+                                <label className='form-label me-4 labelCard fs-5'>Tipo de Jornal</label>
+
+                                <input type="radio" className="btn-check" name="options-outlined" id="tj_comun" autoComplete="off" checked={tipoJornal.id === 1} onChange={(e) => handleTipoJornal(1)} />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="tj_comun">Común</label>
+
+                                <input type="radio" className="btn-check" name="options-outlined" id="tj_extra" autoComplete="off" checked={tipoJornal.id === 3} onChange={(e) => handleTipoJornal(3)} />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="tj_extra">Extra</label>
+
+                                {id && (<><input type="radio" className="btn-check" name="options-outlined" id="tj_lluvia" autoComplete="off" checked={tipoJornal.id === 2} onChange={(e) => handleTipoJornal(2)} /><label className="btn btn-outline-dark mx-1 my-1" htmlFor="tj_lluvia">Lluvia</label></>)}
+                            </div>
+                        )}
+
+
                         {/*--------- HORA COMIENZO--------------------------- */}
                         {horaComienzoManual && (
-                            <div className='form-group mt-3'>
-                                <label className='form-label me-4 labelCard'>Hora comienzo</label>
+                            <div className='form-group my-4'>
+                                <label className='form-label me-4 labelCard fs-5'>Hora comienzo</label>
                                 <TimePicker
                                     value={horaComienzo}
                                     onChange={setHoraComienzo}
@@ -380,29 +391,29 @@ export const AddOrModifyJornalComponent = () => {
                                     timeFormat='HH:mm:ss'
                                 />
                             </div>
-                        )}                     
+                        )}
 
                         {/*--------- OPCIONES HORAS--------------------------- */}
-                        {!id && (isAdmin || isJefeObra) && (
-                        <div className='form-group mt-3'>
-                            <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
+                        {!id && showSelectorHoras && (
+                            <div className='form-group my-4'>
+                                <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
 
-                            <input type="radio" className="btn-check" name="options-outlined" id="radio_2_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_2_hora">2 horas</label>
+                                <input type="radio" className="btn-check" name="options-outlined" id="radio_2_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_2_hora">2 horas</label>
 
-                            <input type="radio" className="btn-check" name="options-outlined" id="radio_all_day" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_all_day">Día completo</label>
+                                <input type="radio" className="btn-check" name="options-outlined" id="radio_all_day" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_all_day">Día completo</label>
 
-                            <input type="radio" className="btn-check " name="options-outlined" id="radio_manual" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_manual">Ingreso manual</label>
-                        </div>
+                                <input type="radio" className="btn-check " name="options-outlined" id="radio_manual" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
+                                <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_manual">Ingreso manual</label>
+                            </div>
                         )}
 
                         {/*--------- HORA FIN--------------------------- */}
                         {(horaFinManual || id || !isAdmin) && (
-                            <div className='form-group mt-3'>
-                                <label className='form-label me-4 labelCard'>Hora fin</label>
+                            <div className='form-group my-4'>
+                                <label className='form-label me-4 labelCard fs-5'>Hora fin</label>
                                 <TimePicker
                                     value={horaFin}
                                     onChange={setHoraFin}
@@ -414,49 +425,34 @@ export const AddOrModifyJornalComponent = () => {
 
                         }
                         {/*--------- TRABAJADORES--------------------------- */}
-                        <div className='form-group mt-3 mb-3'>
-                            <label className='form-label me-4 labelCard'>Trabajador</label>
-                            {persona && isAdmin &&         
+                        <div className='form-group mt-3 my-4'>
+                            <label className='form-label me-4 labelCard fs-5'>Trabajador</label>
+                            {persona && isAdmin &&
                                 (<label className="form-label me-4 border d-inline p-2 justify-content-center">
                                     {persona.nombre} {persona.apellido}
                                 </label>)
                             }
 
                             {persona && !isAdmin && (
-                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={persona.nombre + ' ' + persona.apellido} disabled /> 
-                                )
+                                <input className="form-label me-4 border d-inline p-2 justify-content-center" defaultValue={persona.nombre + ' ' + persona.apellido} disabled />
+                            )
                             }
 
-                            {(isAdmin || isJefeObra) && !id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
-                            {(isAdmin || isJefeObra) && !id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
+                            { !id && !buscarTrabajador && !persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Buscar</div>)}
+                            { !id && !buscarTrabajador && persona && (<div className='btn btn-secondary' onClick={handleBuscar}>Cambiar</div>)}
                         </div>
                         {/*--------- BUSCADOR--------------------------- */}
-                        {(isAdmin || isJefeObra) && buscarTrabajador && (
+                        { buscarTrabajador && (
                             <div className='row justify-content-center'>
                                 <ContainerPersonaFinderComponent onCancelar={cancelarBusqueda} minimalData={true} handleRowClick={(e) => handleSetPersona(e)}></ContainerPersonaFinderComponent>
                             </div>)
                         }
-                        {/*--------- TIPO JORNAL--------------------------- */}
-                        {(isAdmin || isJefeObra) && tipoJornal && (
-                        <div className='form-group mt-3'>
 
-                            <label className='form-label me-4 labelCard'>Tipo de Jornal</label>
-
-                            <input type="radio" className="btn-check" name="options-outlined" id="tj_comun" autoComplete="off" checked={tipoJornal.id === 1} onChange={(e) => handleTipoJornal(1)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_comun">Común</label>
-
-                            <input type="radio" className="btn-check" name="options-outlined" id="tj_extra" autoComplete="off" checked={tipoJornal.id === 3} onChange={(e) => handleTipoJornal(3)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_extra">Extra</label>
-
-                            <input type="radio" className="btn-check" name="options-outlined" id="tj_lluvia" autoComplete="off" checked={tipoJornal.id === 2} onChange={(e) => handleTipoJornal(2)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="tj_lluvia">Lluvia</label>
-                        </div>
-                        )}
                         {/*--------- MOTIVO --------------------------- */}
                         {id && (
-                        <div className='form-group mt-3'>
-                            <label className='form-label me-4 labelCard'>Motivo del cambio</label>
-                            <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setMotivo(e.target.value)}>
+                            <div className='form-group my-4'>
+                                <label className='form-label me-4 labelCard fs-5'>Motivo del cambio</label>
+                                <select className="form-select col-5" aria-label="Default select example" onChange={(e) => setMotivo(e.target.value)}>
                                     <option value='Horario de Entrada Incorrecto'>Trabajador no marcó salida</option>
                                     <option value='Horario de Entrada Incorrecto'>Trabajador no marcó entrada</option>
                                     <option value='Horario de Entrada Incorrecto'>Horario de Entrada Incorrecto</option>
@@ -464,13 +460,13 @@ export const AddOrModifyJornalComponent = () => {
                                     <option value='Fecha Incorrecta'>Fecha Incorrecta</option>
                                     <option value='Cambio de Obra'>Cambio de Obra</option>
                                     <option value='Otros'>Otros</option>
-                            </select>
-                        </div>  
+                                </select>
+                            </div>
                         )}
                         {(motivo == 'Otros') && (
-                            <div className='form-group mt-3'>
+                            <div className='form-group my-4'>
                                 <label className='form-label me-4'>Especifique:</label>
-                                <input type='text' name='otrosmotivos' className='form-control' value={otroMotivo} onChange={(e) => setOtroMotivo(e.target.value)}/>
+                                <input type='text' name='otrosmotivos' className='form-control' value={otroMotivo} onChange={(e) => setOtroMotivo(e.target.value)} />
                             </div>
                         )}
                     </form>
@@ -485,5 +481,6 @@ export const AddOrModifyJornalComponent = () => {
         </div>
     )
 }
+
 
 export default AddOrModifyJornalComponent;

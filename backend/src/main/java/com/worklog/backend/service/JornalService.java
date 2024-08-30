@@ -8,6 +8,7 @@ import com.worklog.backend.exception.JornalNotSavedException;
 import com.worklog.backend.model.*;
 import com.worklog.backend.repository.JornalRepository;
 import com.worklog.backend.util.DateTimeUtil;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,10 @@ public class JornalService {
     private JornalEliminadoService jornalEliminadoService;
 
     private final RolService rolService= new RolService();
+    @Autowired
+    private PersonaRolService personaRolService;
+    @Autowired
+    private JefeObraService jefeObraService;
 
     @Transactional
     public Jornal saveJornal(Jornal newJornal) {
@@ -94,7 +99,13 @@ public class JornalService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Jornal[]> getLastJornales() {
+        return jornalRepository.findAllOrderedByFechaDESC();
+    }
+
+    @Transactional(readOnly = true)
     public Jornal getJornalById(Long id) {
+        isAuthorizedToGetJornal(id);
         return jornalRepository.findById(id)
                 .orElseThrow(() -> new JornalNotFoundException(id.toString()));
     }
@@ -145,6 +156,7 @@ public class JornalService {
 
     public Optional<Jornal[]> findJornalesByPersona(Long personaId) {
         Persona persona = personaService.getPersonaById(personaId);
+        isAuthorizedToGetJornalesOfPersona(persona);
        return jornalRepository.findByPersonaOrderedByFechaJornalDesc(persona);
     }
 
@@ -238,8 +250,6 @@ public class JornalService {
 
     @Transactional
     public Jornal validarUpdate(Jornal newJornal, Long id, String motivo) {
-        System.out.println(newJornal.getHoraComienzo());
-        System.out.println(newJornal.getHoraFin());
 
         newJornal.setId(id);
         validateJornal(newJornal);
@@ -304,6 +314,10 @@ public class JornalService {
                         throw new InvalidDataException("El jornal no puede ser marcado a futuro");
                     }
                 }
+
+                if(DateTimeUtil.isTimeStampAfterNow(jornal.getHoraComienzo()) || DateTimeUtil.isTimeStampAfterNow(jornal.getHoraFin())){
+                    throw new InvalidDataException("El jornal no puede ser marcado con horarios a futuro");
+                }
             }
 
             if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)) {
@@ -335,11 +349,7 @@ public class JornalService {
 
             //En una misma fecha una persona no puede tener jornales superpuestos en otras obras, sin importar el tipo
             Optional<Jornal[]> jornalesFecha = jornalRepository.findByPersonaAndFechaAndNotObra(jornal.getPersona(), jornal.getFechaJornal(), jornal.getObra());
-            try {
-                validateNoOverlap(jornalesFecha, jornal);
-            } catch (InvalidDataException e) {
-                throw new InvalidDataException(jornal.getPersona().getApellido() + ": ya tiene un jornal sin finalizar en otra obra para este día");
-            }
+            validateNoOverlap(jornalesFecha, jornal);
 
             //En una misma fecha una persona no puede tener jornales superpuestos del mismo tipo en una misma obra
             Optional<Jornal[]> jornalesFechaObraTipo = jornalRepository.findByFechaJornalAndObraAndPersonaAndTipoJornal(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona(), jornal.getTipoJornal());
@@ -363,9 +373,9 @@ public class JornalService {
         for (Jornal j : jornalArray) {
             if (!(j.getId().equals(nuevoJornal.getId()))) {
                 if (j.getHoraFin() == null)
-                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal sin finalizar para este día");
+                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": existe un jornal sin finalizar para el día seleccionado");
                 if (DateTimeUtil.timeRangesOverlap(j.getHoraComienzo(), j.getHoraFin(), nuevoJornal.getHoraComienzo(), nuevoJornal.getHoraFin())) {
-                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal de ese tipo en el horario ingresado");
+                    throw new InvalidDataException(nuevoJornal.getPersona().getApellido() + ": ya existe un jornal en el horario ingresado");
                 }
             }
         }
@@ -506,7 +516,43 @@ public class JornalService {
         LocalDate startDate= DateTimeUtil.parseLocalDate(fechaDesde);
         LocalDate endDate = DateTimeUtil.parseLocalDate(fechaHasta);
         return jornalRepository.existsJornalesSinConfirmarByObraFecha(startDate, endDate, obraId);
+    }
 
+    public void isAuthorizedToGetJornal(Long jornalID) {
+        Optional<Jornal> optJornal = jornalRepository.findById(jornalID);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        PersonaRol personaRol = personaRolService.getPersonaRolActivoByUsername(currentUserName);
+        if (optJornal.isPresent()){
+            Jornal jornal = optJornal.get();
+            if (personaRol.getRol().getId().equals(Rol.ID_ROL_TRA)){
+               if (!jornal.getPersona().getId().equals(personaRol.getPersona().getId())){
+                   throw new InvalidDataException ("No tienes autorización para ver los datos");
+               }
+            }
+
+            if(personaRol.getRol().getId().equals(Rol.ID_ROL_JO)){
+                Obra obra = jefeObraService.getObraByJefe(personaRol.getPersona().getId());
+                if (obra == null) throw new InvalidDataException("No tienes autorización para ver los datos");
+
+                if(!jornal.getObra().getId().equals(obra.getId())){
+                    throw new InvalidDataException("No tienes autorización para ver los datos");
+                }
+            }
+
+        }
+    }
+
+    public void isAuthorizedToGetJornalesOfPersona(Persona persona) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        PersonaRol personaRol = personaRolService.getPersonaRolActivoByUsername(currentUserName);
+        if (personaRol.getRol().getId().equals(Rol.ID_ROL_TRA)){
+            if(!personaRol.getPersona().getId().equals(persona.getId())){
+                throw new InvalidDataException ("No tienes autorización para ver los datos");
+            }
+        }
     }
 
 

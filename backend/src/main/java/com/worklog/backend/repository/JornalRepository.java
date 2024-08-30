@@ -56,5 +56,7 @@ public interface JornalRepository extends JpaRepository<Jornal,Long>, JornalRepo
     boolean existsJornalesSinConfirmarByObraFecha(@Param("startDate") LocalDate startDate,
                                                   @Param("endDate") LocalDate endDate,
                                                   @Param("obraId") Long obraId);
+    @Query(value="SELECT j FROM Jornal j ORDER BY j.fechaJornal DESC, j.horaComienzo DESC")
+    Optional<Jornal[]> findAllOrderedByFechaDESC();
 
 }

@@ -43,7 +43,6 @@ const JornalFinderFormComponent = ({ onSubmitDataToParent, onFechasChange, title
  
 
     const agregarALista =  async (persona) => {
-        console.log('click')
         setSeleccionarAllTrabajadores(false)
         setTrabajadoresSeleccionados(prevTrabajadores => {
             // Check if personaFound is already in the array

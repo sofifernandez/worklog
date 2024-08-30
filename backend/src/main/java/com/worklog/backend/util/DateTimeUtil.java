@@ -173,16 +173,28 @@ public class DateTimeUtil {
     }
 
     public static boolean timeRangesOverlap(Timestamp A_Start, Timestamp A_End, Timestamp B_Start, Timestamp B_End) {
-        if (B_End == null) {
-            // If B_End is null, check if B_Start falls within A's range
-            return B_Start != null && B_Start.after(A_Start) && B_Start.before(A_End);
+        LocalDateTime A_Start_LDT = truncateToMinutes(A_Start.toLocalDateTime());
+        LocalDateTime A_End_LDT = truncateToMinutes(A_End.toLocalDateTime());
+        LocalDateTime B_Start_LDT = truncateToMinutes(B_Start.toLocalDateTime());
+        LocalDateTime B_End_LDT = (B_End != null) ? truncateToMinutes(B_End.toLocalDateTime()) : null;
+
+        if (B_End_LDT == null) {
+            // If B_End is null, check if B_Start falls within A's range, excluding boundary overlap
+            return  B_Start_LDT.isAfter(A_Start_LDT) && B_Start_LDT.isBefore(A_End_LDT);
         }
 
-        // Regular checks if B_End is not null
-        if (B_Start.after(A_Start) && B_Start.before(A_End)) return true; // B start is within A's range
-        if (B_End.after(A_Start) && B_End.before(A_End)) return true; // B end is within A's range
-        return A_Start.before(B_End) && A_End.after(B_Start); // Check for overlap
+        // Adjusted checks to exclude boundary overlaps
+        if (B_Start_LDT.isAfter(A_Start_LDT) && B_Start_LDT.isBefore(A_End_LDT)) return true; // B start is within A's range
+        if (B_End_LDT.isAfter(A_Start_LDT) && B_End_LDT.isBefore(A_End_LDT)) return true; // B end is within A's range
+
+        // Exclude exact boundary overlaps where A_End equals B_Start or A_Start equals B_End
+        return A_Start_LDT.isBefore(B_End_LDT) && A_End_LDT.isAfter(B_Start_LDT) && !A_End_LDT.equals(B_Start_LDT) && !A_Start_LDT.equals(B_End_LDT);
     }
+
+    private static LocalDateTime truncateToMinutes(LocalDateTime localDateTime) {
+        return localDateTime.truncatedTo(ChronoUnit.MINUTES);
+    }
+
 
     public static void validateFechas(LocalDate fechaDesde, LocalDate fechaHasta){
         if (fechaDesde != null) {
@@ -206,6 +218,17 @@ public class DateTimeUtil {
     public static void areDatesWithinSixMonths(LocalDate date1, LocalDate date2) {
         long monthsBetween = ChronoUnit.MONTHS.between(date1, date2);
         if(Math.abs(monthsBetween) >6) throw new InvalidDataException("No se pueden seleccionar fechas con un rango mayor a 6 meses");
+    }
+
+    public static boolean isTimeStampAfterNow(Timestamp timestamp){
+       // Get the current time truncated to the minute
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        // Truncate the given timestamp to the minute
+        LocalDateTime truncatedTimestamp = timestamp.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES);
+
+        return truncatedTimestamp.isAfter(now);
+
     }
 
 }
