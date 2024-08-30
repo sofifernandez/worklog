@@ -107,15 +107,8 @@ public class PersonaRolService {
 
     @Transactional(readOnly = true)
     public PersonaRol getPersonaRolActivoByUsername(String username) {
-        String queryStr = "SELECT PR FROM PersonaRol pr, Usuario U, Persona P ";
-        queryStr = queryStr + " WHERE U.username=:username AND  PR.activo= true";
-        TypedQuery<PersonaRol> query = entityManager.createQuery(queryStr, PersonaRol.class);
-        query.setParameter("username", username);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            throw new PersonaRolNotFoundException(username);
-        }
+        return personaRolRepository.findPersonaRolActivoByUsername(username)
+                .orElseThrow(() -> new PersonaRolNotFoundException(username));
     }
 
     @Transactional(readOnly = true)

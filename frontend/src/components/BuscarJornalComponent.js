@@ -21,7 +21,6 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
                 setObras(obrasData.data);
             }
             if(workerView) {
-                console.log('we are here')
                 const obrasData = await ObraService.getObrasActivasEntreFechasyTrabajador(fechaDesde, fechaHasta, personaRolLoggeado.id);
                 setObras(obrasData.data);
             } 

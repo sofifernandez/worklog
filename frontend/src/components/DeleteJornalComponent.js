@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext';
 import JornalService from '../services/JornalService';
 import DatePicker from 'react-datepicker';
-import TimePicker from 'react-time-picker';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import 'react-time-picker/dist/TimePicker.css';
@@ -29,8 +28,6 @@ export const DeleteJornalComponent = () => {
     const [horaFinManual, setHoraFinManual] = useState(false)
     const [modificado, setModificado] = useState()
     const [confirmado, setConfirmado] = useState()
-    const [motivo, setMotivo] = useState()
-    const [otroMotivo, setOtroMotivo] = useState('')
     const [confirmar, setConfirmar] = useState(false)
 
     useEffect(() => {
@@ -47,7 +44,8 @@ export const DeleteJornalComponent = () => {
                 setHoraFin(format(res.data.horaFin, 'HH:mm:ss'))
             }
         }).catch(e => {
-            console.log(e)
+            e.response?.data ? setMensajeError(e.response.data):
+            setMensajeError(e.message)
         })
       }
     }, [id])
@@ -57,12 +55,6 @@ export const DeleteJornalComponent = () => {
         setMensajeSuccess([])
         e.preventDefault();
 
-        // Update jornal
-        const horaComienzoFormatted = fechaJornal + 'T' + horaComienzo;
-        const horaFinFormatted = fechaJornal + 'T' + horaFin;
-        const jornal = { persona, obra, fechaJornal, horaComienzo: horaComienzoFormatted, horaFin: horaFinFormatted, tipoJornal, modificado, confirmado}
-        //var motivoDefinitivo = '';
-        //if (motivo === 'Otros') {motivoDefinitivo =  otroMotivo;}else{motivoDefinitivo = motivo}
         JornalService.deleteJornal(id).then((res) => {  
             let timerInterval;
             Swal.fire({
@@ -122,12 +114,9 @@ export const DeleteJornalComponent = () => {
                         {/*--------- FECHA--------------------------- */}
                         <div className='form-group mt-3'>
                             <label className='form-label me-4 labelCard'>Fecha</label>
-                            <DatePicker
-                                onChange={date => setFechaJornal(format(date, 'yyyy-MM-dd'))}
-                                className='form-control'
-                                dateFormat='yyyy-MM-dd'
-                                value={fechaJornal}
-                            />
+                            <label className="form-label me-4 border d-inline p-2 justify-content-center">
+                                    {fechaJornal}
+                                </label>
                         </div>
                         {/*--------- HORA COMIENZO--------------------------- */}
                         {horaComienzoManual && (

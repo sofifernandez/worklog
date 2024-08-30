@@ -165,13 +165,14 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
                 {/*----- ACCIONES -------- */}
                 {adminView && (
                     <td className="text-center">
-                        <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                        <Link className='btn btn-danger m-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
                         {!jornal.confirmado && (<ConfirmarJornalComponent
                             jornal={jornal}
                             onError={onError}
                             onSuccess={onSuccess}
                         />)}
+                        <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
+                        <Link className='btn btn-outline-danger m-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
+                        
                     </td>
                 )}
 

@@ -50,12 +50,12 @@ export const JornalesParaConfirmarComponent = ({ obra }) => {
         <div className='container mt-5 row justify-content-center'>
             {obra ? (
                 <div>
-                    <h2 className='text-center'>
-                        {hasJornales ? `Jornales para confirmar de ${obra.nombre}` : `${obra.nombre}: No tiene jornales para confirmar`}
-                    </h2>
+                    <h4 className=''>
+                        {hasJornales ? `Jornales para confirmar de ${obra.nombre}` : `${obra.nombre}: no tiene jornales para confirmar`}
+                    </h4>
                     {hasJornales && (
                         <>
-                            <div className='row justify-content-center px-0'>
+                            <div className='row justify-content-center border bg-white px-0'>
                                 <ContainerDatoJornalComponent
                                     jornales={jornales.slice(0, 10)}
                                     adminView={true}
