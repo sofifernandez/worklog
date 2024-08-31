@@ -33,7 +33,8 @@ export const ContainerJornalEditorComponent = () => {
     const [confirmado, setConfirmado] = useState(false)
     const [mensajeError, setMensajeError] = useState();
 
-
+    console.log(horaComienzo)
+    console.log(horaFin)
 
 
   /*--------SETEO INICIAL DEL FORM ------------------ */
@@ -71,8 +72,6 @@ export const ContainerJornalEditorComponent = () => {
         }
     }, [id])
 
-
-    
 
   /*-------FETCH OBRAS ------------------ */
     const fetchObraByJefe = async (id) => {

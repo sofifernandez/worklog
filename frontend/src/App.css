@@ -110,4 +110,8 @@ input.react-time-picker__inputGroup__input.react-time-picker__inputGroup__minute
   color: white;
 }
 
+.divSymbol{
+  cursor: inherit;
+}
+
 

@@ -85,11 +85,12 @@ export const JornalEditorFormComponent = ({ isModify, obras, persona, fechaJorna
     }, [fechaJornal, isModify])
 
 
+    console.log(fechaJornal)
 
 
     useEffect(() => {
         if (horaComienzo && horaComienzo != null && horaComienzo !== undefined) {
-            
+
             const [hours, minutes] = horaComienzo.split(':').map(Number);
             const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
 
@@ -115,7 +116,7 @@ export const JornalEditorFormComponent = ({ isModify, obras, persona, fechaJorna
 
     }, [horaComienzo, radioSelection, dayOfTheWeek]);
 
-    
+
 
 
     const handleBuscar = () => {
@@ -175,13 +176,20 @@ export const JornalEditorFormComponent = ({ isModify, obras, persona, fechaJorna
 
                     <div className='form-group my-5'>
                         <label className='form-label me-4 labelCard fs-5'>Fecha</label>
-                        <DatePicker
-                            selected={fechaJornal} // Set initial date from the parent or null
-                            onChange={handleFechaSelect}
-                            className='form-control bg-white'
-                            dateFormat='dd-MM-yyyy'
-                            disabled={isModify}
-                        />
+                        {!isModify && (
+                            <DatePicker
+                                selected={fechaJornal} // Set initial date from the parent or null
+                                onChange={handleFechaSelect}
+                                className='form-control bg-white'
+                                dateFormat='dd-MM-yyyy'
+                            />
+                        )}
+
+                        {isModify && (
+                           
+                            <input className="form-label me-4 bg-white border d-inline p-2 justify-content-center" defaultValue={fechaJornal} disabled />
+                            
+                        )}
                     </div>
 
                     {/*--------- TRABAJADORES--------------------------- */}

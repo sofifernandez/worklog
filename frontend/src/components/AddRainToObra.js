@@ -7,7 +7,7 @@ import JefeObraService from '../services/JefeObraService';
 import DatePicker from 'react-datepicker';
 import TimePicker from 'react-time-picker';
 import { useNavigate } from 'react-router-dom';
-import { format, setHours, setMinutes, addHours } from 'date-fns';
+import { format, setHours, setMinutes, addHours, subHours } from 'date-fns';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import ContainerPersonaFinderComponent from './functionalComponents/ContainerPersonaFinderComponent';
@@ -34,8 +34,7 @@ export const AddRainToObra = () => {
     const [radioSelection, setRadioSelection] = useState('radio_1_hora')
     const [seleccionarTodos, setSeleccionarTodos] = useState(false)
     const [buscarTrabajador, setBuscarTrabajador] = useState(false)
-    const [horaComienzoManual, setHoraComienzoManual] = useState(true)
-    const [horaFinManual, setHoraFinManual] = useState(false)
+
 
     const handleFetchError = (error, currentErrors) => {
         const newErrors = [...(currentErrors || [])]; // Create a copy of currentErrors or initialize as empty array
@@ -69,34 +68,61 @@ export const AddRainToObra = () => {
 
 
     useEffect(() => {
-        const [hours, minutes] = horaComienzo.split(':').map(Number);
-        const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
+        if (horaComienzo && horaComienzo != null && horaComienzo !== undefined) {
+            
+            const [hours, minutes] = horaComienzo.split(':').map(Number);
+            const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
 
-        if (radioSelection === 'radio_1_hora') {
-            const oneHourLater = addHours(parsedDate, 1);
-            const formattedEndTime = format(oneHourLater, 'HH:mm:ss');
-            setHoraFinManual(false)
-            setHoraFin(formattedEndTime)
-            setHoraComienzoManual(true)
-        }
-        if (radioSelection === 'radio_2_hora') {
-            const twoHoursLater = addHours(parsedDate, 2);
-            const formattedEndTime = format(twoHoursLater, 'HH:mm:ss');
-            setHoraFin(formattedEndTime)
-            setHoraComienzoManual(true)
-            setHoraFinManual(false)
+            if (radioSelection === 'radio_1_hora') {
+                const oneHourLater = addHours(parsedDate, 1);
+                const formattedEndTime = format(oneHourLater, 'HH:mm');
+                setHoraFin(formattedEndTime)
+            }
+            if (radioSelection === 'radio_2_hora') {
+                const twoHoursLater = addHours(parsedDate, 2);
+                const formattedEndTime = format(twoHoursLater, 'HH:mm');
+                setHoraFin(formattedEndTime)
+            }
         }
         if (radioSelection === 'radio_all_day') {
-            setHoraComienzoManual(false)
-            setHoraFinManual(false)
-            setHoraComienzo('07:30:00')
-            setHoraFin('16:30:00');
+            setHoraComienzo('07:00')
+            setHoraFin('13:00')
         }
         if (radioSelection === 'radio_manual') {
-            setHoraComienzoManual(true)
-            setHoraFinManual(true)
+
         }
+
     }, [horaComienzo, radioSelection]);
+
+
+/*     useEffect(() => {
+        if (horaFin && horaFin != null && horaFin !== undefined) {
+            
+            const [hours, minutes] = horaComienzo.split(':').map(Number);
+            const parsedDate = setHours(setMinutes(new Date(), minutes), hours);
+
+            if (radioSelection === 'radio_1_hora') {
+                const oneHourBefore = subHours(parsedDate, 1);
+                const formattedEndTime = format(oneHourBefore, 'HH:mm');
+                setHoraComienzo(formattedEndTime)
+            }
+            if (radioSelection === 'radio_2_hora') {
+                const twoHoursBefore = subHours(parsedDate, 2);
+                const formattedEndTime = format(twoHoursBefore, 'HH:mm');
+                setHoraComienzo(formattedEndTime)
+            }
+        }
+        if (radioSelection === 'radio_all_day') {
+            setHoraComienzo('07:00')
+            setHoraFin('13:00')
+        }
+        if (radioSelection === 'radio_manual') {
+
+        }
+
+    }, [horaFin, radioSelection]); */
+
+
 
     useEffect(() => {
         if (seleccionarTodos) {
@@ -321,52 +347,52 @@ export const AddRainToObra = () => {
                             />
                         </div>
                         {/*--------- HORA COMIENZO--------------------------- */}
-                        {horaComienzoManual && (
+
                             <div className='form-group mt-5'>
                                 <label className='form-label me-4 labelCard'>Hora comienzo</label>
                                 <TimePicker
                                     value={horaComienzo}
                                     onChange={setHoraComienzo}
                                     className='form-control'
-                                    timeFormat='HH:mm:ss'
+                                    timeFormat='HH:mm'
+                                    locale='es'
                                 />
                             </div>
-                        )}
+                        
 
                         {/*--------- OPCIONES HORAS--------------------------- */}
                         <div className='form-group mt-2'>
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_1_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} defaultChecked />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
+                            <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_1_hora">1 hora</label>
 
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_2_hora" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_2_hora">2 horas</label>
+                            <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_2_hora">2 horas</label>
 
                             <input type="radio" className="btn-check" name="options-outlined" id="radio_all_day" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_all_day">Día completo</label>
+                            <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_all_day">Día completo</label>
 
                             <input type="radio" className="btn-check " name="options-outlined" id="radio_manual" autoComplete="off" onChange={(e) => setRadioSelection(e.target.id)} />
-                            <label className="btn btn-outline-primary mx-1 my-1" htmlFor="radio_manual">Ingreso manual</label>
+                            <label className="btn btn-outline-dark mx-1 my-1" htmlFor="radio_manual">Ingreso manual</label>
                         </div>
 
 
                         {/*--------- HORA FIN--------------------------- */}
-                        {horaFinManual && (
+
                             <div className='form-group mt-5'>
                                 <label className='form-label me-4 labelCard'>Hora fin</label>
                                 <TimePicker
                                     value={horaFin}
                                     onChange={setHoraFin}
                                     className='form-control'
-                                    timeFormat='HH:mm:ss'
+                                    timeFormat='HH:mm'
+                                    locale='es'
                                 />
                             </div>
-                        )
 
-                        }
                         {/*--------- TRABAJADORES--------------------------- */}
                         <div className='form-group mt-5 mb-3'>
                             <label className='form-label me-4 labelCard'>Trabajadores</label>
-                            <button className='btn btn-outline-primary mx-3'
+                            <button className='btn btn-outline-dark mx-3'
                                 onClick={(e) => handleSeleccionarTodos(e)}
                                 disabled={trabajadoresSugeridos?.length == 0}
                                 >Todos</button>
@@ -405,7 +431,7 @@ export const AddRainToObra = () => {
                 {mensajeSuccess && <SuccessMessage mensajeSuccess={mensajeSuccess} handleAlertClose={(e) => handleAlertCloseSuccess(e)} />}
             </div>
             <div className='row justify-content-center mt-4'>
-                <button className="btn btn-primary col-5 col-lg-3 ms-3 mb-3" type="button" onClick={(e) => handleConfirmar(e)}>Confirmar</button>
+                <button className="btn btn-dark col-5 col-lg-3 ms-3 mb-3" type="button" onClick={(e) => handleConfirmar(e)}>Confirmar</button>
                 <button className="btn btn-danger col-5 col-lg-3 ms-3 mb-3 " type="button" onClick={handleCancelar}>Cancelar</button>
             </div>
         </div>
