@@ -220,7 +220,7 @@ public class ReporteService {
         for (Persona persona : trabajadores) {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
-                Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(currentDate, obra, persona);
+                Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersonaConfirmados(currentDate, obra, persona);
                 List<Jornal> jornalesList = jornalService.convertOptionalArrayToList(jornales);
                 if(!jornalesList.isEmpty()) {
                     DetalleHorasJornalDTO detalleHorasJornalDTO = this.getDetalleHorasFromJornalesPorDia(jornalesList);

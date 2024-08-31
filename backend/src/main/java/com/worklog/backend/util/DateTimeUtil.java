@@ -97,7 +97,7 @@ public class DateTimeUtil {
         if(dayOfWeek == DayOfWeek.FRIDAY){
             isBeforeEndOfDay = currentTime.isBefore(FRIDAY_END) || currentTime.equals(FRIDAY_END);;
         } else {
-            isBeforeEndOfDay=currentTime.isBefore(MONDAY_TO_THURSDAY_END);
+            isBeforeEndOfDay=currentTime.isBefore(MONDAY_TO_THURSDAY_END) || currentTime.equals(MONDAY_TO_THURSDAY_END);
         }
         return isAfterStartOfDay && isBeforeEndOfDay;
     }
@@ -114,8 +114,8 @@ public class DateTimeUtil {
 
 
     public static boolean isDateAfterTomorrowOrLater(LocalDate date) {
-        LocalDate dayAfterTomorrow = LocalDate.now(ZoneId.systemDefault()).plusDays(2);
-        return date.isAfter(dayAfterTomorrow);
+        LocalDate tomorrow = LocalDate.now(ZoneId.systemDefault()).plusDays(1);
+        return date.isAfter(tomorrow);
     }
 
 

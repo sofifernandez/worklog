@@ -63,12 +63,27 @@ public class JornalRepositoryImpl implements JornalRepositoryCustom{
 
 
     @Override
-    public Optional<Jornal[]> findJornalesByFechaObraPersona(LocalDate fecha, Obra obra, Persona persona) {
+    public Optional<Jornal[]> findJornalesByFechaObraPersonaConfirmados(LocalDate fecha, Obra obra, Persona persona) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM jornal WHERE fecha_jornal = :fecha");
         sql.append(" AND obra_id = :obraId");
         sql.append(" AND persona_id = :personaId");
         sql.append(" AND confirmado = true");
+        Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
+
+        query.setParameter("personaId", persona.getId());
+        query.setParameter("fecha", fecha);
+        query.setParameter("obraId", obra.getId());
+        List<Jornal> result = query.getResultList();
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.toArray(new Jornal[0]));
+    }
+
+    @Override
+    public Optional<Jornal[]> findJornalesByFechaObraPersona(LocalDate fecha, Obra obra, Persona persona) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM jornal WHERE fecha_jornal = :fecha");
+        sql.append(" AND obra_id = :obraId");
+        sql.append(" AND persona_id = :personaId");
         Query query = entityManager.createNativeQuery(sql.toString(), Jornal.class);
 
         query.setParameter("personaId", persona.getId());
