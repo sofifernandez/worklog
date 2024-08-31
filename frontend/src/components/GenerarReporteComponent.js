@@ -85,11 +85,13 @@ const GenerarReporteComponent = () => {
                 onCancelar={handleCancelar}
             />
 
+            <div className="row justify-content-center">
             <button
                 className={`btn btn-outline-dark col-md-2 my-3 mx-1 ${reporteCompleto ? 'btn-active-dark' : 'btn-inactive-dark'}`}
                 onClick={(e) => { e.preventDefault(); setReporteCompleto(prevState => !prevState); }}>
                 Completo
             </button>
+            </div>
 
             {mensajeError && <ErrorMessage mensajeError={mensajeError} handleAlertClose={(e) => handleAlertCloseError(e)} />}
         </div>

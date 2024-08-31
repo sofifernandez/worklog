@@ -18,7 +18,7 @@ const HeaderAdminComponent = () => {
                 <div className="collapse navbar-collapse justify-content-lg-between" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item mx-2 px-2 ">
-                            <a className="nav-link" href="/home">Inicio</a>
+                            <a className="nav-link labelCard text-dark" href="/home">Inicio</a>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
                             <a className="nav-link dropdown-toggle" href="/personas" id="navbarDropdownMenuLinkPersonas" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -54,13 +54,10 @@ const HeaderAdminComponent = () => {
                                 
                             </div>
                         </li>
-                        <li className="nav-item dropdown mx-2 px-2">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkReportes" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <li className="nav-item mx-2 px-2 ">
+                            <a className="nav-link text-white" href="/reporte">
                                 Reportes
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkReportes">
-                                <a className="dropdown-item" href="/reporte">Obtener nuevo reporte</a>
-                            </div>
                         </li>
 
                     </ul>

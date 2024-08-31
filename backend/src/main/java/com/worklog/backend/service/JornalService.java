@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class JornalService {
@@ -301,7 +302,7 @@ public class JornalService {
             validacionPersonal(jornal);
         }
 
-        public void validacionGeneralDeDatos (Jornal jornal){
+        public void validacionGeneralDeDatos (Jornal jornal) {
             transformToCorrectTimeZone(jornal);
             if (!DateTimeUtil.isValidTimeRange(jornal.getHoraComienzo(), jornal.getHoraFin())) {
                 throw new InvalidDataException("La hora de fin debe ser al menos 30 minutos más tarde que la hora de comienzo");
@@ -325,6 +326,12 @@ public class JornalService {
                         !DateTimeUtil.isTimeStampWithinWorkingHours(jornal.getHoraFin())) {
                     throw new InvalidDataException("No se pueden marcar horarios de lluvia por fuera del horario laboral habitual");
                 }
+                double horas = DateTimeUtil.calculateHoursDifference(jornal.getHoraComienzo(), jornal.getHoraFin());
+                if(horas > 6) throw new InvalidDataException("La horas de lluvia no pueden ser mayores a 6 por día");
+                if (DateTimeUtil.isDateAfterTomorrowOrLater(jornal.getFechaJornal())) {
+                    // tirar error
+                    throw new InvalidDataException("No se puede marcar horario de lluvia en un día posterior a mañana.");
+                }
             }
 
         }
@@ -332,16 +339,19 @@ public class JornalService {
         private void validacionPersonal (Jornal jornal){
             if (jornal.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)) {
                 boolean allDayRain = false;
-                if (DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraComienzo(), DateTimeUtil.MONDAY_TO_FRIDAY_START) &&
-                        DateTimeUtil.compareTimestampToLocalTime(jornal.getHoraFin(), DateTimeUtil.MONDAY_TO_THURSDAY_END
-                        )) {
-                    allDayRain = true;
-                    jornal.setHoraFin(DateTimeUtil.getEndOfWorkdayTimestamp(jornal.getFechaJornal()));
-                }
+                double horas = DateTimeUtil.calculateHoursDifference(jornal.getHoraComienzo(), jornal.getHoraFin());
+                if (horas==6) {allDayRain = true;}
                 if (!allDayRain) {//Si no es lluvia all day, solo se puede agregar el período de lluvia en trabajadores que haya ingresado ese día
                     Optional<Jornal[]> jornales = jornalRepository.findJornalesByFechaObraPersona(jornal.getFechaJornal(), jornal.getObra(), jornal.getPersona());
                     if (jornales.isEmpty() && (DateTimeUtil.isBeforeToday(jornal.getFechaJornal()) || DateTimeUtil.isAfterWorkingHours(Timestamp.from(Instant.now())))) { //si esta vacío es porque es un día finalizado o anterior a hoy y esa persona nunca marcó
                         throw new JornalNotSavedException(jornal.getPersona().getApellido(), "No hay ingreso registrado para la obra indicada.");
+                    }
+                    if (jornales.isPresent()) {
+                        List<Jornal> jornalesList = convertOptionalArrayToList(jornales);
+                        Map<Boolean, List<Jornal>> partitionedJornalesLluvia = jornalesList.stream()
+                                .collect(Collectors.partitioningBy(j -> j.getTipoJornal().getId().equals(TipoJornal.ID_JORNAL_LLUVIA)));
+                        double totalHorasLLuvia =calcularTotalHoras(partitionedJornalesLluvia.get(true));
+                        if (totalHorasLLuvia >= 6) throw new InvalidDataException("La horas de lluvia no pueden ser mayores a 6 por día");
                     }
 
                 }
@@ -553,6 +563,16 @@ public class JornalService {
                 throw new InvalidDataException ("No tienes autorización para ver los datos");
             }
         }
+    }
+
+    private double calcularTotalHoras (List<Jornal> jornales) {
+        double total=0;
+        for(Jornal j: jornales){
+            if(j.getHoraComienzo()!=null & j.getHoraFin()!=null){ //Para que no de NullPointer si está sin terminar
+                total+= DateTimeUtil.calculateHoursDifference(j.getHoraComienzo(),j.getHoraFin());
+            }
+        }
+        return total;
     }
 
 

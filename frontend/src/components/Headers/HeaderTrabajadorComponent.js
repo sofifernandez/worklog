@@ -17,7 +17,7 @@ const HeaderTrabajadorComponent = () => {
                 <div className="collapse navbar-collapse justify-content-lg-between" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active mx-2 px-2 ">
-                            <a className="nav-link" href="/home">Inicio</a>
+                            <a className="nav-link labelCard text-dark" href="/home">Inicio</a>
                         </li>
                         <li className="nav-item dropdown mx-2 px-2">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkJornales" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
