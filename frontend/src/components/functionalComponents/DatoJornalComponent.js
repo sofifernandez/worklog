@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { faCloudRain, faE, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import { faCircle, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain, faE, faArrowRightFromBracket, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faClock, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { format, subHours } from 'date-fns';
 import ConfirmarJornalComponent from './ConfirmarJornalComponent.js'
 import TimeModal from './TimeModalComponent.js'
@@ -118,9 +118,9 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
 
                 {/*----- TIPO -------- */}
                 <td className="text-center lluvia" >
-                    {jornal.tipoJornal.id === 1 && <FontAwesomeIcon icon={faClock} title='Común' />}
-                    {jornal.tipoJornal.id === 2 && <FontAwesomeIcon icon={faCloudRain} title='Lluvia' />}
-                    {jornal.tipoJornal.id === 3 && <FontAwesomeIcon icon={faE} title='Extra' />}
+                    {jornal.tipoJornal.id === 1 && <FontAwesomeIcon className=' btn btn-dark divSymbol' icon={faClock} title='Común' />}
+                    {jornal.tipoJornal.id === 2 && <FontAwesomeIcon className=' btn btn-dark divSymbol' icon={faCloudRain} title='Lluvia' />}
+                    {jornal.tipoJornal.id === 3 && <FontAwesomeIcon className=' btn btn-dark divSymbol' icon={faE} title='Extra' />}
                 </td>
                 {/*----- FECHA -------- */}
                 <td className="text-center">{formatDate(jornal.fechaJornal)}</td>
@@ -144,47 +144,47 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
                 <td className="text-center">
                     {jornal.horaFin && (
                         formatTime(jornal.horaFin)
-                    )} 
-                    
+                    )}
+
                     {!jornal.horaFin && (adminView || jefeView) && (
                         <button
-                        className="btn btn-danger"
-                        onClick={() => openModal(jornal.id, 'horaFin')}
-                    >
-                        Agregar salida
-                    </button>
-                    ) }
+                            className="btn btn-danger"
+                            onClick={() => openModal(jornal.id, 'horaFin')}
+                        >
+                            Agregar salida
+                        </button>
+                    )}
                 </td>
                 {/*----- STATUS CONFIRMADO -------- */}
-                {(adminView || jefeView) && (<td className="text-center"> <FontAwesomeIcon
-                    icon={faCircle}
-                    style={{ color: jornal.confirmado ? 'green' : 'red' }}
-                /> </td>)
-                }
-
-                {/*----- ACCIONES -------- */}
-                {adminView && (
+                {(adminView || jefeView) && (
                     <td className="text-center">
-                        {!jornal.confirmado && (<ConfirmarJornalComponent
+                        {jornal.confirmado ? (
+                            <FontAwesomeIcon
+                                icon={faCircle}
+                                style={{ color: 'green' }}
+                            />
+                        ) : (
+                            <ConfirmarJornalComponent
                             jornal={jornal}
                             onError={onError}
                             onSuccess={onSuccess}
-                        />)}
-                        <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                        <Link className='btn btn-outline-danger m-1' to={`/delete-jornal/${jornal.id}`}>Eliminar</Link>
-                        
+                        />
+                        )}
+                    </td>
+                )}
+                {/*----- ACCIONES -------- */}
+                {adminView && (
+                    <td className="text-center">
+                        <Link title='Modificar' className='btn btn-outline-info m-1' to={`/modify-jornal/${jornal.id}`}><FontAwesomeIcon icon={faPencil} /></Link>
+                        <Link title='Eliminar' className='btn btn-outline-danger m-1' to={`/delete-jornal/${jornal.id}`}><FontAwesomeIcon icon={faTrash} /></Link>
+
                     </td>
                 )}
 
                 {jefeView && (
                     <td className="text-center">
                         {!jornal.confirmado && (
-                            <><ConfirmarJornalComponent
-                                jornal={jornal}
-                                onError={onError}
-                                onSuccess={onSuccess} />
-                                <Link className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}>Modificar</Link>
-                            </>
+                            <Link title='Modificar' className='btn btn-info m-1' to={`/modify-jornal/${jornal.id}`}><FontAwesomeIcon icon={faPencil} /></Link>
                         )}
                     </td>
                 )}
