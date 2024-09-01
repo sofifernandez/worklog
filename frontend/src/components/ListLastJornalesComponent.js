@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 
 export const ListLastJornalesComponent = () => {
-    const { personaRolLoggeado, refreshJornales } = useAuth();
+    const { personaRolLoggeado, refreshJornales, setRefreshJornales } = useAuth();
     const [jornales, setJornales] = useState([])
     const [isAdmin, setIsAdmin]=useState(false)
 
@@ -27,8 +27,11 @@ export const ListLastJornalesComponent = () => {
                 console.log(error)
             })
         }
+        setRefreshJornales(false)
             
     }
+
+    console.log(refreshJornales)
 
     useEffect(() => {
         listarJornales()

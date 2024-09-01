@@ -34,7 +34,7 @@ const ListObrasComponent = () => {
         <div className='container mt-5 row justify-content-center'>
             <h2 className='text-center'>Lista de obras</h2>
             <Link to='/add-obra' className='btn btn-primary mb-2 col-lg-9' >Agregar nueva obra </Link>
-            <div className='table-responsive col-lg-9'>
+            <div className=''>
                 <ContainerDatoObraComponent obras={obras} onRefrescarDatos={onRefrescarDatos}></ContainerDatoObraComponent>
             </div>
             <div className='mt-5'>

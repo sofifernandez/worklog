@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ContainerDatoJornalComponent from './functionalComponents/ContainerDatoJornalComponent';
 import JornalFinderFormComponent from "./functionalComponents/JornalFinderFormComponent";
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,8 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
     const [obras, setObras] = useState([]);
     const [jornales, setJornales] =useState();
     const [mensajeError, setMensajeError] = useState();
-    const { personaRolLoggeado } = useAuth();
+    const { personaRolLoggeado,refreshJornales, setRefreshJornales } = useAuth();
+    const [filtros, setFiltros] =useState();
     const navigate = useNavigate();
 
     const fetchObrasActivasEntreFechas = async (fechaDesde, fechaHasta) => {
@@ -35,6 +36,7 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
     };
 
     const getJornalesPorFiltros = async (data) => {
+        setFiltros(data)
         setMensajeError();
         try {
             if(!showTrabajadores) data= {...data, personas:[personaRolLoggeado.id]}
@@ -47,7 +49,12 @@ const BuscarJornalComponent = ({ showTrabajadores, adminView, jefeView, workerVi
                 setMensajeError('Ocurrió un error');
             }
         }
+        setRefreshJornales(false)
     }
+
+    useEffect(() => {
+        getJornalesPorFiltros(filtros)
+    }, [refreshJornales])
    
 
     const handleVolver = () => {

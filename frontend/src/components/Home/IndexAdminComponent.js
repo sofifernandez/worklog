@@ -9,8 +9,8 @@ export const AdminIndexComponent = () => {
  
   return (
     <div className="container mt-5 mx-auto justify-content-center">
-      <div className='row justify-content-center'>
-        <div className="col-8 col-lg-4 mb-4 justify-content-center">
+      <div className='row justify-content-center align-items-stretch'>
+        <div className="col-8 col-lg-4 mb-4">
           <div className="card cardsAdmin">
             <img className="card-img-top" src={iconoPersonas} alt="Card image cap" />
             <div className="card-body">
@@ -34,7 +34,6 @@ export const AdminIndexComponent = () => {
             <ul className="list-group list-group-flush">
               <Link title='Ir' to ='/obras' className='no-decoration'><li className="list-group-item itemLink">Ver listado/Buscar</li></Link>
               <Link title='Ir' to ='/add-obra' className='no-decoration'><li className="list-group-item itemLink">Agregar nueva obra</li></Link>
-              <Link title='Ir' to ='/assign-jefeObra' className='no-decoration'><li className="list-group-item itemLink">Asignar Jefe de Obra</li></Link>
             </ul>
 
           </div>

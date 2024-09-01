@@ -34,8 +34,15 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
         const seconds = date.getSeconds().toString().padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
+        return `${hours}:${minutes}`;
     };
+
+    const getClassName = () => {
+        if (jornal.tipoJornal.id === 1) return 'table-light';
+        if (jornal.tipoJornal.id === 2) return 'table-primary';
+        if (jornal.tipoJornal.id === 3) return 'table-warning';
+        return 'error-class';
+      };
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
@@ -111,7 +118,7 @@ const DatoJornalComponent = ({ jornal, adminView, jefeView, confirmar, onError, 
     return (
 
         <>
-            <tr key={jornal.id}>
+            <tr key={jornal.id} className={getClassName()}>
 
                 {/*----- NOMBRE -------- */}
                 {(adminView || jefeView) && (<th className="text-center">{jornal.persona.nombre} {jornal.persona.apellido} </th>)}

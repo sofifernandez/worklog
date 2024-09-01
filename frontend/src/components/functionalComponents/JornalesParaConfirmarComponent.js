@@ -4,11 +4,13 @@ import ContainerDatoJornalComponent from './ContainerDatoJornalComponent';
 import ConfirmarJornalComponent from "./ConfirmarJornalComponent";
 import ErrorMessage from './ErrorMessageComponent';
 import SuccessMessage from './SuccessMessageComponent';
+import { useAuth } from '../../context/AuthContext';
 
 export const JornalesParaConfirmarComponent = ({ obra }) => {
     const [jornales, setJornales] = useState([]);
     const [mensajeError, setMensajeError] = useState([]);
     const [mensajeSuccess, setMensajeSuccess] = useState([]);
+    const { refreshJornales, setRefreshJornales } = useAuth();
     const hasJornales = jornales.length > 0;
 
     const fetchJornalesSinConfirmar = async () => {
@@ -22,11 +24,12 @@ export const JornalesParaConfirmarComponent = ({ obra }) => {
                 console.error('Error fetching jornales:', error);
             }
         }
+        setRefreshJornales(false)
     };
 
     useEffect(() => {
         fetchJornalesSinConfirmar();
-    }, [obra]);
+    }, [obra, refreshJornales]);
 
     const handleFetchError = (error) => {
         setMensajeError(prevErrors => [...prevErrors, error]);
@@ -47,21 +50,21 @@ export const JornalesParaConfirmarComponent = ({ obra }) => {
     };
 
     return (
-        <div className='container mt-5 row justify-content-center'>
+        <div className='container mt-5 row divBorder justify-content-center'>
             {obra ? (
                 <div>
-                    <h4 className=''>
+                    <h4 className='pt-3'>
                         {hasJornales ? `Jornales para confirmar de ${obra.nombre}` : `${obra.nombre}: no tiene jornales para confirmar`}
                     </h4>
                     {hasJornales && (
                         <>
-                            <div className='row justify-content-center border bg-white px-0'>
+                            <div className='row justify-content-center px-0'>
                                 <ContainerDatoJornalComponent
                                     jornales={jornales.slice(0, 10)}
                                     adminView={true}
                                     confirmar={true}
-                                    onError={handleFetchError}
-                                    onSuccess={handleFetchSuccess}
+                                    /* onError={handleFetchError}
+                                    onSuccess={handleFetchSuccess} */
                                 />
                             </div>
                             <div className='row justify-content-center px-0'>

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import ListMyJornalesComponent from '../ListMyJornalesComponent';
+import ListLastJornales from '../ListLastJornalesComponent';
 
 export const IndexTrabComponent = () => {
 
-  return <ListMyJornalesComponent />;
+  return <ListLastJornales />;
 };
 
 export default IndexTrabComponent;

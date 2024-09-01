@@ -70,8 +70,8 @@ class JornalService {
         })
     }
 
-    confirmarJornal(jornal) {
-        return axios.post(`${JORNALES_BASE_REST_API_URL}/confirmarJornal`, jornal);
+    confirmarJornal(jornalID) {
+        return axios.post(JORNALES_BASE_REST_API_URL + '/confirmarJornal/' + jornalID);
     }
 
     agregarLluvia(jornal) {
