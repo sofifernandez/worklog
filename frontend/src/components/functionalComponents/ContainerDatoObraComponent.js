@@ -8,7 +8,7 @@ const ContainerDatoObraComponent = ({ obras, onRefrescarDatos }) => {
     }
 
     return (
-        <table className='table table-sm table-bordered table-striped mt-3'>
+        <table className='table table-sm table-striped mt-3'>
             <thead>
                 <th></th>
                 <th>Nombre</th>
@@ -19,7 +19,7 @@ const ContainerDatoObraComponent = ({ obras, onRefrescarDatos }) => {
             </thead>
             <tbody>
                 {obras.map(obra =>
-                    <DatoObraComponent obra={obra} onlyRows={true} onRefrescarDatos={onRefrescarDatosParent} />
+                    <DatoObraComponent obra={obra} onRefrescarDatos={onRefrescarDatosParent} />
                 )}
             </tbody>
         </table>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+/* import { Link } from 'react-router-dom'
 import ContainerDatoJornalComponent from './functionalComponents/ContainerDatoJornalComponent';
 import React, { useEffect, useState } from 'react'
 
@@ -38,4 +38,4 @@ export const ListMyJornalesComponent = () => {
   )
 }
 
-export default ListMyJornalesComponent;
+export default ListMyJornalesComponent; */

@@ -132,10 +132,10 @@ public class JornalController {
         return new ResponseEntity<>(jornales, HttpStatus.OK);
     }
 
-    @PostMapping("jornal/confirmarJornal")
+    @PostMapping("jornal/confirmarJornal/{jornalID}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'JEFE_OBRA')")
-    public ResponseEntity<Object> confirmarJornal(@Valid @RequestBody Jornal jornal) {
-        jornalService.confirmarJornal(jornal);
+    public ResponseEntity<Object> confirmarJornal(@PathVariable Long jornalID) {
+        jornalService.confirmarJornal(jornalID);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

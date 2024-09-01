@@ -7,7 +7,7 @@ const ContainerPersonaFinderComponent = ({ onPersonaFound, onCancelar, minimalDa
     const [mensajeError, setMensajeError] = useState('');
 
     const handlePersonasFound = (personas) => {
-        if (personas.length === 1) {
+        if (personas?.length === 1) {
             setPersonas([personas[0]]);
             //onPersonaFound(personas[0]);
         } else {
@@ -32,12 +32,12 @@ const ContainerPersonaFinderComponent = ({ onPersonaFound, onCancelar, minimalDa
 
     return (
         <div className='row row justify-content-center'>
-            {!personas.length && (
+            {!personas?.length && (
                 <div className='row justify-content-center px-0'>
                     <PersonaFinderComponent onPersonasFound={handlePersonasFound} onMensajeError={handleMensajeError} onCancelar={onCancelar} />
                 </div>
             )}
-            {personas.length > 0 && (
+            {personas?.length > 0 && (
                 <div className='row justify-content-center'>
                     <h5 className='px-0'>Resultado:</h5>
                     <ContainerDatoPersonaComponent personas={personas} minimalData={minimalData} handleRowClick={handlePersonaClick} />
