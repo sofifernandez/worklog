@@ -26,6 +26,7 @@ const BuscadorByBPS = ({ onObraFound, onMensajeError, onCancelar }) => {
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {
+                console.log('CLICK')
                 onMensajeError(error.response.data);
             } else {
                 onMensajeError('Ocurrió un error');

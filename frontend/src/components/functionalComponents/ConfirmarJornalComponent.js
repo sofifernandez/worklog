@@ -2,23 +2,23 @@ import React from 'react';
 import JornalService from '../../services/JornalService';
 
 const ConfirmarJornalComponent = ({ jornal, jornales, onError, onSuccess }) => {
-    console.log(jornal)
+
     const confirmarJornal = async (jornal) => {
         try {
-            await JornalService.confirmarJornal(jornal);
+            await JornalService.confirmarJornal(jornal.id);
             onSuccess(`${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} confirmado exitosamente.`);
         } catch (error) {
-            onError(error.response?.data || `${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} no se pudo confirmar.`);
+            onError(error.response?.data || `${jornal.persona.apellido}: jornal del dia ${jornal.fechaJornal} no se pudo confirmar.`);
         }
     };
 
     const confirmarJornales = async (jornales) => {
         const results = await Promise.all(jornales.map(async (jornal) => {
             try {
-                await JornalService.confirmarJornal(jornal);
+                await JornalService.confirmarJornal(jornal.id);
                 return { success: true, jornal };
             } catch (error) {
-                return { success: false, error: error.response?.data || `${jornal.persona.nombre}: Jornal del dia ${jornal.fechaJornal} no se pudo confirmar.` };
+                return { success: false, error: error.response?.data || `${jornal.persona.apellido}: jornal del dia ${jornal.fechaJornal} no se pudo confirmar.` };
             }
         }));
 
@@ -30,7 +30,7 @@ const ConfirmarJornalComponent = ({ jornal, jornales, onError, onSuccess }) => {
         }
 
         if (successfulResults.length > 0) {
-            successfulResults.forEach(res => onSuccess(`${res.jornal.persona.nombre}: Jornal del dia ${res.jornal.fechaJornal} confirmado exitosamente.`));
+            successfulResults.forEach(res => onSuccess(`${res.jornal.persona.apellido}: jornal del dia ${res.jornal.fechaJornal} confirmado exitosamente.`));
         }
     };
 

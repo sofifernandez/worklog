@@ -71,7 +71,7 @@ public class ObraService {
     @Transactional(readOnly = true)
     public Obra getObraByBPS(String bps) {
         Obra obra = obraRepository.findByBps(bps);
-        if (obra == null) {throw new ObraNotFoundException(bps);}
+        if (obra == null) {throw new ObraNotFoundException("Obra no encontrada");}
         return obra;
     }
 
@@ -79,6 +79,8 @@ public class ObraService {
     public List<Obra>  getObraByNombre(String nombre) {
         if(nombre==null || nombre.isEmpty() || nombre.isBlank()) throw new InvalidDataException("Ingrese un parámetro de búsqueda");
         String nombrePattern = "%" + nombre + "%";
+        List<Obra> obras = obraRepository.getObrasByNombre(nombrePattern);
+        if(obras.isEmpty()){throw new ObraNotFoundException("Obra no encontrada");}
         return obraRepository.getObrasByNombre(nombrePattern);
     }
 

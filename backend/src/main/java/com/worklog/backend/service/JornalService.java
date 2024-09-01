@@ -366,11 +366,12 @@ public class JornalService {
             validateNoOverlap(jornalesFechaObraTipo, jornal);
         }
 
-        public void confirmarJornal (Jornal jornal){
-            validateJornal(jornal);
-            jornal.setConfirmado(true);
-            jornalRepository.save(jornal);
-        }
+    public void confirmarJornal(Long jornalID) {
+        Jornal jornal = jornalRepository.findById(jornalID).get();
+        if(jornal.getHoraFin()==null) throw new InvalidDataException(jornal.getPersona().getApellido() + ": " + "No se puede confirmar jornal porque no tiene horario de salida");
+        jornal.setConfirmado(true);
+        jornalRepository.save(jornal);
+    }
 
     private void validateNoOverlap(Optional<Jornal[]> jornales, Jornal nuevoJornal) {
         //Validar que no haya ya un que quede superpuesto con este

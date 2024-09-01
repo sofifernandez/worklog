@@ -9,13 +9,12 @@ import AssignJefeObraComponent from '../components/AssignJefeObraComponent';
 import AssignRolComponent from '../components/AssignRolComponent';
 import ChangePassword from '../components/functionalComponents/ChangePassword';
 import AddRainToObra from '../components/AddRainToObra'
-import AddOrModifyJornalComponent from '../components/AddOrModifyJornalComponent';
 import DeleteJornalComponent from '../components/DeleteJornalComponent';
 import GenerarReporteComponent from '../components/GenerarReporteComponent';
 import BuscarJornalComponent from '../components/BuscarJornalComponent';
 import JornalesParaConfirmarAdminComponent from '../components/functionalComponents/JornalesParaConfirmarAdminComponent';
 import ContainerJornalEditorComponent from '../components/functionalComponents/ContainerJornalEditorComponent';
-import ListLastJornalesComponent from '../components/ListLastJornales';
+import ListLastJornalesComponent from '../components/ListLastJornalesComponent';
 
 const AdminRoutes = () => {
   return (

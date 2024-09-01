@@ -41,66 +41,6 @@ const DatoObraComponent = ({ obra, onlyRows, onRefrescarDatos }) => {
     return (
 
         <>
-            {!onlyRows &&
-
-                (
-                    <table className='table table-sm table-bordered table-striped'>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nombre</th>
-                                <th>Número BPS</th>
-                                <th className='text-center'>Activo</th>
-                                <th>Jefe de Obra</th>
-                                <th>Codigo QR</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr key={obra.id}>
-                                <td className='text-center'>
-                                    <Link className='btn btnActualizar mx-1' to={`/edit-obra/${obra.id}`}>Actualizar</Link>
-                                    {/* <button className='btn btn-danger mx-1' onClick={() => deleteObra(obra.id)}>Eliminar</button> */}
-                                </td>
-                                <td >{obra.nombre}</td>
-                                <td >{obra.bps}</td>
-                                <td className='text-center'>
-                                    <FontAwesomeIcon
-                                        icon={faCircle}
-                                        style={{ color: obra.activo ? 'green' : 'red' }}
-                                    />
-                                </td>
-                                {obra.jefeObra?.activo ?
-                                    <td className='text-center'>
-                                        <div>{obra.jefeObra.persona.nombre} {obra.jefeObra.persona.apellido}</div>
-                                        <span className="col-2 trashcan">
-                                            <FontAwesomeIcon icon={faTrash} onClick={() => eliminarJefeObra(obra.jefeObra.id)} />
-                                        </span>
-                                        {/* <button className='btn alert-warning mx-3' onClick={() => eliminarJefeObra(obra.jefeObra.id)}>Eliminar</button> */}
-                                    </td>
-                                    :
-                                    <td className='text-center'>
-                                        <Link className='btn btn-primary' to={`/assign-jefeObra/${obra.id}`}>Asignar</Link>
-                                    </td>}
-                                {obra.codigoQR &&
-                                    <td>
-                                        <div className="d-flex justify-content-center">
-                                            <img
-                                                src={`data:image/png;base64,${obra.codigoQR}`}
-                                                alt="Código QR"
-                                                style={{ width: '30px', height: '30px', cursor: 'pointer' }}
-                                                onClick={() => openModal(obra.codigoQR)}
-                                            />
-                                        </div>
-                                    </td>
-                                }
-                            </tr>
-
-                        </tbody>
-                    </table>
-                )}
-
-            {onlyRows && (
                 <tr key={obra.id}>
                      <td className='text-center'>
                         <Link className='btn btnActualizar mx-1' to={`/edit-obra/${obra.id}`}>Actualizar</Link>
@@ -139,7 +79,7 @@ const DatoObraComponent = ({ obra, onlyRows, onRefrescarDatos }) => {
                         </td>
                     }
                 </tr>
-            )}
+
             <div>
                 <ModalComponent show={showModal} handleClose={closeModal} selectedQR={selectedQR} obra={obra}>
                     {selectedQR && <img src={`data:image/png;base64,${selectedQR}`} alt="Código QR Completo" style={{ width: '100%' }} />}
