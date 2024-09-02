@@ -28,7 +28,7 @@ public class UsuarioService {
             Usuario usuario = new Usuario();
             usuario.setPersona(persona);
             usuario.setUsername(persona.getCi());
-            usuario.setPasswordResetRequired(false);
+            usuario.setPasswordResetRequired(true);
             usuario.setPassword(new BCryptPasswordEncoder().encode(persona.getCi()));
             return usuarioRepository.save(usuario);
         } catch (Exception e) {
@@ -53,11 +53,14 @@ public class UsuarioService {
     @Transactional
     public void changePassword(long id, String password) {
         if(!isValidPassword(password)) {
-            throw new InvalidDataException("La contraseña debe tener al menos 4 caracteres");
+            throw new InvalidDataException("La contraseña debe tener al menos 8 caracteres");
         }
         Usuario usuario = usuarioRepository.findByPersonaId(id).orElse(null);
         if (usuario == null) {
             throw new UsuarioNotFoundException(id);
+        }
+        if(isCedulaPassword(password,usuario.getPersona().getCi())) {
+            throw new InvalidDataException("La contraseña debe ser distinta de la cédula");
         }
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setPasswordResetRequired(false);
@@ -65,6 +68,10 @@ public class UsuarioService {
     }
 
     private boolean isValidPassword(String password) {
-        return password.length() >= 4;
+        return password.length() >= 8;
+    }
+
+    private boolean isCedulaPassword(String password, String cedula) {
+        return password.equals(cedula);
     }
 }

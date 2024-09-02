@@ -1,10 +1,6 @@
 import axios from "axios"
-import { initAxiosInterceptors } from "../helpers/AuthHelper"
 
-const PERSONA_ROL_BASE_REST_API_URL = "http://localhost:8080/personaRol"
-//const PERSONA_ROL_BASE_REST_API_URL = "http://3.233.21.8:8080/personaRol"
-
-//initAxiosInterceptors();
+const PERSONA_ROL_BASE_REST_API_URL = "http://backend-worklog.rustikas.com.uy:8080/personaRol"
 
 
 class PersonaRolService{

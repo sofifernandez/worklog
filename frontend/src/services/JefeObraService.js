@@ -1,7 +1,6 @@
 import axios from "axios"
 
-const JEFE_OBRA_BASE_REST_API_URL = "http://localhost:8080/"
-//const JEFE_OBRA_BASE_REST_API_URL = "http://3.233.21.8:8080/login"
+const JEFE_OBRA_BASE_REST_API_URL = "http://backend-worklog.rustikas.com.uy:8080/"
 
 class JefeObraService{
 

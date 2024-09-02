@@ -1,7 +1,6 @@
 import axios from "axios"
 
-const LOGIN_BASE_REST_API_URL = "http://localhost:8080/usuario"
-//const LOGIN_BASE_REST_API_URL = "http://18.205.219.216:8080/usuario"
+const LOGIN_BASE_REST_API_URL = "http://backend-worklog.rustikas.com.uy:8080/usuario"
 
 class UsuarioService{
 
